@@ -1,0 +1,702 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="introduction-interface">Introducing the plentymarkets plugin interface</h1>
+
+<div class="api-docs-basics">
+    <p>
+        The plentymarkets plugin interface is a collection of interfaces representing the modules and sub-modules available in plentymarkets. The plugin interface defines the core services for plentymarkets plugins and contains all necessary methods <!-- properties, events etc. --> for your plugin to communicate with plentymarkets. For each module of plentymarkets, individual interfaces are available. The documentation for these interfaces can be accessed via the <b>Interface</b> drop-down menu in the navigation bar. Learn how to <a href="/dev-doc/template-plugins#ide-plugin-interface">integrate the plentymarkets plugin interface</a> into your IDE to support auto-completion.
+    </p>
+</div>
+
+<div class="connect">
+    <div class="btn btn-primary btn-block btn-github" title="Clone or download the plentymarkets plugin interface on GitHub.">
+        <a href="https://github.com/plentymarkets/plugin-interface" target="_blank" role="button"><img class="img-responsive pull-left" src="{{ plugin_path('PlentyPluginShowcase') }}/images/github-logo.png"  style="width: 40px;"/><span>Download on GitHub</span></a>
+    </div>
+</div>
+    
+<h2 id="guide-interface">Overview of interfaces</h2>
+<div class="api-docs-basics">
+    <p>
+        Find an overview of all available interfaces below:
+    </p>
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>
+                Interface
+            </th>
+            <th>
+                Description
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Account">Account</a>
+            </td>
+            <td>
+                Contains sub-modules for <strong>Addresses</strong> and <strong>Contacts</strong>. This interface is the counterpart to the plentymarkets CRM module.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Accounting">Accounting</a>
+            </td>
+            <td>
+                Contains a sub-module for <strong>VAT</strong> and classes for determining the VAT.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Authentication">Authentication</a>
+            </td>
+            <td>
+                Interface for user authentication.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Authorization">Authorization</a>
+            </td>
+            <td>
+                Interface for user permissions and user roles.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Basket">Basket</a>
+            </td>
+            <td>
+                Contains sub-modules for determining the basket and the items within the basket.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Category">Category</a>
+            </td>
+            <td>
+                Interface with sub-modules and models for categories.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Cloud">Cloud</a>
+            </td>
+            <td>
+                Interface for cloud services, e.g. ElasticSearch and Storage.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Cron">Cron</a>
+            </td>
+            <td>
+                Interface for accessing cron jobs.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Comment">Comment</a>
+            </td>
+            <td>
+                Contains the Comment model.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/DataExchange">DataExchange</a>
+            </td>
+            <td>
+                Interface for exchanging data. Contains models for export and filters.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Document">Document</a>
+            </td>
+            <td>
+                Contains the document model.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/EventProcedures">EventProcedures</a>
+            </td>
+            <td>
+                Interface with events and services for event procedures.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Export">Export</a>
+            </td>
+            <td>
+                Contains the Export model.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Frontend">Frontend</a>
+            </td>
+            <td>
+                Interface with services for the online store.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Helper">Helper</a>
+            </td>
+            <td>
+                Interface with contracts, models and services for helpers.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Item">Item</a>
+            </td>
+            <td>
+                Contains sub-modules for attributes, availability, item and variation data, manufacturers, shipping and units.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/ItemSet">ItemSet</a>
+            </td>
+            <td>
+                Interface for item sets. Contains methods to get and create item sets and item set components.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Market">Market</a>
+            </td>
+            <td>
+                Contains the sub-module <strong>Ebay</strong> for fitments and fitment items.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Order">Order</a>
+            </td>
+            <td>
+                Contains contracts and models for orders and order items as well as the sub-modules <strong>Currency</strong>, <strong>Payment</strong> and <strong>Shipping</strong>. This interface is the counterpart to the plentymarkets order module.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Payment">Payment</a>
+            </td>
+            <td>
+                Contains the sub-modules for payment methods, the payment history, as well as contracts and models for payments and payment properties.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Plugin">Plugin</a>
+            </td>
+            <td>
+                Contains the sub-modules for storing data in a plugin database or accessing external SDKs.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/StockManagement">StockManagement</a>
+            </td>
+            <td>
+                Contains contracts and models for stock management and storage data.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/System">System</a>
+            </td>
+            <td>
+                Contains the <strong>Webstore</strong> model.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Template">Template</a>
+            </td>
+            <td>
+                Contains contracts and models for the design and design configuration.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Ticket">Ticket</a>
+            </td>
+            <td>
+                Contains contracts and models related to the plentymarkets ticket system.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{ url() }}/api-doc/Miscellaneous">Miscellaneous</a>
+            </td>
+            <td>
+                Contains interfaces that cannot be organised in the listed interfaces.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h1 id="plugin-structure">Plugin structure</h1>
+<div class="api-docs-basics">
+    <p>
+        All plugins need to be organised in a specific structure. You can create a new plugin from a Git repository. This will create all required files and folders automatically as follows:
+    </p>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-plain grey-back">
+PluginDirectory/
+    ├── meta/
+    │   ├── images/
+    │   │   │   // preview images showing this plugin
+    │   │   ├── preview_[0-6].[png │ jpeg]
+    │   │   │   // plugin icons
+    │   │   ├── icon_plugin_[xs │ sm │ md].[png │ jpeg]
+    │   │   │   // authors logo
+    │   │   └── icon_author_[xs │ sm │ md].[png │ jpeg]
+    │   └── documents/
+    │       └── user_guide_[en │ de │ etc].md // <a href="/tutorials/marketplace-guide#marketplace-user-guide">user guide</a> for the plugin
+    │
+    ├── resources/
+    │   ├── css/
+    │   │   └── // .css and .scss files
+    │   ├── images/
+    │   │   └── // images
+    │   ├── js/
+    │   │   └── // JavaScript and CoffeeScript
+    │   ├── lang/
+    │   │   └── // language files
+    │   ├── documents/
+    │   │   └── // fonts, pdf-files or other resources
+    │   └── views/
+    │       └── // twig templates (can be organised in sub-folders)
+    │
+    ├── src/
+    │   └── // plugin source code
+    │
+    ├── test/
+    │   └── // tests will be executed before build
+    │
+    ├── ui/
+    │   └── // files for back end views
+    │
+    ├── config.json // <a href="#plugin-options">admin's plugin options</a>
+    ├── plugin.json // <a href="#plugin-information">plugin information</a>
+    ├── ui.json // <a href="#ui-information">back end menu information</a>
+    ├── README.md
+    └── CHANGELOG.md // <a href="/tutorials/marketplace-guide#marketplace-changelog">change log</a> for the plugin
+</pre>
+</div>
+
+<div class="api-docs-basics">
+    <p>
+        For detailed information about the different plugin features, refer to the <a href="template-plugins#template-introduction">Template plugin guide</a> or <a href="payment-plugins#payment-introduction">Payment plugin guide</a>.
+    </p>
+</div>
+
+<h2 id="plugin-information">Plugin information</h2>
+<div class="api-docs-basics">
+    <p>
+        All information about your plugin is defined in a <code>plugin.json</code> file. This file defines the service provider of your plugin, which will be called by plentymarkets to register and run your plugin.
+    </p>
+</div>
+
+<!-- DocBlock with plugin.json information -->
+{% include "PlentyPluginShowcase::content.devguide.docblocks.block_plugin_json" %}
+
+<h2 id="plugin-options">Admin options</h2>
+<div class="api-docs-basics">
+    <p>
+        You can define multiple options that will be displayed in the <b>Plugins » Plugin overview</b> menu to be configured by admin users.
+        The value of each option can be accessed in your PHP code by using the <code>ConfigRepository</code> or from
+        Twig templates by using the <code>config()</code> macro.
+    </p>
+
+    <p>
+        All admin options can be defined in an array of configurations in the <code>config.json</code>. Each configuration needs
+        the following properties:
+    </p>
+</div>
+
+<div class="route-container">
+<code>PluginXY/config.json</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+[
+    {
+        "tab"       : "Categories",
+        "key"       : "global.category.home",
+        "label"     : "Home page",
+        "type"      : "category_select"
+    },
+    {
+        "tab"       : "Header",
+        "key"       : "header.company_logo_align",
+        "label"     : "Align company logo",
+        "type"      : "dropdown",
+        "possibleValues": {
+            "0" : "Left",
+            "1" : "Center",
+            "2" : "Right"
+        },
+        "default"   : "0"
+    },
+    {
+        "tab"       : "Footer",
+        "key"       : "footer.col_1_title",
+        "label"     : "Title of first column",
+        "type"      : "text",
+        "default"   : "Shop"
+    },
+    {
+        "tab"       : "SEO",
+        "key"       : "seo.text_area",
+        "label"     : "Text for search engines",
+        "type"      : "textarea",
+        "default"   : "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
+    },
+    {
+        "tab"       : "Item",
+        "key"       : "item.data",
+        "label"     : "Show item information",
+        "type"      : "multi_select",
+        "possibleValues": {
+            "item.technical_data": "Technical data",
+            "item.description": "Description"
+        },
+        "default"   : "all"
+    },
+    {
+       "tab"       : "Basket",
+       "key"       : "basket.variations",
+       "label"     : "Show Change variation button",
+       "type"      : "checkbox",
+       "default"   : true
+   }
+]
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="api-docs-basics">
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+              <td>tab</td>
+              <td>Organises the <code>config.json</code> options into tabs. Tabs are optional.</td>
+            </tr>
+            <tr>
+                <td>key</td>
+                <td>The identifier of the configuration. This key can be used to access the options value.</td>
+            </tr>
+            <tr>
+                <td>label</td>
+                <td>The label of this configuration. Will be displayed in the <b>Plugins » Plugin overview</b> menu.</td>
+            </tr>
+            <tr>
+                <td>type</td>
+                <td>Defines the presentation of this configuration. Possible values:<br /><b>"dropdown"</b> = Possible values are displayed in a drop-down menu.<br /><b>"text"</b> = Displays a text field for text input.<br /><b>"textarea"</b> = Displays a text area for text input.<br /><b>"checkbox"</b> = Displays a checkbox.<br /><b>"multi_select"</b> = Displays a multi-select box. Possible values can be activated or deactivated.<br /><b>"category_select"</b> = Displays a category picker.<br /><b>"password"</b> = Displays a password field for text input that will not be displayed as clear text.</td>
+            </tr>
+            <tr>
+                <td>possibleValues</td>
+                <td>Defines available values of a dropdown or multi-select option (obsolete if type is "text", "checkbox" or "category_select")</td>
+            </tr>
+            <tr>
+                <td>default</td>
+                <td>The default value of this option</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<h4>Accessing plugin options from <code>PhpClass.php</code></h4>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+// access configuration from PHP
+function getTitle(ConfigRepository $config):string
+    {
+        if( $config->get('MyPlugin.show_title') == "1" )
+            {
+                return $config->get('MyPlugin.title_text');
+                    }
+                        else
+                    {
+                return "";
+            }
+    }
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<h4>Accessing plugin options from <code>Template.twig</code></h4>
+<div class="code-container">
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+{% verbatim %}
+{% if config('MyPlugin.show_title') == "1" %}
+    &lt;h1&gt;{{ config('MyPlugin.title_text') }}&lt;/h1&gt;
+{% endif %}
+{% endverbatim %}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<h2 id="ui-information">Back end menu information</h2>
+<div class="api-docs-basics">
+    <p>
+        All information about the back end menu entries is saved in a <code>ui.json</code> file. This file defines the entry points for the plugin. Views are then available at the respective menus. Find a list of possible <a href="#guide-entrypoints">menu entry points</a> below.
+    </p>
+</div>
+
+<div class="route-container">
+<code>PluginXY/ui.json</code>
+</div>
+
+<div class="code-container grey-back">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+{
+    "defaultEntryPoint" : "index.html",
+    "namespace"         : "MyFirstView",
+    "icon": "icon-plugin",
+    "menuEntries"       : [
+                            {
+                              "label": "Hello World",
+                              "menu": "start",
+                              "urlKey": "hello-world",
+                              "entryPoint": "index.html",
+                              "icon": "icon-add"
+                            }
+                          ]
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="api-docs-basics">
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>defaultEntryPoint</td>
+                <td>The default entry point of your plugin</td>
+            </tr>
+            <tr>
+                <td>namespace</td>
+                <td>The namespace of your plugin</td>
+            </tr>
+            <tr>
+                <td>menuEntries</td>
+                <td>The menu entries of your plugin. The following information is saved for a menu entry:<br />
+                    <ul>
+                        <li><b>label</b>: The label to be displayed in the back end</li>
+                        <li><b>menu</b>: The menu that can be accessed by a plugin via entry points. Find a list of available entry points below.</li>
+                        <li><b>urlKey</b>: The route for the view in our plentymarkets back end, e.g. <code>http://your-plentystore.co.uk/plenty/ui-backend/start/hello-world</code></li>
+                        <li><b>entryPoint</b>: The entry point of your plugin</li>
+                        <li><b>icon</b>: The icon for your the menu entry in the system tree. If no icon is specified, the standard plugin icon is displayed. To not display any icon, use <code>"icon": "none"</code>. Find a list of all icons <a href="/terra-doc/icons">here.</a></li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+</div>
+
+<h2 id="guide-entrypoints">Menu entry points</h2>
+
+<div class="api-docs-basics">
+    <p>
+        Back end views can be integrated in the plentymarkets main menu and in the system tree. The following menus can be accessed by a plugin via entry points. You can find a list with eligible system tree entries <a href="/terra-doc/routes">here</a>.
+    </p>
+    <ul>
+      <li>
+        start
+      </li>
+      <li>
+        start/account
+      </li>
+      <li>
+        item
+      </li>
+      <li>
+        item/lionbridge
+      </li>
+      <li>
+        listing
+      </li>
+      <li>
+        listing/main-batch-processing
+      </li>
+      <li>
+        stock
+      </li>
+      <li>
+        stock/purchase
+      </li>
+      <li>
+        stock/returns
+      </li>
+      <li>
+        crm
+      </li>
+      <li>
+        order
+      </li>
+      <li>
+        order/scheduler
+      </li>
+      <li>
+        data-exchange
+      </li>
+      <li>
+        data-exchange/export
+      </li>
+      <li>
+        data-exchange/import
+      </li>
+      <li>
+        cms
+      </li>
+    </ul>
+</div>
+
+
+<h1 id="plugin-provisioning">Plugin provisioning</h1>
+
+<div class="api-docs-basics">
+    <p>
+        After creating a plugin with the respective structure and files, the plugin needs to be provisioned. Let's have a look on how to provision a plugin.
+    </p>
+</div>
+
+<h2 id="add-repository">Adding a Git repository to the plentymarkets inbox</h2>
+<div class="api-docs-basics">
+
+<p>Proceed as described here to add a Git repository to your plentymarkets inbox.</p>
+
+<ol>
+<li>Go to <strong>Plugins » Plugin overview</strong>.</li>
+<li>Click on <strong>Add plugin</strong>.<br />
+→ The <strong>New plugin</strong> window is displayed.</li>
+<li>Click on <strong>Git</strong>.<br />
+→ The <strong>Settings</strong> window opens.</li>
+<li>Enter the login details for the Git repository.</li>
+<li>Click on <strong>Test connection</strong>.<br />
+&rarr; Connectivity to the Git repository is checked and established.<br />
+&rarr; The drop-down menu <strong>Branch</strong> can be selected.</li>
+<li>Select the branch of the repository that you want to clone and edit.</li>
+<li><strong>Save</strong> your settings.<br />
+→ The plugin repository is cloned to the plentymarkets inbox.<br />
+→ The plugin is added to the plugin list.<br />
+→ The plugin is added to the plugins in the <strong>Plugins » Git</strong> menu.</li>
+</ol>
+</div>
+
+
+<h2 id="provisioning">Provisioning plugins</h2>
+<div class="api-docs-basics">
+
+
+    <p>
+        The provisioning process is started from the <b>Plugins » Plugin overview</b> menu of the plentymarkets backend. Before provisioning, select the clients (stores) that you want to provision the plugins for.</p>
+    <ul>
+        <li>Clicking the <b>Paper airplane</b> icon will start the provisioning process for all plugins that have a check mark in the <b>Stage</b> column of the plugin list.</li>
+        <li>Clicking on the <b>Globe</b> icon will start the provisioning process for all plugins that have a check mark in the <b>Productive</b> column.<br />
+        &rarr; You can not start the provisioning process for individual plugins.<br />
+        &rarr; By default, the check mark is identical to the current state of the plugin in the environment. Newly added plugins have a check mark by default.</li>
+    </ul>
+
+    <p>
+    You need to provision the plugins if one of the following has occurred since the last provisioning process:
+    </p>
+
+    <ul>
+        <li>new plugins were added and activated</li>
+        <li>plugins were updated</li>
+        <li>plugins were activated</li>
+        <li>plugins were deactivated</li>
+        <li>provisioning errors were fixed</li>
+        <li>currently provisioned plugins were deleted</li>
+    </ul>
+
+</div>
+
+    <h1 id="ide-support">Recommended IDEs</h1>
+    <div class="api-docs-basics">
+        <p>
+            We recommend using an IDE which supports the PHP language and Twig syntax.
+            For this purpose, we suggest using one of the following IDEs.
+        </p>
+    </div>
+    <h2 id="phpstorm">PhpStorm</h2>
+    <div class="api-docs-basics">
+        <p>PhpStorm is a comprehensive IDE which supports all PHP language features. PhpStorm also includes a wide range of leading edge front-end technologies, such as CSS, Sass, Javascript, as well as Twig syntax highlighting.</p>
+    </div>
+    <h3>Installation</h3>
+    <div class="api-docs-basics">
+        <ol>
+            <li>
+                <a href="https://www.jetbrains.com/phpstorm/download/" target="_blank">Download and install</a>
+                PhpStorm
+            </li>
+            <li>
+                <a href="https://plugins.jetbrains.com/plugin/7303?pr=phpStorm" target="_blank">Install Twig Plugin</a> for Twig syntax highlighting
+            </li>
+        </ol>
+    </div>
+    <h2 id="atom">Atom</h2>
+    <div class="api-docs-basics">
+        <p>Atom is a customisable editor working across operating systems. It can be extended to also support Twig syntax.</p>
+    </div>
+    <h3>Installation</h3>
+    <div class="api-docs-basics">
+        <ol>
+            <li>
+                <a href="https://github.com/atom/atom/releases/latest" target="_blank">Download</a>
+                and <a href="https://atom.io/docs/latest/getting-started-installing-atom" target="_blank">install</a>
+                Atom IDE
+            </li>
+            <li>
+                <a href="https://atom.io/packages/php-twig" target="_blank">Install Twig Plugin</a><sup>*</sup> for Twig syntax highlighting
+            </li>
+        </ol>
+        <p>
+            *) All required Atom packages can be found using the embedded package control pane of the Atom IDE. This pane can be found in Atom: <i>Settings</i> > <i>Install</i>.
+        </p>
+    </div>
+    <h2 id="sublime-text">Sublime Text</h2>
+
+    <div class="api-docs-basics">
+        <p>As an alternative to the PhpStorm and Atom IDEs, we also recommend Sublime Text with the respective plugins for syntax highlighting.</p>
+    </div>
+
+    <h3>Installation</h3>
+    <div class="api-docs-basics">
+        <ol>
+            <li><a href="https://www.sublimetext.com/2" target="_blank">Install Sublime Text</a></li>
+            <li>Install Sublime Text's <a href="https://packagecontrol.io/installation" target="_blank">Package-Control</a></li>
+            <li>Install <a href="https://packagecontrol.io/packages/PHP-Twig" target="_blank">Twig Plugin</a></li>
+        </ol>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,272 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="introduction">My first back end view</h1>
+<div class="api-docs-basics">
+    <p>
+        In this tutorial, we will develop a basic plugin to display a view in our plentymarkets 7 back end.
+        Only basic knowledge of creating and editing files in your <a href="/tutorials/helloworld#install-atom">IDE</a> as well as using plentymarkets is necessary to develop this plugin.<br /><br />
+        Follow the steps and learn how to create your first view that displays <b>Hello World!</b> in the plentymarkets back end.
+    </p>
+</div>
+
+<!-- GitHub button -->
+<div class="connect">
+    <div class="btn btn-primary btn-block btn-github" title="Clone or download this plentymarkets plugin on GitHub.">
+        <a href="https://github.com/plentymarkets/plugin-tutorial-backend-view" target="_blank" role="button"><img class="img-responsive pull-left" src="{{ plugin_path('PlentyPluginShowcase') }}/images/github-logo.png"  style="width: 40px;"/><span>Download on GitHub</span></a>
+    </div>
+</div>
+<!-- GitHub button end -->
+
+<h2 id="create-plugin-files">Step 1: Creating the plugin files</h2>
+<div class="api-docs-basics">
+    <p>
+        In our previous tutorials, you learned how to set up the folder structure for template and payment plugins. Our new plugin has a slightly different structure. You still find the <b>src</b> folder containing the plugin source code. One new piece of the plugin puzzle is the <b>ui</b> folder. Another imperative part for back end plugins is the <code>ui.json</code> file.
+    </p>
+</div>
+
+<!-- Folder structure -->
+<div class="code-container">
+<pre class="prettyprint lang-plain grey-back">
+MyFirstView/
+    ├── src/
+    │   └── Providers/
+    │       └── MyFirstViewServiceProvider.php
+    │
+    ├── ui/
+    │   └── index.html
+    │
+    ├── plugin.json // plugin information
+    └── ui.json // back end information
+</pre>
+</div>
+<!-- Folder structure end -->
+
+<h2 id="fill-source-files">Step 2: Filling the source files</h2>
+<div class="api-docs-basics">
+    <p>
+        We start by creating the <code>plugin.json</code> file. We will also need a <code>ui.json</code>, as well as a ServiceProvider in the <b>src</b> folder of our plugin and a <code>index.html</code> file in the <b>ui</b> folder. Create these files and copy the code examples.
+    </p>
+</div>
+
+<h3 id="code-pluginjson">Code for the plugin.json</h3>
+
+<!-- Code example -->
+<div class="route-container">
+<code>MyFirstView/plugin.json</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+{
+    "name": "MyFirstView",
+    "description": "My first back end view",
+    "namespace": "MyFirstView",
+    "author": "Your name",
+    "type": "backend",
+    "serviceProvider": "MyFirstView\\Providers\\MyFirstViewServiceProvider"
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The <code>plugin.json</code> of this plugin is similar to the other plugins. The code has worked for the other plugins and will work for this plugin, too.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-uijson">Code for the ui.json</h3>
+
+<!-- Code example -->
+<div class="route-container">
+<code>MyFirstView/ui.json</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+{
+    "defaultEntryPoint": "index.html",
+    "namespace": "MyFirstView",
+    "menuEntries": [
+        {
+        "label": "Hello World",
+        "menu": "start",
+        "urlKey": "hello-world",
+        "entryPoint": "index.html"
+        }
+    ]
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Information about the <a href="/dev-doc/basics#ui-information">back end menu entries</a> is saved in the <code>ui.json</code> file.<br /><br />We want our view to be displayed in our <b>Start</b> menu. A list of available entry points can be found <a href="/dev-doc/basics#guide-entrypoints">here</a>. The <code>urlKey</code> sets the route for the view in our plentymarkets back end, e.g. <code>http://your-plentystore.co.uk/plenty/ui-backend/start/hello-world</code>.<br /><br />We also have to specify the <code>entryPoint</code>, i.e. the plugin file with the content of our view. A simple HTML file will do the job.
+</div>
+<!-- Code example end -->
+
+<!-- Image -->
+<div>
+<figure>
+    <a data-toggle="modal" data-target="#modal1" href="#">
+    <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/helloworld-backend-menu.png" />
+    </a>
+</figure>
+</div>
+<!-- Image end -->
+
+<h3 id="code-serviceprovider">Code for the ServiceProvider</h3>
+
+<!-- Code example -->
+<div class="route-container">
+  <code>MyFirstView/src/Providers/MyFirstViewServiceProvider.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace MyFirstView\Providers;
+
+use Plenty\Plugin\ServiceProvider;
+
+class MyFirstViewServiceProvider extends ServiceProvider
+{
+    public function register()
+    {
+
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The ServiceProvider of this plugin is very simple. It contains no fancy logic and is only required for plugin provisioning.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-helper">Code for the index.html</h3>
+
+<!-- Code example -->
+<div class="route-container">
+  <code>MyFirstView/ui/index.html</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;h1>Hello World!&lt;/h1>
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: A simple HTML file containing <b>Hello World!</b>
+</div>
+<!-- Code example end -->
+
+<!-- Image -->
+<div>
+<figure>
+    <a data-toggle="modal" data-target="#modal2" href="#">
+    <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/helloworld-backend-view.png" />
+    </a>
+</figure>
+</div>
+<!-- Image end -->
+
+<h2 id="add-content">Bonus step: Adding more content</h2>
+<div class="api-docs-basics">
+    <p>
+        Saying <b>Hello</b> to the world is nice, but let's take it a step further. We will create a <b>resources</b> folder and add a GIF file that will be linked and shown in our view.
+    </p>
+    <ol>
+        <li>
+            Create a <b>resources</b> folder.
+        </li>
+        <li>
+            Create an <b>images</b> folder in the <b>resources</b> folder.
+        </li>
+        <li>
+            Save a file in the <b>images</b> folder, e.g. <code>YOUR-FAVOURITE.gif</code>.
+        </li>
+        <li>
+            Open the <code>index.html</code> file.
+        </li>
+        <li>
+            Enter the image that you want to display in your back end view into this file and save the file.<br />
+            &rarr; We simply enter <code>&lt;img src="../images/YOUR-FAVOURITE.gif"&gt;</code>.
+        </li>
+    </ol>
+</div>
+
+
+<h1 id="open-plugin">Getting a clear view</h1>
+<div class="api-docs-basics">
+    <p>
+        After creating the plugin, we have to <a href="/dev-doc/basics#add-repository">add</a> our new plugin to the plentymarkets inbox. Then, we <a href="/dev-doc/basics#provisioning">provision</a> the plugin in <b>Productive</b>. Finally, after reloading the plentymarkets back end, go to the <b>Start</b> menu and click on <b>Hello World</b>. Your plugin view will open.
+    </p>
+    <figure>
+        <a data-toggle="modal" data-target="#modal3" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/helloworld-backend-with-gif.png" />
+        </a>
+    </figure>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Hello World menu entry in the back end</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/helloworld-backend-menu.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">My first back end view</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/helloworld-backend-view.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Nice work. Thumbs up!</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/helloworld-backend-with-gif.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

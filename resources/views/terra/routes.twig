@@ -1,0 +1,2148 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+    <h1 id="routes-system-tree">Routes in the system tree</h1>
+    <div class="api-docs-basics">
+        <p>
+            The Terra system tree offers plugin developers the opportunity to register their plugin behind a route. In doing so, the plugin becomes accessible in the system tree like a regular part of Terra. You can read about the different points of entry in the table below. Find an instruction how to register your plugin <a href="/tutorials/backendview#code-uijson">here.</a>
+        </p>
+    </div>
+
+    <h2 id="routes-overview">Overview of the routes available in the system tree</h2>
+    <div class="api-docs-basics">
+        <p>
+            The following routes can be accessed by plugins.
+        </p>
+        <table class="table table-striped table-responsive table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>
+                    Route
+                </th>
+                <th>
+                    Full system tree path name
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td colspan="2" style="text-align: center"><b>Settings</b></td>
+            </tr>
+            <tr>
+                <td>
+                    'settings'
+                </td>
+                <td>
+                    <strong>System » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/user'
+                </td>
+                <td>
+                    <strong>System » Settings » User</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/user/accounts'
+                </td>
+                <td>
+                    <strong>System » Settings » User » Accounts</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/user/roles'
+                </td>
+                <td>
+                    <strong>System » Settings » User » Roles</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/printer'
+                </td>
+                <td>
+                    <strong>System » Settings » Printer</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/printer/new'
+                </td>
+                <td>
+                    <strong>System » Settings » Printer » New</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/master-data'
+                </td>
+                <td>
+                    <strong>System » Settings » Master data</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/bank'
+                </td>
+                <td>
+                    <strong>System » Settings » Bank</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/numbers'
+                </td>
+                <td>
+                    <strong>System » Settings » Numbers</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/editors'
+                </td>
+                <td>
+                    <strong>System » Settings » Editors</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/tags'
+                </td>
+                <td>
+                    <strong>System » Settings » Tags</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/migration'
+                </td>
+                <td>
+                    <strong>System » Settings » Migration</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/api'
+                </td>
+                <td>
+                    <strong>System » Settings » API</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/api/data'
+                </td>
+                <td>
+                    <strong>System » Settings » API » Data</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/api/reporting'
+                </td>
+                <td>
+                    <strong>System » Settings » API » Reporting</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/api/soap-migration'
+                </td>
+                <td>
+                    <strong>System » Settings » API » Soap Migration</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/database'
+                </td>
+                <td>
+                    <strong>System » Settings » Database</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/backup'
+                </td>
+                <td>
+                    <strong>System » Settings » Backup</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/language'
+                </td>
+                <td>
+                    <strong>System » Settings » Language</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'settings/certification'
+                </td>
+                <td>
+                    <strong>System » Settings » Certification</strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center"><b>Client</b></td>
+            </tr>
+            <tr>
+                <td>
+                    'shop'
+                </td>
+                <td>
+                    <strong>System » Client</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings'
+                </td>
+                <td>
+                    <strong>System » Client » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/languages'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Languages</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/ftp-access'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » FTP access</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/modules'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Services</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/modules/bitly'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Services » bit.ly</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/modules/cliplister'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Services » Cliplister</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/modules/dropbox'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Services » Dropbox</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/modules/facebook'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Services » Facebook</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/modules/facets'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Services » Faceted search</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/modules/family-card'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Services » Family card</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/modules/lionbridge'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Services » Lionbridge</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/modules/picalike'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Services » Picalike</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/modules/testberichte'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Services » Testberichte.de</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/modules/twitter'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Services » Twitter</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/feedback'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Feedback</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/live-shopping'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Live shopping</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/gift-service'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Gift service</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/sweepstakes'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Sweepstakes</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'shop/settings/statistics'
+                </td>
+                <td>
+                    <strong>System » Client » Settings » Statistics</strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center"><b>Item</b></td>
+            </tr>
+            <tr>
+                <td>
+                    'item'
+                </td>
+                <td>
+                    <strong>System » Item</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/settings'
+                </td>
+                <td>
+                    <strong>System » Item » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/free-text-fields'
+                </td>
+                <td>
+                    <strong>System » Item » Free text fields</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/ean'
+                </td>
+                <td>
+                    <strong>System » Item » GTIN</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/units'
+                </td>
+                <td>
+                    <strong>System » Item » Units</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/digital-media'
+                </td>
+                <td>
+                    <strong>System » Item » Digital media</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/labels'
+                </td>
+                <td>
+                    <strong>System » Item » Labels</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/search-index'
+                </td>
+                <td>
+                    <strong>System » Item » Search index</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/producer'
+                </td>
+                <td>
+                    <strong>System » Item » Manufacturers</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/attributes'
+                </td>
+                <td>
+                    <strong>System » Item » Attributes</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/character'
+                </td>
+                <td>
+                    <strong>System » Item » Properties</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/actions-manager'
+                </td>
+                <td>
+                    <strong>System » Item » Procedures</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/availability'
+                </td>
+                <td>
+                    <strong>System » Item » Availability</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/flags'
+                </td>
+                <td>
+                    <strong>System » Item » Flags</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/sales-price'
+                </td>
+                <td>
+                    <strong>System » Item » Sales prices</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/barcode'
+                </td>
+                <td>
+                    <strong>System » Item » Barcode</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/calculation'
+                </td>
+                <td>
+                    <strong>System » Item » Calculation</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'item/images'
+                </td>
+                <td>
+                    <strong>System » Item » Images</strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center"><b>Listings</b></td>
+            </tr>
+            <tr>
+                <td>
+                    'listings'
+                </td>
+                <td>
+                    <strong>System » Listings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'listings/settings'
+                </td>
+                <td>
+                    <strong>System » Listings » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'listings/stock'
+                </td>
+                <td>
+                    <strong>System » Listings » Stock</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'listings/checkout'
+                </td>
+                <td>
+                    <strong>System » Listings » Checkout</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'listings/scheduler'
+                </td>
+                <td>
+                    <strong>System » Listings » Scheduler</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'listings/layouts'
+                </td>
+                <td>
+                    <strong>System » Listings » Layouts</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'listings/directories'
+                </td>
+                <td>
+                    <strong>System » Listings » Directories</strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center"><b>Markets</b></td>
+            </tr>
+            <tr>
+                <td>
+                    'markets'
+                </td>
+                <td>
+                    <strong>System » Markets</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/price-analysis'
+                </td>
+                <td>
+                    <strong>System » Markets » Price analysis</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/price-analysis/exports'
+                </td>
+                <td>
+                    <strong>System » Markets » Price analysis » Exports</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/allyouneed'
+                </td>
+                <td>
+                    <strong>System » Markets » Allyouneed</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/allyouneed/settings'
+                </td>
+                <td>
+                    <strong>System » Markets » Allyouneed » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/allyouneed/category-link'
+                </td>
+                <td>
+                    <strong>System » Markets » Allyouneed » Category link</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/allyouneed/item-export'
+                </td>
+                <td>
+                    <strong>System » Markets » Allyouneed » Item export</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/amazon'
+                </td>
+                <td>
+                    <strong>System » Markets » Amazon</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/amazon/settings'
+                </td>
+                <td>
+                    <strong>System » Markets » Amazon » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/amazon/free-fields'
+                </td>
+                <td>
+                    <strong>System » Markets » Amazon » Freely definable fields</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/amazon/category-link'
+                </td>
+                <td>
+                    <strong>System » Markets » Amazon » Category link</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/amazon/data-exchange'
+                </td>
+                <td>
+                    <strong>System » Markets » Amazon » Data exchange</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/amazon/data-exchange/data-export'
+                </td>
+                <td>
+                    <strong>System » Markets » Amazon » Data exchange » Data export</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/amazon/data-exchange/order-import'
+                </td>
+                <td>
+                    <strong>System » Markets » Amazon » Data exchange » Order import</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/amazon/data-exchange/shipping-confirmation'
+                </td>
+                <td>
+                    <strong>System » Markets » Amazon » Data exchange » Shipping confirmation</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/amazon/data-exchange/reset-reports'
+                </td>
+                <td>
+                    <strong>System » Markets » Amazon » Data exchange » Reset order reports</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/amazon/data-exchange/fba-stock'
+                </td>
+                <td>
+                    <strong>System » Markets » Amazon » Data exchange » FBA stock</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/bol'
+                </td>
+                <td>
+                    <strong>System » Markets » bol.com</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/bol/settings'
+                </td>
+                <td>
+                    <strong>System » Markets » bol.com » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/bol/category-link'
+                </td>
+                <td>
+                    <strong>System » Markets » bol.com » Category link</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/brandsdistribution'
+                </td>
+                <td>
+                    <strong>System » Markets » Brandsdistribution</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/cdiscount'
+                </td>
+                <td>
+                    <strong>System » Markets » Cdiscount.com</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/check24'
+                </td>
+                <td>
+                    <strong>System » Markets » Check24</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/dawanda'
+                </td>
+                <td>
+                    <strong>System » Markets » DaWanda</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/dawanda/settings'
+                </td>
+                <td>
+                    <strong>System » Markets » DaWanda » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/dawanda/category-link'
+                </td>
+                <td>
+                    <strong>System » Markets » DaWanda » Category link</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/ebay'
+                </td>
+                <td>
+                    <strong>System » Markets » Ebay</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/ebay/settings'
+                </td>
+                <td>
+                    <strong>System » Markets » Ebay » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/ebay/accounts'
+                </td>
+                <td>
+                    <strong>System » Markets » Ebay » Accounts</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/ebay/fitment'
+                </td>
+                <td>
+                    <strong>System » Markets » Ebay » Parts compatibility listing</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/ebay/second-chance'
+                </td>
+                <td>
+                    <strong>System » Markets » Ebay » Second Chance Offer</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/ebay/data-exchange'
+                </td>
+                <td>
+                    <strong>System » Markets » Ebay » Data exchange</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/ebay/business-policies'
+                </td>
+                <td>
+                    <strong>System » Markets » Ebay » Business policies</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/flubit'
+                </td>
+                <td>
+                    <strong>System » Markets  » Flubit</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/fruugo'
+                </td>
+                <td>
+                    <strong>System » Markets » Fruugo</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/fruugo/settings'
+                </td>
+                <td>
+                    <strong>System » Markets » Fruugo » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/google'
+                </td>
+                <td>
+                    <strong>System » Markets » Google</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/google/shopping-de'
+                </td>
+                <td>
+                    <strong>System » Markets » Google » Google Shopping DE</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/google/shopping-int'
+                </td>
+                <td>
+                    <strong>System » Markets » Google » Google Shopping Int.</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/grosshandel'
+                </td>
+                <td>
+                    <strong>System » Markets » grosshandel.eu</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/hertie'
+                </td>
+                <td>
+                    <strong>System » Markets » Hertie</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/hood'
+                </td>
+                <td>
+                    <strong>System » Markets » Hood</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/idealo'
+                </td>
+                <td>
+                    <strong>System » Markets » idealo Checkout</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/kauflux'
+                </td>
+                <td>
+                    <strong>System » Markets » Kauflux</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/kauflux/settings'
+                </td>
+                <td>
+                    <strong>System » Markets » Kauflux » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/kauflux/category-link'
+                </td>
+                <td>
+                    <strong>System » Markets » Kauflux » Category link</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/laredoute'
+                </td>
+                <td>
+                    <strong>System » Markets » La Redoute</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/laredoute/settings'
+                </td>
+                <td>
+                    <strong>System » Markets » La Redoute » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/laredoute/import'
+                </td>
+                <td>
+                    <strong>System » Markets » La Redoute » Item property import</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/laredoute/category-link'
+                </td>
+                <td>
+                    <strong>System » Markets » La Redoute » Category link</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/mercateo'
+                </td>
+                <td>
+                    <strong>System » Markets » Mercateo</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/mercateo/settings'
+                </td>
+                <td>
+                    <strong>System » Markets</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/mercateo/data-export'
+                </td>
+                <td>
+                    <strong>System » Markets</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/mercateo/export-history'
+                </td>
+                <td>
+                    <strong>System » Markets</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/neckermann-ep-austria'
+                </td>
+                <td>
+                    <strong>System » Markets » Neckermann Austria Enterprise</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/otto'
+                </td>
+                <td>
+                    <strong>System » Markets » Otto</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/otto/cooperation'
+                </td>
+                <td>
+                    <strong>System » Markets » Otto » Cooperation</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/otto/integration'
+                </td>
+                <td>
+                    <strong>System » Markets » Integration</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/pixmania'
+                </td>
+                <td>
+                    <strong>System » Markets » PIXmania</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/pixmania/settings'
+                </td>
+                <td>
+                    <strong>System » Markets » PIXmania » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/pixmania/category-link'
+                </td>
+                <td>
+                    <strong>System » Markets » PIXmania » Category link</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/pixmania/export-history'
+                </td>
+                <td>
+                    <strong>System » Markets » PIXmania » Export history</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/plus'
+                </td>
+                <td>
+                    <strong>System » Markets » Plus.de</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/rakuten'
+                </td>
+                <td>
+                    <strong>System » Markets » Rakuten</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/real'
+                </td>
+                <td>
+                    <strong>System » Markets » real.de</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/real/settings'
+                </td>
+                <td>
+                    <strong>System » Markets » real.de » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/real/category-link'
+                </td>
+                <td>
+                    <strong>System » Markets » real.de » Category link</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/restposten'
+                </td>
+                <td>
+                    <strong>System » Markets » Restposten</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/ricardo'
+                </td>
+                <td>
+                    <strong>System » Markets » ricardo</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/ricardo/settings'
+                </td>
+                <td>
+                    <strong>System » Markets » ricardo » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/ricardo/accounts'
+                </td>
+                <td>
+                    <strong>System » Markets » ricardo » Accounts</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/shopgate'
+                </td>
+                <td>
+                    <strong>System » Markets » Shopgate</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/sumonet'
+                </td>
+                <td>
+                    <strong>System » Markets » SumoNet</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/yatego'
+                </td>
+                <td>
+                    <strong>System » Markets » Yatego</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/yatego/settings'
+                </td>
+                <td>
+                    <strong>System » Markets » Yatego » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/yatego/category-link'
+                </td>
+                <td>
+                    <strong>System » Markets » Yatego » Category link</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/zalando'
+                </td>
+                <td>
+                    <strong>System » Markets » Zalando</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/zalando/settings'
+                </td>
+                <td>
+                    <strong>System » Markets » Zalando » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'markets/zalando/category-link'
+                </td>
+                <td>
+                    <strong>System » Markets » Zalando » Category link</strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center"><b>Stock</b></td>
+            </tr>
+            <tr>
+                <td>
+                    'stock'
+                </td>
+                <td>
+                    <strong>System » Stock</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'stock/reorder-management'
+                </td>
+                <td>
+                    <strong>System » Stock » Reorder management</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'stock/reorder-management/settings'
+                </td>
+                <td>
+                    <strong>System » Stock » Reorder management » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'stock/reorder-management/order-status'
+                </td>
+                <td>
+                    <strong>System » Stock » Reorder management » Order status</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'stock/reorder-management/delete-orders'
+                </td>
+                <td>
+                    <strong>System » Stock » Reorder management » Delete orders</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'stock/reorder-management/procedures'
+                </td>
+                <td>
+                    <strong>System » Stock » Reorder management » Events</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'stock/reorder-management/templates'
+                </td>
+                <td>
+                    <strong>System » Stock » Reorder management » Templates</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'stock/stock'
+                </td>
+                <td>
+                    <strong>System » Stock » Stock</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'stock/stock/incoming-items'
+                </td>
+                <td>
+                    <strong>System » Stock » Stock » Incoming items</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'stock/stock/search'
+                </td>
+                <td>
+                    <strong>System » Stock » Stock » Search</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'stock/external-stock'
+                </td>
+                <td>
+                    <strong>System » Stock » External stock</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'stock/external-stock/mention'
+                </td>
+                <td>
+                    <strong>System » Stock » External stock » Mention</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'stock/new-incoming-items'
+                </td>
+                <td>
+                    <strong>System » Stock » New incoming items</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'stock/warehouse'
+                </td>
+                <td>
+                    <strong>System » Stock » Warehouse</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'stock/warehouse/new'
+                </td>
+                <td>
+                    <strong>System » Stock » Warehouse » New warehouse</strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center"><b>Customers</b></td>
+            </tr>
+            <tr>
+                <td>
+                    'crm'
+                </td>
+                <td>
+                    <strong>System » Customers</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/settings'
+                </td>
+                <td>
+                    <strong>System » Customers » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/classes'
+                </td>
+                <td>
+                    <strong>System » Customers » Classes</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/passwords'
+                </td>
+                <td>
+                    <strong>System » Customers » Classes » Passwords</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/vat-check'
+                </td>
+                <td>
+                    <strong>System » Customers » VAT number check</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/ticket-system'
+                </td>
+                <td>
+                    <strong>System » Customers » Ticket system</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/ticket-system/settings'
+                </td>
+                <td>
+                    <strong>System » Customers » Ticket system » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/ticket-system/events'
+                </td>
+                <td>
+                    <strong>System » Customers » Ticket system » Events</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/ticket-system/procedures'
+                </td>
+                <td>
+                    <strong>System » Customers » Ticket system » Procedures</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/ticket-system/email-accounts'
+                </td>
+                <td>
+                    <strong>System » Customers » Ticket system » Email accounts</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/ticket-system/templates'
+                </td>
+                <td>
+                    <strong>System » Customers » Ticket system » Templates</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/ticket-system/cards'
+                </td>
+                <td>
+                    <strong>System » Customers » Ticket system » Ticket cards</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/ticket-system/questions'
+                </td>
+                <td>
+                    <strong>System » Customers » Ticket system » Ticket questions</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/service-units'
+                </td>
+                <td>
+                    <strong>System » Customers » Service units</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/service-units/types'
+                </td>
+                <td>
+                    <strong>System » Customers » Service units » Types</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/service-units/invoice'
+                </td>
+                <td>
+                    <strong>System » Customers » Service units » Invoice</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/service-units/commissions'
+                </td>
+                <td>
+                    <strong>System » Customers » Service units » Commissions</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/property'
+                </td>
+                <td>
+                    <strong>System » Customers »  Characteristics</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'crm/types'
+                </td>
+                <td>
+                    <strong>System » Customers »  Types</strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center"><b>Orders</b></td>
+            </tr>
+            <tr>
+                <td>
+                    'orders'
+                </td>
+                <td>
+                    <strong>System » Orders</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/settings'
+                </td>
+                <td>
+                    <strong>System » Orders » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/events'
+                </td>
+                <td>
+                    <strong>System » Orders » Events</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/procedures'
+                </td>
+                <td>
+                    <strong>System » Orders » Procedures</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/documents'
+                </td>
+                <td>
+                    <strong>System » Orders » Documents</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/documents/reorder'
+                </td>
+                <td>
+                    <strong>System » Orders » Documents » Reorder</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/documents/address-label'
+                </td>
+                <td>
+                    <strong>System » Orders » Documents » Address label</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/documents/picklist'
+                </td>
+                <td>
+                    <strong>System » Orders » Documents » Wish list</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/documents/warehouse-picklist'
+                </td>
+                <td>
+                    <strong>System » Orders » Documents » Warehouse pick list</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/documents/packing-list'
+                </td>
+                <td>
+                    <strong>System » Orders » Documents » Packing list</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/referrer'
+                </td>
+                <td>
+                    <strong>System » Orders » Order referrer</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/status'
+                </td>
+                <td>
+                    <strong>System » Orders » Order status</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/template'
+                </td>
+                <td>
+                    <strong>System » Orders » Order template</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/types'
+                </td>
+                <td>
+                    <strong>System » Orders » Order types</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/types/delivery'
+                </td>
+                <td>
+                    <strong>System » Orders » Order types » Delivery order</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/types/repair'
+                </td>
+                <td>
+                    <strong>System » Orders » Order types » Repair</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/types/retoure'
+                </td>
+                <td>
+                    <strong>System » Orders » Order types » Return</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/types/multi-order'
+                </td>
+                <td>
+                    <strong>System » Orders » Order types » Multi-order</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/debt-collection'
+                </td>
+                <td>
+                    <strong>System » Orders » Debt collection</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/debt-collection/arvato'
+                </td>
+                <td>
+                    <strong>System » Orders » Debt collection » arvato/strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/debt-collection/mediafinanz'
+                </td>
+                <td>
+                    <strong>System » Orders » Debt collection » mediafinanz</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/credit-rating'
+                </td>
+                <td>
+                    <strong>System » Orders » Credit rating</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/credit-rating/arvato-infoscore'
+                </td>
+                <td>
+                    <strong>System » Orders » Credit rating » arvato infoscore</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/settings'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/settings'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » Settings</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/cbc-logistics'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » CBC Logistics</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/dhl-intraship'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » DHL Intraship/Versenden</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/dhl-easylog'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » DHL Easylog</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/dhl-freight'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » DHL Freight</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/dhl-retoure-online'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » Retoure Online</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/dhl-retoure-labels'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » DHL RETOURE enclosed return labels</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/dhl-supply-chain'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » DHL Supply Chain</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/dhl-uk'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » DHL UK</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/dpd-cloud'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » DPD Cloud Webservice</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/dpd-delisprint'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » DPD DELISprint</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/easypak'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » EasyPAK</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/gls-germany'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » GLS Germany</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/hermes-two-person'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » Hermes (two-person handling)</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/hermes'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » Hermes (ProfiPaketService (professional parcel service))</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/my-dpd-iloxx'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » MyDPD Business / iloxx</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/netdespatch'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » NetDespatch</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/royal-mail'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » Royal Mail</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/swiss-post'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » Swiss Post</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/provider/ups'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping service providers » UPS</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/fulfillment'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Fulfillment</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/fulfillment/dhl-fulfillment'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Fulfillment » DHL Fulfillment</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/fulfillment/ids-logistik'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Fulfillment » IDS Logistik</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/fulfillment/ilopack'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Fulfillment » iLopack</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/shipping/shipping-packages'
+                </td>
+                <td>
+                    <strong>System » Orders » Shipping » Shipping packages</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/payment'
+                </td>
+                <td>
+                    <strong>System » Orders » Payment</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/payment/methods'
+                </td>
+                <td>
+                    <strong>System » Orders » Payment » Methods</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/payment/ebics-old'
+                </td>
+                <td>
+                    <strong>System » Orders » Payment</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/payment/hbci-pin-tan'
+                </td>
+                <td>
+                    <strong>System » Orders » Payment » HBCI PIN/TAN</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/payment/incoming'
+                </td>
+                <td>
+                    <strong>System » Orders » Payment » Incoming</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/payment/currencies'
+                </td>
+                <td>
+                    <strong>System » Orders » Payment » Currencies</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/scheduler'
+                </td>
+                <td>
+                    <strong>System » Orders » Scheduler</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'orders/coupons'
+                </td>
+                <td>
+                    <strong>System » Orders » Coupons</strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center"><b>CMS</b></td>
+            </tr>
+            <tr>
+                <td>
+                    'cms'
+                </td>
+                <td>
+                    <strong>System » CMS</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'cms/forms'
+                </td>
+                <td>
+                    <strong>System » CMS » Forms</strong>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    'cms/newsletter'
+                </td>
+                <td>
+                    <strong>System » CMS » Newsletter</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'cms/newsletter/plentymarkets'
+                </td>
+                <td>
+                    <strong>System » CMS » Newsletter » plentymarkets</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'cms/newsletter/plentymarkets/email-folder'
+                </td>
+                <td>
+                    <strong>System » CMS » Newsletter » plentymarkets » Email folder</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'cms/newsletter/plentymarkets/emails'
+                </td>
+                <td>
+                    <strong>System » CMS » Newsletter » plentymarkets » Emails</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'cms/newsletter/plentymarkets/email-filter'
+                </td>
+                <td>
+                    <strong>System » CMS » Newsletter » plentymarkets » Email filter</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'cms/newsletter/cleverreach'
+                </td>
+                <td>
+                    <strong>System » CMS » Newsletter » CleverReach</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'cms/rss'
+                </td>
+                <td>
+                    <strong>System » CMS » Newsletter » RSS</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'cms/item-gallery'
+                </td>
+                <td>
+                    <strong>System » CMS » Newsletter » Item gallery</strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center"><b>Processes</b></td>
+            </tr>
+            <tr>
+                <td>
+                    'process'
+                </td>
+                <td>
+                    <strong>System » Processes</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'process/new'
+                </td>
+                <td>
+                    <strong>System » Processes » New process</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'process/import'
+                </td>
+                <td>
+                    <strong>System » Processes » Import</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'process/user'
+                </td>
+                <td>
+                    <strong>System » Processes » Mine</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'process/other-user'
+                </td>
+                <td>
+                    <strong>System » Processes » Others</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'process/role'
+                </td>
+                <td>
+                    <strong>System » Processes » Per role</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'process/global'
+                </td>
+                <td>
+                    <strong>System » Processes » Global</strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center"><b>plenty app</b></td>
+            </tr>
+            <tr>
+                <td>
+                    'plenty-app'
+                </td>
+                <td>
+                    <strong>System » plenty app</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'plenty-app/picklist'
+                </td>
+                <td>
+                    <strong>System » plenty app » Mobile pick list</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'plenty-app/item-search'
+                </td>
+                <td>
+                    <strong>System » plenty app » Item search</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'plenty-app/rebooking'
+                </td>
+                <td>
+                    <strong>System » plenty app » Rebooking</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    'plenty-app/order-overview'
+                </td>
+                <td>
+                    <strong>System » plenty app » Order overview</strong>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}

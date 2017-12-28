@@ -1,0 +1,57 @@
+<h2 id="adding-style">Adding style in Ceres</h2>
+
+<div class="api-docs-basics">
+
+<p>
+    Inline style of your plugin defined using the HTML <code><span><</span>style></code> tag can be added to the style of the template plugin Ceres without creating a data provider and linking the content with a template container. Simply extend the ServiceProvider of your plugin and import your style resource into Ceres.
+</p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Theme/src/Providers/ThemeServiceProvider.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace Theme\Providers;
+
+use IO\Helper\TemplateContainer;
+use IO\Helper\ResourceContainer;
+use Plenty\Plugin\Events\Dispatcher;
+use Plenty\Plugin\ServiceProvider;
+use Plenty\Plugin\Templates\Twig;
+
+class ThemeServiceProvider extends ServiceProvider
+{
+
+	/**
+	 * Register the service provider.
+	 */
+	public function register()
+	{
+
+	}
+
+    /**
+	 * Boot a template for the basket that will be displayed in the template plugin instead of the original basket.
+	 */
+	public function boot(Twig $twig, Dispatcher $eventDispatcher)
+    {
+        $eventDispatcher->listen('IO.Resources.Import', function (ResourceContainer $container)
+        {
+            // The style is imported in the &lt;head> on the PageDesign.twig of Ceres
+            $container->addStyleTemplate('Theme::content.SingleItemStyle');
+        }, self::PRIORITY);
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Add the dependencies for the <code>ResourceContainer</code>, the <code>Dispatcher</code> and <code>Twig</code> classes.<br /><br />Add the <code>boot()</code> function and use the dispatcher for listening to the resource import event <code>IO.Resource.Import</code>. Use the <code>addStyleTemplate()</code> method and specify the location of your style resource, e.g. a twig template. In this template, use <code><span><</span>style></code> tags to define the style information for your plugin.
+</div>
+<!-- Code example end -->
+
+

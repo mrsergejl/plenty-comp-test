@@ -1,0 +1,41 @@
+<h2 id="item-sorting">Adding a custom value to the item sorting</h2>
+
+<div class="api-docs-basics">
+
+<p>
+    If you want to add one or multiple custom sorting values to the item sorting drop-down menu of the template plugin <b>Ceres</b>, add the following code in the service provider of your plugin:
+</p>
+
+<!-- Code example -->
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace Feedback\Providers;
+
+...
+
+use Plenty\Plugin\Events\Dispatcher;
+
+/**
+ * @param Dispatcher $dispatcher
+ */
+public function boot(Dispatcher $dispatcher)
+{
+    // Add sorting by customer reviews
+    $dispatcher->listen('IO.initAdditionalSorting', function (ItemService $itemService) {
+
+        // addAdditionalItemSorting(field name, translation key)
+        $itemService->addAdditionalItemSorting('item.feedbackDecimal_desc', 'Feedback::Feedback.customerReviews');
+    });
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In the example, we add another value for sorting items by customer reviews. Simply add an <code>Event dispatcher</code> which listens to the <code>itemService</code> of the plugin <b>IO</b>. For adding a new value, the <code>field name</code> and translation must be provided.
+</div>
+<!-- Code example end -->
+
+</div>

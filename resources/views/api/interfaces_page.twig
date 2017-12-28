@@ -1,0 +1,25 @@
+{% extends 'PlentyPluginShowcase::HtmlStructure' %}
+
+
+{% block MainFrame -%}
+    <div class="row">
+        <div class="container">
+            <a href="#" id="top"></a>
+                <div class="col-lg-9 col-md-9">
+                    {%- if view_exists('PlentyPluginShowcase::documentation.plentyInterface.' ~ module) -%}
+                        {{- include_view('PlentyPluginShowcase::documentation.plentyInterface.' ~ module) }}
+                    {% else %}
+                        {{- include_view('PlentyPluginShowcase::documentation.plentyInterface.' ~ module|capitalize) }}
+                    {% endif %}
+                    {# otherwise: Exception, leading to a 404 (see ApiDocController) #}
+                </div>
+
+            <div class="col-lg-3 col-md-3 hidden-sm hidden-xs fixed-right" id="sidebar-nav">
+                <p class="h4">Contents</p>
+                <ul class="nav nav-list"></ul>
+                <a href="#top">Back to top</a>
+            </div>
+        </div>
+    </div>
+
+{%- endblock %}

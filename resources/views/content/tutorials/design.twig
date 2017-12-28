@@ -1,0 +1,108 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="install-template">Installing the Ceres template</h1>
+
+<div class="api-docs-basics">
+    <p>
+        In this tutorial, you will learn how to set up the Ceres design in your plentymarkets 7 system. Remember that, the two plugins <a href="https://github.com/plentymarkets/plugin-ceres" target="_blank">Ceres</a> and <a href="https://github.com/plentymarkets/plugin-io" target="_blank">IO</a> are required to run our design.
+    </p>
+</div>
+
+<!-- GitHub button -->
+<div class="connect">
+    <div class="btn btn-primary btn-block btn-github" title="Clone or download this plentymarkets plugin on Github.">
+        <a href="https://github.com/plentymarkets/plugin-ceres" target="_blank" role="button"><img class="img-responsive pull-left" src="{{ plugin_path('PlentyPluginShowcase') }}/images/github-logo.png"  style="width: 40px;"/><span>Download on GitHub</span></a>
+    </div>
+</div>
+<!-- GitHub button end -->
+
+<h2 id="clone-template">Step 1: Cloning the template</h2>
+<div class="api-docs-basics">
+    <ol>
+        <li>
+            Go to <b>Plugins » Plugin overview</b>.
+        </li>
+        <li>Click on <b>Add plugin</b>.<br />
+            → The <b>New plugin</b> window will open.
+        </li>
+        <li>Click on <b>Git</b>.<br />
+            → The <b>Settings</b> window will open.
+        </li>
+        <li>
+            Enter the remote URL.<br />
+            → The URL for <b>Ceres</b> is: <code>https://github.com/plentymarkets/plugin-ceres.git</code>.
+        </li>
+        <li>Enter your user name and password.</li>
+        <li>Click on <b>Test connection</b>.<br />
+            → Connectivity to the Git repository is checked and established and the drop-down menu <b>Branch</b> can be selected.
+        </li>
+        <li>Select the <b>Stable</b> branch of the repository if you have a stable plentymarkets 7 system.<br />
+            → If you work with a beta system, select the <b>Beta</b> branch.
+        </li>
+        <li><b>Save</b> the settings.<br />
+            → The plugin repository is cloned to the plentymarkets inbox and the plugin is added to the plugin list.
+        </li>
+    </ol>
+    <p>
+        Repeat the steps above for the <b>IO</b> plugin. The <b>remote URL</b> of this repository is: <code>https://github.com/plentymarkets/plugin-io.git</code>. Next, provision both plugins in <b>Productive</b>.
+    </p>
+</div>
+
+<h2 id="provision-template">Step 2: Provisioning the template</h2>
+<div class="api-docs-basics">
+    <ol>
+        <li>
+            Go to <b>Plugins » Plugin overview</b>.
+        </li>
+        <li>
+            In the line of your plugin, click on <b>Select client</b>.
+        </li>
+        <li>
+            Select your client and save it.
+        </li>
+        <li>
+            Activate the plugin in the <b>Productive</b> column.
+        </li>
+        <li>
+            In the toolbar, click on <b>Provision plugins in Productive</b>.
+        </li>
+    </ol>
+</div>
+
+<h2 id="release-cycle">Ceres release cycle</h2>
+<div class="api-docs-basics">
+    <p>Three branches of the Ceres and IO repositories are important to describe the release cycle of the design: <b>Development</b>, <b>Beta</b> and <b>Stable</b>.
+    </p>
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Branch</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td><b>Development</b></td>
+            <td>The <b>Development</b> branch is the main branch for plentymarkets developers. Our developers regularly commit their changes into this branch. At the end of a sprint, these changes will be merged into the <b>Beta</b> branch. It is possible that certain menus or features of plentymarkets do not work if you check out and use this branch. The <b>Development</b> branches will be merged into <b>Beta</b> approx. every 2 weeks and the new <b>Beta</b> branches will be released.</td>
+        </tr>
+        <tr>
+            <td><b>Beta</b></td>
+            <td>The <b>Beta</b> branch is the main branch for plentymarkets 7 systems in beta status. It is recommended to use the <b>Beta</b> branches of our repositories for a beta system. The <b>Stable</b> branches will also work with beta systems, but certain features or fixes released when <b>Development</b> branches are merged into the <b>Beta</b> branches are not available in <b>Stable</b> branches yet. The <b>Beta</b> branches will be merged into <b>Stable</b> approx. every 2 weeks and the new <b>Stable</b> branches will be released.</td>
+        </tr>
+        <tr>
+            <td><b>Stable</b></td>
+            <td>The <b>Stable</b> branch are the main branch for plentymarkets 7 systems in stable status. It is recommended to use the <b>Stable</b> branches of our repositories for a stable system. The <b>Beta</b> branches will not necessarily work with stable systems. It is possible that certain menus or features of plentymarkets do not work if you check out and use <b>Beta</b> branches in a stable system. Approx. every 2 weeks, the new <b>Stable</b> branches will be released.</td>
+        </tr>
+        <tr>
+            <td><b>Other branches</b></td>
+            <td>Other branches of our repositories are work-in-progress branches of plentymarkets developers. It is not recommended to use these branches in a beta or stable system.</td>
+        </tr>
+        </tbody>
+
+    </table>
+</div>
+
+{% endblock %}

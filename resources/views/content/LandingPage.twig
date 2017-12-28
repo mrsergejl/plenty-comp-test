@@ -1,0 +1,200 @@
+{% extends 'PlentyPluginShowcase::HtmlStructure' %}
+
+        {% block MainFrame %}
+            <div class="plugin-opener row">
+                <div class="claim">
+                    <div class="container">
+                        <div class="col-sm-12 drive-container">
+                            <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8">
+                                <h1 data-link="ignore">Experience plentyDrive</h1>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
+                                <div class="btn-drive-container">
+                                    <a href="/dev-doc/plentydrive" class="btn-banner mr-1">Learn more</a>
+                                    <a href="https://marketplace.plentymarkets.com/plugins/integration/plentydrive_5091" class="btn-banner">Download</a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--div class="connect">
+                <div class="container">
+                    <div class="btn btn-secondary btn-block">
+                        <a href="/dev-doc/overview" role="button">start developing now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="hr hr-arrow"></div-->
+
+            <section>
+                <div class="container mb-3">
+                    <div class="row">
+
+                        <div class="col-md-4 col-md-push-8 col-sm-6 col-sm-push-6">
+                            <div class="list-group changelog mt-3">
+                                {% for changelogEntry in changelog %}
+                                    <a href="{{ changelogEntry.url }}" class="list-group-item" target="_blank">
+                                        <div class="clearfix">
+                                            <p class="list-group-item-text pull-left"><small>{{ changelogEntry.dateString|date("d.m.Y") }}</small>
+                                            </p>
+                                            <p class="list-group-item-text pull-right">
+                                                <small>
+                                                {% for tag in changelogEntry.tags %}
+                                                    <span class="label label-danger">{{ tag }}</span>
+                                                {% endfor %}
+                                                </small>
+                                            </p>
+                                        </div>
+                                        <h4 class="list-group-item-heading">{{ changelogEntry.title }}</h4>
+                                    </a>
+                                {% endfor %}
+                                <a href="https://forum.plentymarkets.com/search?q=tags%3Aplugin%2Crest%20%23changelog&order=created" class="list-group-item btn btn-default" target="_blank">
+                                   <span class="glyphicon glyphicon-list"></span> show all
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-md-pull-4 col-sm-6 col-sm-pull-6">
+                            <div class="row">
+                                <div class="col-md-6 col-xs-12 text-center highlight-img-container mt-3">
+                                    <figure>
+                                        <a href="/rest-doc/introduction">
+                                            <h2 class="highlight-text" data-link="ignore"><span class="glyphicon glyphicon-transfer gi-size" aria-hidden="true"></span>   REST</h2>
+                                            <img src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/rest-api-img.jpg" class="img-responsive" alt="REST api"></a>
+                                    </figure>
+                                </div>
+                                <div class="col-md-6 col-xs-12 text-center highlight-img-container mt-3">
+                                    <figure>
+                                        <a href="/dev-doc/template-plugins">
+                                            <h2 class="highlight-text" data-link="ignore"><span class="glyphicon glyphicon-wrench gi-size" aria-hidden="true"></span>   Templates</h2>
+                                            <img src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/template-plugin-img.jpg" class="img-responsive" alt="template plugin guide"></a>
+                                    </figure>
+                                </div>
+                                <div class="col-md-6 col-xs-12 text-center highlight-img-container mt-3">
+                                    <figure>
+                                        <a href="/dev-doc/theme-plugins">
+                                            <h2 class="highlight-text" data-link="ignore"><span class="glyphicon glyphicon-pencil gi-size" aria-hidden="true"></span>   Themes</h2>
+                                            <img src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/theme-plugin-img.jpg" class="img-responsive" alt="theme plugin guide"></a>
+                                    </figure>
+                                </div>
+                                <div class="col-md-6 col-xs-12 text-center highlight-img-container mt-3">
+                                    <figure>
+                                        <a href="/terra-doc/components">
+                                            <h2 class="highlight-text" data-link="ignore"><span class="glyphicon glyphicon-modal-window gi-size" aria-hidden="true"></span>   Back end</h2>
+                                            <img src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/backend-plugin.jpg" class="img-responsive" alt="back end plugin guide"></a>
+                                    </figure>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="hr hr-arrow"></div>
+            <section>
+                <div class="container mb-3">
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center">
+                        <figure>
+                            <img class="img-responsive img-center" src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/why-plugin-2.svg" alt="plentymarkets logo consisting of puzzle pieces" style="max-height: 200px;" />
+                        </figure>
+                        <h2 data-link="ignore">Be a plugin pioneer</h2>
+                        <p class="text-jst">
+                            Learn how to create your first plentymarkets plugin. Our <a href="/tutorials/helloworld">Hello World</a> tutorial for beginners will walk you through the basics of setting up an IDE and Git and creating all necessary files for your first fully functional plugin. Start now - develop your own plugins and offer them to our customers in our plugin store.
+                        </p>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center">
+                        <figure>
+                            <img class="img-responsive img-center" src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/plugin_customizable.svg" alt="customized online-shop on different devices" style="max-height: 200px;" />
+                        </figure>
+                        <h2 data-link="ignore">Make your customers happy</h2>
+                        <p class="text-jst">
+                            Provide your plentymarkets customers with individualised service and develop plugins tailored to their needs. Find out about the most wanted plugins in our <a href="https://forum.plentymarkets.com/c/plugin-entwicklung" target="_blank">plentyCommunity</a>. The technology we chose makes plugins compatible for all users. This means you can offer any plugins that you develop to a broad audience in our store.
+                        </p>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center">
+                        <figure>
+                            <img class="img-responsive img-center" src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/plugin_store.svg" alt="online-plugin-store" style="max-height: 200px;" />
+                        </figure>
+                        <h2 data-link="ignore">Optimise your business</h2>
+                        <p class="text-jst">
+                            Discover new plugins in our plugin store. Find beautifully designed templates and themes. Plugins give you complete flexibility when it comes to optimising your business. Regardless whether you develop plugins in-house or hire an agency to build them for you – there are no limits to the functionality of your software. Modify plentymarkets to meet your needs!
+                        </p>
+                    </div>
+                </div>
+            </section>
+            <div class="hr hr-arrow"></div>
+            <section>
+                <div id="feat">
+                    <div class="container mb-3">
+                        <div class="col-lg-12 text-center">
+                            <h2 class="text-center" data-link="ignore">Technology stack</h2>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 text-center">
+                                <figure class="image-box">
+                                    <a href="https://laravel.com/" target="_blank" onclick="trackOutboundLink('https://laravel.com/'); return false;">
+                                    <img class="img-responsive img-center" src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/laravel-logo.png" alt="laravel logo" />
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 text-center">
+                                <figure class="image-box">
+                                    <a href="http://php.net/" target="_blank" onclick="trackOutboundLink('http://php.net/'); return false;">
+                                        <img class="img-responsive img-center" src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/php7-logo.png" alt="php logo" />
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 text-center">
+                                <figure class="image-box">
+                                    <a href="https://angular.io/" target="_blank" onclick="trackOutboundLink('https://angular.io/'); return false;">
+                                        <img class="img-responsive img-center" src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/angular-logo.png" alt="angular logo" />
+                                    </a>
+                                </figure>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 text-center">
+                                <figure class="image-box">
+                                    <a href="http://twig.sensiolabs.org/" target="_blank" onclick="trackOutboundLink('http://twig.sensiolabs.org/'); return false;">
+                                        <img class="img-responsive img-center" src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/twig-logo.png" alt="twig logo" />
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 text-center">
+                                <figure class="image-box">
+                                    <a href="https://vuejs.org/" target="_blank" onclick="trackOutboundLink('https://vuejs.org/'); return false;">
+                                        <img class="img-responsive img-center" src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/vue-logo.png" alt="vue logo" />
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 text-center">
+                                <figure class="image-box">
+                                    <a href="http://sass-lang.com/" target="_blank" onclick="trackOutboundLink('http://sass-lang.com/'); return false;">
+                                        <img class="img-responsive img-center" src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/sass-logo.png" alt="sass logo" />
+                                    </a>
+                                </figure>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 text-center">
+                                <figure class="image-box">
+                                    <a href="https://git-scm.com/" target="_blank" onclick="trackOutboundLink('https://git-scm.com/'); return false;">
+                                        <img class="img-responsive img-center" src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/git-logo.png" alt="git logo" />
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 text-center">
+                                <figure class="image-box">
+                                    <a href="http://plentymarkets.eu/" target="_blank" onclick="trackOutboundLink('https://plentymarkets.eu/'); return false;">
+                                        <img class="img-responsive img-center" src="{{ plugin_path('PlentyPluginShowcase') }}/images/landingpage/plentymarkets.png" alt="plentymarkets logo" />
+                                    </a>
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        {% endblock %}

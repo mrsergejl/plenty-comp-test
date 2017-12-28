@@ -1,0 +1,30 @@
+<h2 id="disable-lazy-load">Disabling lazy loading in Ceres item lists</h2>
+
+<div class="api-docs-basics">
+
+<p>
+If you want to disable the lazy load function in <strong>Ceres</strong> item lists, simply add a line of code to the <code><span><</span>category-image-carousel>
+    </code> block:
+</p>
+
+<!-- Code example -->
+<div class="code-container">
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+<span><</span>category-image-carousel template="#vue-category-image-carousel"
+    :image-urls="itemData.images | itemImages imageUrlAccessor"
+    :alt-text="texts | itemName {{ configItemName }}"
+    :item-url="itemData | itemURL"
+    :show-dots="{{ config("Ceres.item.category_show_dots") | json_encode() }}"
+    :show-nav="{{ config("Ceres.item.category_show_nav") | json_encode() }}"
+    :disable-lazy-load="true">
+<span><</span>/category-image-carousel>
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The line <code>:disable-lazy-load="true"</code> has been added.
+</div>
+<!-- Code example end -->
+
+</div>

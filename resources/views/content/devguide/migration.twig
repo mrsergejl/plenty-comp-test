@@ -1,0 +1,65 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="Introduction">Updating from Hack to PHP 7</h1>
+    <div class="api-docs-basics">
+        <p>
+            In this guide, you will learn about the differences between Hack and PHP 7. We will walk you through the necessary changes to convert your Hack plugin code to PHP 7. Don't worry. The changes are minimal and your plugins will be running on PHP 7 in no time.
+        </p>
+    </div>
+
+<h2 id="file-format">Changing the file format</h2>
+    <div class="api-docs-basics">
+        <p>
+            The files to be changed are saved in the <b>src</b> folder in your plugin folder. No files in the <b>resources</b> folder must be changed. Change the format of every <code>.hh</code> file to <code>.php</code>.
+        </p>
+    </div>
+
+<h2 id="opening-tags">Changing the opening tags</h2>
+    <div class="api-docs-basics">
+        <p>
+            The opening tags in your <code>.php</code> files must be updated. Change the opening tags in every <code>.php</code> file from <code><span><</span>?hh // strict</code> to <code><span><</span>?php</code>.
+        </p>
+    </div>
+
+<h2 id="return-types">Unavailable return types</h2>
+    <div class="api-docs-basics">
+        <p>
+            The return types <code>:void</code> and <code>:mixed</code> are not used in PHP 7. Check your <code>.php</code> files for functions using the return types <code>:void</code> and <code>:mixed</code> and delete the return types.
+        </p>
+    </div>
+
+<h2 id="type-hints">No array type hints</h2>
+    <div class="api-docs-basics">
+        <p>
+            Array type hints, e.g. <code>array <span><</span>string, mixed<span>></span></code> are not used in PHP 7. Check your <code>.php</code> files for array type hints and delete them.
+        </p>
+    </div>
+
+<h2 id="nullables">No nullable functions</h2>
+    <div class="api-docs-basics">
+        <p>
+            In Hack, a function can have a specific return type, e.g. <code>string</code>, and still can return <code>null</code>. In PHP 7, specific functions cannot return <code>null</code>. The same applies to parameters. Check your code for functions that are limited to a certain return type. If the function should also return <code>null</code>, delete the type.
+        </p>
+    </div>
+
+<h2 id="other-changes">Other changes</h2>
+    <div class="api-docs-basics">
+        <p>
+            Other changes to take into consideration, when updating from Hack to PHP 7 are:
+        </p>
+
+        <ul>
+          <li>
+            HHVM functions cannot be used in PHP, e.g. no <code>async</code>
+          </li>
+          <li>
+            There is no typification of class variables in PHP 7, e.g. <code>public TwigFactory <span>$</span>factory</code> must be changed into <code>public <span>$</span>factory</code>
+          </li>
+          <li>
+            <code>enum</code> cannot be used in PHP 7, use <code>constants</code> instead
+          </li>
+        </ul>
+    </div>
+{% endblock %}

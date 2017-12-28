@@ -1,0 +1,36 @@
+{#
+    Provided blocks:
+     - Description
+     - ExampleOutput
+
+    Required variables:
+     - exampleId: used for referencing generated file tabs
+     - exampleFiles: files to display beneath the examples output
+
+#}
+{% import 'PlentyPluginShowcase::macros.fileTabs' as tabs %}
+
+{% block Description %}
+
+{% endblock %}
+
+{% if exampleFiles is defined %}
+<div class="panel panel-default panel-example">  
+    <div class="panel-body panel-expandable expanded">
+        <div class="panel-expandable-inner">
+            <p class="text-muted bold text-uppercase">example</p>
+            <!-- span class="btn btn-default"><span class="glyphicon glyphicon-resize-small"></span></span -->
+            {% block ExampleOutput %}
+            {% endblock %}
+        </div>
+    </div>
+    <div class="panel-footer panel-expandable expanded">
+        <div class="panel-expandable-inner">
+            <!-- span class="btn btn-default"><span class="glyphicon glyphicon-resize-small"></span></span -->
+
+            {{ tabs.output(exampleId, exampleFiles) }}
+        </div>
+    </div>
+</div>
+{% endif %}
+    

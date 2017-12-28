@@ -1,0 +1,304 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="template-containers">Containers in the Ceres template</h1>
+<div class="api-docs-basics">
+    <p>
+        Approx. 70 containers are available on the different pages and views of the Ceres template plugin allowing you to replace existing content or display additional content. The content provided by other plugins can be integrated in the following areas of the online store:
+    </p>
+    <ul>
+        <li>
+            Header and footer of the page
+        </li>
+        <li>
+            Homepage
+        </li>
+        <li>
+            Other content pages
+        </li>
+        <li>
+            Category view
+        </li>
+        <li>
+            Single item view
+        </li>
+        <li>
+            Shopping cart and shopping cart preview
+        </li>
+        <li>
+            Checkout
+        </li>
+        <li>
+            Order confirmation page
+        </li>
+    </ul>
+</div>
+
+<h3 id="containers-further-reading">Further reading</h3>
+
+<div class="api-docs-basics">
+    <ul>
+        <li>
+            <a href="/dev-doc/basics#plugin-structure">Plugin structure</a>
+        </li>
+        <li>
+            <a href="/tutorials/container">Placeholder tutorial</a>
+        </li>
+        <li>
+            <a href="/tutorials/design">Installing a template</a>
+        </li>
+        <li>
+            <a href="http://twig.sensiolabs.org/doc/templates.html#template-inheritance" target="_blank">Template inheritance</a>
+        </li>
+        <li>
+            <a href="http://twig.sensiolabs.org/doc/templates.html#including-other-templates" target="_blank">Including other templates</a>
+        </li>
+    </ul>
+</div>
+
+<h2 id="container-table">List of containers</h2>
+<div class="api-docs-basics">
+    <p>
+        Find a detailed list of all containers in the table below:
+    </p>
+</div>
+
+<!-- DocBlock with Ceres containers -->
+{% include "PlentyPluginShowcase::content.devguide.docblocks.block_containers_ceres" %}
+
+<h2 id="container-homepage">Containers on the homepage</h2>
+<div class="api-docs-basics">
+    <p>
+        The <b>Ceres</b> homepage provides multiple containers which can be used to replace the content of the default homepage or add more content to the homepage. Find an overview of the homepage containers below:
+    </p>
+</div>
+
+<!-- Image -->
+<figure>
+    <a data-toggle="modal" data-target="#modal1" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/ceres-homepage-containers.png" />
+    </a>
+</figure>
+<!-- Image end -->
+
+<h2 id="container-usage">Using containers in the template</h2>
+<div class="api-docs-basics">
+    <p>
+        Following the tutorial above, we have learned about the plugin providing the data for our template. Now, you will learn how to use containers in template plugins.
+    </p>
+</div>
+<h3 id="container-entrypoint">Container entry point</h3>
+<div class="api-docs-basics">
+    <p>
+        The entry point of a container is defined in the <code>plugin.json</code> file of a plugin.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+<code>Ceres/plugin.json</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+"containers"        :
+    [
+        {
+            "key"           : "Homepage.Certified",
+            "name"          : "Homepage: Certified container",
+            "description"   : "Add an icon to the certified by container on the homepage",
+            "multiple"      : false
+        }
+    ]
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The <code>containers</code> key stores an array of values that consist of a <code>key</code>, a <code>name</code> and a <code>description</code> representing our containers. The content provided by our data provider, the <b>Placeholder</b> plugin, is linked to the container in this template plugin.<br /><br /><code>key</code> specifies the container. <code>name</code> and <code>description</code> are texts for the plentymarkets back end.<br /><br /><code>multiple</code> is an optional property that defines whether multiple data providers can provide content for this container. Set it to <code>false</code> if you want to display the content of the first data provider only.
+</div>
+<!-- Code example end -->
+
+<h3 id="container-macro">Container macro</h3>
+<div class="api-docs-basics">
+    <p>The content to be displayed in a container is processed by the <code>show()</code> function in a macro. This macro is stored in the <code>LayoutContainer.twig</code> file. With the help of this macro, you can also access objects in layout containers, e.g. the <code>item</code> object in the <code>SingleItemView.twig</code> template.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Ceres/resources/views/PageDesign/Macros/LayoutContainer.twig</code>
+</div>
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+{% macro show( containerName, object ) %}
+    {% if object == null %}
+        {% for content in container(containerName) %}
+            {{ content.result|raw }}
+        {% endfor %}
+    {% else %}
+        {% for content in container(containerName, object) %}
+            {{ content.result|raw }}
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<!-- Code example end -->
+
+<h3 id="container-template">Container in the template</h3>
+<div class="api-docs-basics">
+    <p>
+        Our <b>Certified by</b> container is integrated into the template of <b>Ceres</b> using the following code.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Ceres/resources/views/PageDesign/Partials/Footer.twig</code>
+</div>
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+{% import "Ceres::PageDesign.Macros.LayoutContainer" as LayoutContainer %}
+
+...
+
+{% set certifiedContent = LayoutContainer.show("Ceres::Homepage.Certified") %}
+{% if certifiedContent|trim is not empty %}
+    &lt;div class="services-certificate m-b-1">
+        &lt;strong class="services-title">{{ trans("Ceres::Template.generalCertifiedBy") }}&lt;/strong>
+        {{ certifiedContent }}
+    &lt;/div>
+{% endif %}
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: A Twig function sets the variable <code>certifiedContent</code>. The variable is equal to the content of the <code>Homepage.Certified</code> container defined in the <code>plugin.json</code> file.<br /><br />The title of the container is displayed using the <code><span>{</span>{ trans("Ceres::Template.generalCertifiedBy") }}</code> variable. The text for this variable is stored in the <code>Template.properties</code> file.<br /><br />The <code><span>{</span>{ certifiedContent }}</code> variable is used to display the content provided by our <b>Placeholder</b> plugin below the title.
+</div>
+<!-- Code example end -->
+
+<h3 id="container-objects">Objects in containers</h3>
+<div class="api-docs-basics">
+    <p>
+        By using the <code>LayoutContainer.twig</code> macro, we can access objects in layout containers. We specify the object as a parameter in the container and can make use of all the information of the current object.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Ceres/resources/views/Item/SingleItem.twig</code>
+</div>
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+{{ LayoutContainer.show("Ceres::SingleItem.BeforePrice", item.documents[0].data) }}
+{% if ('item.recommendedPrice' in itemData or 'all' in itemData) %}
+    &lt;div class="crossprice" v-resource-if:currentVariation="documents[0].data.calculatedPrices.rrp.price > 0">
+        &lt;del class="text-muted small" v-resource-bind:currentVariation="documents.0.data.calculatedPrices.rrp.price" :filters="['currency']">
+            {#{{ item.data.salesPrices[1].price | formatMonetary(item.variationRetailPrice.currency) }} TODO get correct currency#}
+            {{ item.documents[0].data.calculatedPrices.rrp.price | formatMonetary(item.documents[0].data.calculatedPrices.rrp.currency) }}
+        &lt;/del>
+    &lt;/div>
+{% endif %}
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Here, we specify the <code>item</code> object as the second parameter of our layout container. This allows us to use the information saved in the object for further processing, e.g. for calculating the instalments of certain payment methods.
+</div>
+<!-- Code example end -->
+
+<div class="api-docs-basics">
+    <p>
+        In addition to the <code>Item</code> object, other objects can be used in different layout containers. The <code>Order</code> object, for example, can be used in several containers on the order confirmation page.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Ceres/resources/views/Checkout/Components/OrderDetails.twig</code>
+</div>
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+{{ LayoutContainer.show("Ceres::OrderConfirmation.AdditionalPaymentInformation", services.customer.getLatestOrder().order) }}
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Here, we specify the <code>order</code> object as the second parameter of our layout container. This allows us to use the information about the latest order saved in the object for further processing.
+</div>
+<!-- Code example end -->
+
+<h3 id="container-item-view-tab">Additional tabs in the single item view</h3>
+<div class="api-docs-basics">
+    <p>
+        In order to add your own information in an additional tab in the single item view, you can use two containers. The first container <code>SingleItem.AddDetailTabs</code> is used for displaying one or multiple additional tabs in the view of an item in the Ceres online store. The second container <code>SingleItem.AddDetailTabsContent</code> displays your content within the first container. For each container, an individual <a href="/tutorials/container#code-placeholdercontainer">data provider</a> is required.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>MyPlugin/resources/views/CustomTab.twig</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+&lt;li class="nav-item">
+    &lt;a class="nav-link" data-toggle="tab" href="#my-custom-tab" role="tab">Custom Tab&lt;/a>
+&lt;/li>
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Our tab is a <code>li</code> element with the class <code>nav-item</code>. If more tabs are required, further list items can be added here. In the <code>href</code> attribute, we provide a link to our tab content.
+</div>
+<!-- Code example end -->
+
+<!-- Code example -->
+<div class="route-container">
+    <code>MyPlugin/resources/views/CustomTabContent.twig</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+&lt;div class="tab-pane" id="my-custom-tab" role="tabpanel">
+    &lt;div class="m-y-2">
+        Enter Custom Tab content here...
+    &lt;/div>
+&lt;/div>
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In a second <code>Twig</code> file, we enter the content for our tab. Our container has the same ID, that is referenced in the previous code example, e.g. <code>id="my-custom-tab"</code>.
+</div>
+<!-- Code example end -->
+
+<!-- Modal -->
+<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">A schematic overview of containers on the Ceres homepage</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/ceres-homepage-containers.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

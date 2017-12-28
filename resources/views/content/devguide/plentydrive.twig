@@ -1,0 +1,158 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="plentydrive-introduction">Introducing plentyDrive</h1>
+<div class="api-docs-basics">
+    <p>
+        The new plentymarkets tool plentyDrive offers the functionality to skip time-consuming plugin builds by synchronising your local inbox with your system’s preview mode stage.
+    </p>
+</div>
+
+<h1 id="plentydrive-install-tool">Installing the tool</h1>
+<div class="api-docs-basics">
+    <p>
+        Click the link to access plentyDrive on the plentyMarketplace. Select the route for your operating system and follow the respective installation routine.
+    </p>
+</div>
+
+<!-- Download button -->
+<div class="connect">
+    <div class="btn btn-primary btn-block btn-github" title="To the plentyMarketplace.">
+        <a href="https://marketplace.plentymarkets.com/plugins/integration/plentydrive_5091" target="_blank" role="button"><span class="pull-left glyphicon glyphicon-download gi-size" aria-hidden="true" style="font-size: 37px"></span>To the plentyMarketplace</a>
+    </div>
+</div>
+<!-- Download button end -->
+
+<h1 id="plentydrive-configuring-tool">Configuring the tool</h1>
+<div class="api-docs-basics">
+    <p>
+        Follow these steps to complete the setup of plentyDrive.
+    <ol>
+        <li>
+            Open the tool.
+        </li>
+        <li>
+            Enter your plentymarkets domain. Use https:// or http://.
+        </li>
+        <li>
+            Enter your login data.
+        </li>
+        <li>
+            Click on <b>Login</b>.<br />
+            → The tool is logged into your system.
+        </li>
+        <li>
+            Click on <strong>Settings</strong>.
+        </li>
+        <li>
+            Select a local folder to be synchronised with the S3 inbox.
+        </li>
+        <li>
+            <strong>Save</strong> the settings.<br />
+            → plentyDrive will restart.<br />
+            → The configuration is complete.
+        </li>
+    </ol>
+    </p>
+</div>
+
+<h1 id="plentydrive-use-tool">Using the tool</h1>
+<div class="api-docs-basics">
+    <p>
+        plentyDrive can greatly reduce the amount of time needed for applying changes to your plugins. This chapter will provide an overview of the main functions.
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-sm-6 pl-0">
+        <h2 id="plentydrive-prerequisites">Prerequisites</h2>
+        <div class="api-docs-basics">
+            <p>
+            <ul>
+                <li>
+                    Autodeploy has to be activated in <strong>Plugin » Plugin overview</strong>.
+                </li>
+                <li>
+                    All plugins have to be built in stage once.
+                </li>
+            </ul>
+            </p>
+        </div>
+
+        <h2 id="plentydrive-important-information">Important information</h2>
+        <div class="api-docs-basics">
+            <p>
+            <ul>
+                <li>
+                    Only <strong>open source</strong> plugins <strong>not installed via git</strong> in your plentymarkets system will be synchronised.
+                </li>
+                <li>
+                    Excluded from autodeploy are:
+                    <ul>
+                        <li>
+                            all files in the folder <strong>resources/libs</strong>
+                        </li>
+                        <li>
+                            migrations
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    Forbidden file changes are logged and a warning is displayed.
+                </li>
+                <li>
+                    When creating new plugins, the folder name has to match the plugin name.
+                </li>
+                <li>
+                    You can exclude plugin files from synchronisation via <code>.gitignore</code>.
+                </li>
+            </ul>
+            </p>
+        </div>
+
+        <h2 id="plentydrive-building-plugins">Building plugins using plentyDrive</h2>
+        <div class="api-docs-basics">
+            <p>
+            <ol>
+                <li>
+                    Configure your tool as described above.
+                </li>
+                <li>
+                    Make changes to your plugin in the local folder.<br />
+                    → plentyDrive recognises any file changes and copies the respective file into the stage directory.<br />
+                    → Your changes are immediately visible in the browser.
+                </li>
+            </ol>
+            </p>
+        </div>
+
+    </div>
+    <div class="col-sm-6">
+            <img class="img-responsive img-pretty mt-4" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/drive_workflow.png" />
+    </div>
+</div>
+<div class="alert alert-warning">
+    <strong>Important:</strong> If you want to add new plugins via plentyDrive, the plugin directory name must match the plugin name.
+    <img class="img-responsive img-pretty mt-2" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/new_plugins.png" />
+</div>
+
+<h2 id="plentydrive-terra-preview">Terra preview</h2>
+<div class="api-docs-basics">
+    <p>
+    When building a back end UI, there is currently no way to test it. With plentyDrive, you can not only test it, but do so with the same speed plentyDrive lends other plugins.
+    <ol>
+        <li>
+            In the plentyDrive menu, click on <strong>Open Terra preview</strong>.<br />
+            → An emulated Chrome window will open. plentyDrive uses the login session of the system to forward all requests with CORS.
+        </li>
+        <li>
+            Make changes to your plugin in the local folder.<br />
+            → plentyDrive recognises any file changes and copies the respective file into the stage directory.<br />
+            → Your changes are immediately visible in the browser.
+        </li>
+    </ol>
+    </p>
+</div>
+
+{% endblock %}

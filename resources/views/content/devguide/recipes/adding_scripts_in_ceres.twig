@@ -1,0 +1,56 @@
+<h2 id="adding-scripts">Adding scripts in Ceres</h2>
+
+<div class="api-docs-basics">
+
+<p>
+    Scripts of your plugin defined using the HTML <code><span><</span>script></code> tag can be added to the scripts of the template plugin Ceres without creating a data provider and linking the content with a template container. Simply extend the ServiceProvider of your plugin and import your script resource into Ceres.
+</p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Theme/src/Providers/ThemeServiceProvider.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace Theme\Providers;
+
+use IO\Helper\TemplateContainer;
+use IO\Helper\ResourceContainer;
+use Plenty\Plugin\Events\Dispatcher;
+use Plenty\Plugin\ServiceProvider;
+use Plenty\Plugin\Templates\Twig;
+
+class ThemeServiceProvider extends ServiceProvider
+{
+
+	/**
+	 * Register the service provider.
+	 */
+	public function register()
+	{
+
+	}
+
+    /**
+	 * Boot a template for the basket that will be displayed in the template plugin instead of the original basket.
+	 */
+	public function boot(Twig $twig, Dispatcher $eventDispatcher)
+    {
+        $eventDispatcher->listen('IO.Resources.Import', function (ResourceContainer $container)
+        {
+            // The script is imported in the Footer.twig of Ceres
+            $container->addScriptTemplate('Theme::content.SingleItemScript');
+        }, self::PRIORITY);
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Add the dependencies for the <code>ResourceContainer</code>, the <code>Dispatcher</code> and <code>Twig</code> classes.<br /><br />Add the <code>boot()</code> function and use the dispatcher for listening to the resource import event <code>IO.Resource.Import</code>. Use the <code>addScriptTemplate()</code> method and specify the location of your script resource, e.g. a twig template. In this template, use <code><span><</span>script></code> tags to define the scripts to be added to the scripts of Ceres.
+</div>
+<!-- Code example end -->
+

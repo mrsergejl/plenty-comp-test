@@ -1,0 +1,94 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="marketplace-upload">Uploading plugins to plentyMarketplace</h1>
+<div class="api-docs-basics">
+    <p>
+        If your plugin fulfils the <a href="/marketplace/plugin-requirements">requirements</a>, you can upload your plugin to <a href="https://marketplace.plentymarkets.com" target="_blank">plentyMarketplace</a>.
+    </p>
+    <p>
+        First, <a href="/dev-doc/basics#add-repository">add</a> your plugin to the plentymarkets inbox and <a href="/dev-doc/basics#provisioning">provision</a> the plugin. Then, proceed as follows to upload your plugin:
+    </p>
+    <ol>
+        <li>
+            Open the plentymarkets back end.
+        </li>
+        <li>
+            Go to <b>Plugins » Plugin overview</b>.
+        </li>
+        <li>Click on the plugin that you want to upload to plentyMarketplace.<br />
+            → A new tab will open.
+        </li>
+        <li>
+            Check the plugin information, i.e. <b>description</b>, <b>images</b>, <b>change log</b> and <b>configuration</b>.
+        </li>
+        <li>Click on <b>Marketplace upload</b>.<br />
+            → The <b>Marketplace upload</b> window will open.
+        </li>
+        <li>
+            Click on <b>Upload</b>.<br />
+            → The plugin will be uploaded to plentyMarketplace.
+        </li>
+        <li>
+            The plugin requires a review by plentymarkets.<br />
+            → The plugin will be made available on plentyMarketplace after the review.
+        </li>
+        <li>
+            Log in to plentyMarketplace and go to the <b>My Partner portal</b> page to check the review status of your plugin.
+        </li>
+    </ol>
+</div>
+
+<h1 id="marketplace-upload">Uploading a new plugin version</h1>
+<div class="api-docs-basics">
+    <p>
+        When updating a plugin, the new version of the plugin must also be uploaded. Note that the following tasks must be taken into consideration when updating a plugin:
+    </p>
+    <ul>
+        <li>
+            Update the change log
+        </li>
+        <li>
+            Update the user guide
+        </li>
+        <li>
+            Update the version in the <code>plugin.json</code>
+        </li>
+        <li>
+            Provision the plugin in <b>Productive</b>
+        </li>
+        <li>
+            Upload the plugin to plentyMarketplace
+        </li>
+    </ul>
+</div>
+
+<!--h1 id="marketplace-partner-portal">Making plugins visible on plentyMarketplace</h1>
+<div class="api-docs-basics">
+    <p>
+        After the plugin has be reviewed successfully by plentymarkets, it can be made visible in the <b>My Partner portal</b>. In doing so, the plugin will become available to plentymarkets customers. Proceed as follows to make your plugin visible:
+    </p>
+    <ol>
+        <li>
+            Go to <b>plentyMarketplace</b>.
+        </li>
+        <li>Click on <b>Log in</b>.<br />
+            → The <b>Login</b> window will open.
+        </li>
+        <li>
+            Enter your email and password.
+        </li>
+        <li>Click on <b>Login</b>.
+        </li>
+        <li>
+            Select <b>My partner portal</b> from the <b>Login</b> drop-down menu.<br />
+            → The <b>My partner portal</b> page will open.
+        </li>
+        <li>
+            Change the status of your plugins on this page.
+        </li>
+    </ol>
+</div-->
+
+{% endblock %}

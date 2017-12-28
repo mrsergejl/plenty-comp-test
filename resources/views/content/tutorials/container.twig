@@ -1,0 +1,318 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="introduction">Template containers</h1>
+<div class="api-docs-basics">
+    <p>
+        This tutorial will introduce you to template containers. We will develop a small plugin that provides the data for displaying a placeholder image and text in a container of the template plugin. You will also learn about the plugin containers in Ceres and all options to integrate your own content in the template.
+    </p>
+</div>
+
+<!-- GitHub button -->
+<div class="connect">
+    <div class="btn btn-primary btn-block btn-github" title="Clone or download this plentymarkets plugin on GitHub.">
+        <a href="https://github.com/plentymarkets/plugin-tutorial-template-container" target="_blank" role="button"><img class="img-responsive pull-left" src="{{ plugin_path('PlentyPluginShowcase') }}/images/github-logo.png"  style="width: 40px;"/><span>Download on GitHub</span></a>
+    </div>
+</div>
+<!-- GitHub button end -->
+
+<h2 id="install-template">Step 1: Installing the template</h2>
+<div class="api-docs-basics">
+    <p>
+        If you haven't already <a href="/tutorials/design">set up a template</a> in your plentymarkets system, do it before you start developing the template container plugin. In this way, you have your test environment ready and can directly check your coding output.
+    </p>
+</div>
+
+<h2 id="create-plugin-files">Step 2: Creating the plugin files</h2>
+<div class="api-docs-basics">
+    <p>
+        Our plugin is of the <b>template</b> type and integrates with the Ceres template, i.e. our plugin consists of <a href="/dev-doc/template-plugins#features-core">core features</a> saved in the <b>src</b> folder and <a href="/dev-doc/template-plugins#features-design">design features</a> saved in the <b>resources</b> folder. Our plugin also requires a <a href="/dev-doc/basics#plugin-information">plugin.json</a> file and a <a href="/dev-doc/basics#plugin-options">config.json</a> file.
+    </p>
+</div>
+
+<!-- Folder structure -->
+<div class="code-container">
+<pre class="prettyprint lang-plain grey-back">
+Placeholder/
+    ├── resources/
+    │   ├── images/
+    │   │   └── placeholder.png // placeholder image file
+    │   │
+    │   └── views/
+    │       └── content/
+    │           └── Placeholder.twig // template for the placeholder image and text
+    ├── src/
+    │   ├── Containers/
+    │   │   └──PlaceholderContainer.php
+    │   │
+    │   └── Providers/
+    │       └── PlaceholderServiceProvider.php
+    │
+    ├── config.json // admin's plugin options
+    └── plugin.json // plugin information
+</pre>
+</div>
+<!-- Folder structure end -->
+
+<h2 id="fill-source-files">Step 3: Filling the source files</h2>
+<div class="api-docs-basics">
+    <p>
+        Our plugin consists of 6 files in total. Two JSON files, the <a href="#code-pluginjson">plugin.json</a> and the <a href="#code-configjson">config.json</a>, two PHP files, a <a href="#code-serviceprovider">ServiceProvider</a> and a <a href="#code-placeholdercontainer">Container</a> with the source code of the plugin, as well as a <a href="#code-template">Twig template</a> and an image file. Create these files and copy the code examples.
+    </p>
+</div>
+
+<h3 id="code-pluginjson">Code for the plugin.json</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Placeholder/plugin.json</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+{
+    "name"                  :"Placeholder",
+    "description"           :"Template container placeholder plugin",
+    "namespace"             :"Placeholder",
+    "author"                :"Your name",
+    "keywords"              : ["container", "placeholder", "template"],
+    "type"                  :"template",
+    "require"               : [],
+    "serviceProvider"       :"Placeholder\\Providers\\PlaceholderServiceProvider",
+    "dataProviders"         :
+    [
+        {
+            "key"           :"Placeholder\\Containers\\PlaceholderContainer",
+            "name"          :"Placeholder",
+            "description"   :"Display a placeholder image and text"
+        }
+    ]
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: This <code>plugin.json</code> is similar to other files, but it has an additional key-value pair: <code>dataProviders</code> is required for linking the content provided by this plugin to the template plugin. <code>key</code> specifies the container. <code>name</code> and <code>description</code> are texts for the plentymarkets back end.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-configjson">Code for the config.json</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Placeholder/config.json</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+[
+    {
+        "tab"                         : "Placeholder settings",
+        "key"                         : "placeholder.text",
+        "label"                       : "Placeholder text",
+        "type"                        : "text",
+        "default"                     : "This is a placeholder"
+    }
+]
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: This <code>config.json</code> is kept very simple and enables you to define the text that is displayed below or next to the placeholder image.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-serviceprovider">Code for the ServiceProvider</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Placeholder/src/Providers/PlaceholderServiceProvider.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace Placeholder\Providers;
+
+use Plenty\Plugin\ServiceProvider;
+
+class PlaceholderServiceProvider extends ServiceProvider
+{
+
+	/**
+	 * Register the service provider.
+	 */
+	public function register()
+	{
+
+	}
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The ServiceProvider of this plugin is very simple. It contains no fancy logic and is only required for plugin provisioning.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-placeholdercontainer">Code for the PlaceholderContainer</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Placeholder/src/Containers/PlaceholderContainer.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace Placeholder\Containers;
+
+use Plenty\Plugin\Templates\Twig;
+
+class PlaceholderContainer
+{
+    public function call(Twig $twig):string
+    {
+        return $twig->render('Placeholder::content.Placeholder');
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The <code>PlaceholderContainer</code> is specified in the <a href="#code-pluginjson">plugin.json</a> file. It is a completely new source file, a content container which uses the <code>call()</code> method for rendering the Twig template of our plugin.<!-- The <code>call()</code> method can have other parameters. These parameters are optional. --> We will create the <code>Placeholder.twig</code> file in the next step.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-template">Code for the Placeholder.twig</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Placeholder/resources/views/content/Placeholder.twig</code>
+</div>
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-php grey-back linenums code-example">
+{% set placeholderText = config("Placeholder.placeholder.text") %}
+
+&lt;img src="{{ plugin_path("Placeholder") }}/images/placeholder.png">
+&lt;h5>{{ placeholderText }}&lt;/h5>
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: A Twig function sets the variable <code>placeholderText</code>. The variable is equal to the value of <code>placeholder.text</code> key in the <code>config.json</code> file. The placeholder text can be entered in the plentymarkets back end.<br /><br />In line 3, we specify the placeholder image by entering the path of the image. <code><span>{</span>{ plugin_path("Placeholder") }}</code> is equal to the <b>resources</b> folder in our plugin, i.e. the complete image path is <b>Placeholder/resources/images/placeholder.png</b>.<br /><br />In line 4, we use the <code>placeholderText</code> variable that we set in line 1 to display the placeholder text below or next to the placeholder image in the content container.
+</div>
+<!-- Code example end -->
+
+<h2 id="placeholder-text">Step 4: Entering the placeholder text</h2>
+<div class="api-docs-basics">
+    <p>
+        After creating the plugin, we have to <a href="/dev-doc/basics#add-repository">add</a> our new plugin to the plentymarkets inbox. Then, we enter the placeholder text in the plugin config.
+    </p>
+    <ol>
+        <li>
+            Go to <b>Plugins » Plugin overview</b>.
+        </li>
+        <li>
+            In the list of plugins, click on <b>Placeholder</b>.<br />
+            → The plugin config file will open.
+        </li>
+        <li>
+            Enter the <b>Placeholder text</b>.
+        </li>
+        <li>
+            <b>Save</b> the settings.
+        </li>
+    </ol>
+</div>
+
+<h1 id="add-content">Looking at the big picture</h1>
+<div class="api-docs-basics">
+    <p>
+       Now you simply have to link the content from our <b>Placeholder</b> plugin to one or multiple containers of the <b>Ceres</b> template plugin. This can be done in the plentymarkets back end.
+    </p>
+    <ol>
+        <li>
+            Go to the <b>Plugins » Content</b> menu.<br />
+            → A list of all plugins that provide data will be displayed.
+        </li>
+        <li>
+            Activate a container in the <b>Placeholder (Placeholder)</b> area, e.g. the <b>Certified</b> container on the homepage.
+        </li>
+        <li>
+            <b>Save</b> the settings.
+        </li>
+    </ol>
+</div>
+
+<!-- Image -->
+<figure>
+    <a data-toggle="modal" data-target="#modal2" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/template-container-backend.png" />
+    </a>
+</figure>
+<!-- Image end -->
+
+<br /> <!-- required for spacing -->
+<div class="api-docs-basics">
+    <p>
+        After <a href="/dev-doc/basics#provisioning">provisioning</a> the plugins in <b>Productive</b> the content of our <b>Placeholder</b> plugin is displayed in the footer of our online store.
+    </p>
+</div>
+
+<!-- Image -->
+<figure>
+    <a data-toggle="modal" data-target="#modal1" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/footer-template-container.png" />
+    </a>
+</figure>
+<!-- Image end -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Placeholder in the <b>Certified by</b> container in the footer</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/footer-template-container.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">The <b>Plugins » Content</b> menu in the plentymarkets back end</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/template-container-backend.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

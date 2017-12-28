@@ -1,0 +1,328 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+    <h1 id="service-requirements">Requirements for services</h1>
+    <div class="api-docs-basics">
+        <p>
+            A service is an item on plentyMarketplace offered by a service partner that can be purchased by the customer. A service partner describes the offered service in the description and gives detailed information about the service, including contact data, in the user guide. After a customer purchased the service on plentyMarketplace, a JSON response with the respective purchase and customer data is sent to the service partner using a webhook URL. To offer a service on plentyMarketplace, all the <a href="https://developers.plentymarkets.com/marketplace/plugin-requirements" target="_blank">plugin requirements</a> must be met unless stated otherwise, e.g. user guide, icons etc. In addition, you have to specify a webhook URL.
+        </p>
+    </div>
+
+    <h2 id="service-overview">Overview of the differences between services and plugins</h2>
+    <div class="api-docs-basics">
+        <p>
+            Find a list of new required information in the <code>plugin.json</code> file not covered by the basic <a href="https://developers.plentymarkets.com/marketplace/plugin-requirements" target="_blank">plugin requirements</a> below.
+        </p>
+        <table class="table table-striped table-responsive table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>
+                    Property
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td colspan="2" style="text-align: center"><b>Plugin data</b></td>
+            </tr>
+            <tr>
+                <td>
+                    type
+                </td>
+                <td>
+                    A service must be of type <b>service</b>. <span class="label label-danger">required</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    categories
+                </td>
+                <td>
+                   The category <b>3600</b> must be specified. <span class="label label-danger">required</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    webhookUrl
+                </td>
+                <td>
+                    A webhook URL must be specified. A JSON response is sent to the webhook URL when a service is purchased on plentyMarketplace. Find an example of the <a href="#service-response"><b>JSON response</b></a> below. <span class="label label-danger">required</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    license
+                </td>
+                <td>
+                    The license is not required for services. The license field will not be displayed on plentyMarketplace. <span class="label label-default">optional</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center"><b>Meta data</b></td>
+            </tr>
+                        <tr>
+                <td>
+                    Change logs
+                </td>
+                <td>
+                    A change log is not required for services. The change log tab will not be displayed on plentyMarketplace. <span class="label label-default">optional</span>
+                </td>
+            </tr>
+                        <tr>
+                <td>
+                    Support contact data
+                </td>
+                <td>
+                    A support contact file is not required for services. The support tab will not be displayed on plentyMarketplace. <span class="label label-default">optional</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3 id="service-response">Content of the JSON response</h3>
+    <div class="api-docs-basics">
+        <p>
+            The JSON response sent to the service partner using the webhook URL contains the following data.
+        </p>
+    </div>
+
+    <table class="table table-bordered table-striped table-condensed table-hover">
+        <thead>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <td><samp>id</samp></td>
+                    <td><code>string</code></td>
+                    <td>The ID of the service. The ID consists of a maximum of 200 characters and is used for the communication between the plentymarkets API and the service partner API.</td>
+                </tr>
+                <tr>
+                    <td><samp>type</samp></td>
+                    <td><code>string</code></td>
+                    <td>The type of the service. The type is <code>SERVICE.PLUGIN.PURCHASE</code>.</td>
+                </tr>
+                <tr>
+                    <td><samp>createdAt</samp></td>
+                    <td><code>int</code></td>
+                    <td>The timestamp of the service</td>
+                </tr>
+                <tr>
+                    <td><samp>resource</samp></td>
+                    <td><code>Resource[]</code></td>
+                    <td>The response resource containing information about the contact of the customer, the invoice address of the customer and the order including the order items that are associated with the order.</td>
+                </tr>
+                    <tr>
+                        <td><samp><span class="spacer">&nbsp;</span>contact</samp></td>
+                        <td><code>Contact[]</code></td>
+                        <td>The contact information</td>
+                    </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>id</samp></td>
+                            <td><code>int</code></td>
+                            <td>The ID of the contact</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>gender</samp></td>
+                            <td><code>string</code></td>
+                            <td>The gender of the contact. The gender can be <code>male</code>, <code>female</code> or empty.</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>firstName</samp></td>
+                            <td><code>string</code></td>
+                            <td>The first name of the contact</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>lastName</samp></td>
+                            <td><code>string</code></td>
+                            <td>The last name of the contact</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>email</samp></td>
+                            <td><code>string</code></td>
+                            <td>The private email address of the contact</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>updatedAt</samp></td>
+                            <td><code>int</code></td>
+                            <td>The timestamp when the contact was last updated.</td>
+                        </tr>
+                    <tr>
+                        <td><samp><span class="spacer">&nbsp;</span>address</samp></td>
+                        <td><code>Address[]</code></td>
+                        <td>The address information</td>
+                    </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>id</samp></td>
+                            <td><code>int</code></td>
+                            <td>The ID of the address</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>companyName</samp></td>
+                            <td><code>string</code></td>
+                            <td>The company name</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>firstName</samp></td>
+                            <td><code>string</code></td>
+                            <td>The first name</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>lastName</samp></td>
+                            <td><code>string</code></td>
+                            <td>The last name</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>street</samp></td>
+                            <td><code>string</code></td>
+                            <td>The street</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>houseNumber</samp></td>
+                            <td><code>string</code></td>
+                            <td>The house number</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>additional</samp></td>
+                            <td><code>string</code></td>
+                            <td>The additional address information</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>postalCode</samp></td>
+                            <td><code>string</code></td>
+                            <td>The postcode</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>town</samp></td>
+                            <td><code>string</code></td>
+                            <td>The town</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>country</samp></td>
+                            <td><code>string</code></td>
+                            <td>The ISO code of the country. For further information about country codes, refer to <a href="https://developers.plentymarkets.com/rest-doc/introduction#countries" target="_blank"><b>Country IDs</b></a>.</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>phone</samp></td>
+                            <td><code>string</code></td>
+                            <td>The phone option</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>email</samp></td>
+                            <td><code>string</code></td>
+                            <td>The email option</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>updatedAt</samp></td>
+                            <td><code>int</code></td>
+                            <td>The timestamp when the address was last updated.</td>
+                        </tr>
+                    <tr>
+                        <td><samp><span class="spacer">&nbsp;</span>order</samp></td>
+                        <td><code>Order[]</code></td>
+                        <td>The order information</td>
+                    </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>id</samp></td>
+                            <td><code>int</code></td>
+                            <td>The ID of the order</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>payPalTransactionId</samp></td>
+                            <td><code>string</code></td>
+                            <td>The ID of the PayPal transaction for this order</td>
+                        </tr>
+                        <tr>
+                            <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>orderItems</samp></td>
+                            <td><code>OrderItem[]</code></td>
+                            <td>The order items that are associated with the order.</td>
+                        </tr>
+                            <tr>
+                                <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>itemVariationId</samp></td>
+                                <td><code>int</code></td>
+                                <td>The ID of the item variation</td>
+                            </tr>
+                            <tr>
+                                <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>quantity</samp></td>
+                                <td><code>float</code></td>
+                                <td>The quantity. The quantity can have up to 2 decimal places.</td>
+                            </tr>
+                            <tr>
+                                <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>orderItemName</samp></td>
+                                <td><code>string</code></td>
+                                <td>The name of the order item</td>
+                            </tr>
+                            <tr>
+                                <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>priceGross</samp></td>
+                                <td><code>float</code></td>
+                                <td>The total gross price including surcharges and discounts. The gross price can have up to 4 decimal places.</td>
+                            </tr>
+                            <tr>
+                                <td><samp><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span><span class="spacer">&nbsp;</span>priceNet</samp></td>
+                                <td><code>float</code></td>
+                                <td>The total net price including surcharges and discounts. The net price can have up to 4 decimal places.</td>
+                            </tr>
+        </tbody>
+    </table>
+
+    <!-- Code example -->
+    <div class="code-container">
+    <pre class="prettyprint lang-js grey-back linenums code-example">
+    {
+       "id":"evt_553ea8a294e2d3a75d5086a06fb53f5a",
+       "type":"SERVICE.PLUGIN.PURCHASE",
+       "createdAt":1510656066,
+       "resource":{
+          "contact":{
+             "id":1337,
+             "gender":"male",
+             "firstName":"John",
+             "lastName":"Doe",
+             "email":"john@account.com",
+             "updatedAt":1510837206
+          },
+          "address":{
+             "id":25,
+             "companyName":"MyStore",
+             "firstName":"John",
+             "lastName":"Doe",
+             "street":"Main Street",
+             "houseNumber":"123",
+             "additional":"",
+             "postalCode":"34117",
+             "town":"Kassel",
+             "country":"DE",
+             "phone":"123-456-7890",
+             "email":"john@account.com",
+             "updatedAt":1510753095
+          },
+          "order":{
+             "id":221,
+             "payPalTransactionId":"1S473067CV761473M",
+             "orderItems":[
+                {
+                   "itemVariationId":1338,
+                   "quantity":1,
+                   "orderItemName":"SuperService",
+                   "priceGross":49,
+                   "priceNet":41.1765
+                }
+             ]
+          }
+       }
+    }
+    </pre>
+    <button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+    </div>
+
+    <!-- Code example end -->
+
+{% endblock %}

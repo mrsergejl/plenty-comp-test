@@ -1,0 +1,18 @@
+<terra-portlet>
+    <div class="text-input-container">
+        <terra-text-input
+            class="text_input"
+            inputName="Username"
+            [(ngModel)]="_username">
+        </terra-text-input>
+        <terra-text-input
+            class="text_input"
+            inputName="Password"
+            [inputIsPassword]="true">
+        </terra-text-input>
+    </div>
+    <terra-button
+        inputCaption="Login"
+        (outputClicked)="loggingIn()">
+    </terra-button>
+</terra-portlet>

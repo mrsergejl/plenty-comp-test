@@ -1,0 +1,63 @@
+{% macro printClass( className, namespace, description, methods ) %}
+
+<h3 id="repository-{{ className }}" data-title="{{ className }}">
+    <code>{{ className }}</code>
+    <small>{{ namespace }}</small>
+</h3>
+
+{% if description is not empty %}
+    <p>{{ description }}</p>
+{% endif %}
+
+        {% for method in methods %}
+<div class="api-doc-method">
+<h4>{{ className }}::{{ method.name }}()</h4>
+
+<div class="api-doc-method-container">
+    {% if method.description is not empty %}
+        <p>
+            {{ method.description }}
+        </p>
+    {% endif %}
+
+    <div class="code-container">
+        <pre class="prettyprint lang-php">{{ method.call | raw }}</pre>
+    </div>
+
+
+    <div class="api-doc-param-list">
+        {% for param in method.params %}
+        <div class="api-doc-param">
+            <h5>
+                {{ param.name }}
+                {% if not param.isMandatory %}
+                <span class="label label-default">optional</span>
+                {% endif %}
+                {% if param.isNullable %}
+                <span class="label label-primary">nullable</span>
+                {% endif %}
+            </h5>
+
+            <p>Type: <span class="label-white">{{ param.type }}</span></p>
+            {% if param.defaultValue is defined %}
+            <p>Default: <span class="label-white">{{ param.defaultValue }}</span></p>
+            {% endif %}
+
+            <div class="api-doc-param-container">
+                {% if param.description is not empty %}
+                    <p>
+                        {{ param.description }}
+                    </p>
+                {% endif %}
+
+                {% if param.docFile is defined %}
+                {{ include( param.docFile ) }}
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</div>
+        {% endfor %}
+        {% endmacro %}

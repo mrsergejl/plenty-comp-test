@@ -1,0 +1,364 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="introduction">Integrating external SDKs</h1>
+<div class="api-docs-basics">
+    <p>
+        In this tutorial, you will learn how to integrate an external SDK into your plugin. By integrating an external SDK and adding a dependency between your plugin and a repository on Packagist, you can access the functionality of the external SDK.
+    </p>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Note</b>: External SDKs will not be executed in plentymarkets directly. We separated the code of an external SDK from the plentymarkets plugin code for security reasons. The code of the external SDK is executed on another server that is not connected to the plentymarkets servers.
+</div>
+
+<h2 id="clone-repository">Step 1: Cloning the HelloWorld plugin</h2>
+<div class="api-docs-basics">
+    <p>
+        In this tutorial, we will extend the functionality of the <a href="/tutorials/helloworld#introduction">HelloWorld</a> plugin by integrating <a href="http://docs.guzzlephp.org/en/latest/" target="_blank">Guzzle</a>, a PHP HTTP client. We then use the external SDK to send an HTTP request to an API, e.g. the <a href="https://packagist.org/apidoc" target="_blank">Packagist API</a>, to retrieve certain information.
+    </p>
+</div>
+
+<!-- GitHub button -->
+<div class="connect">
+    <div class="btn btn-primary btn-block btn-github" title="Clone or download this plentymarkets plugin on Github.">
+        <a href="https://github.com/plentymarkets/plugin-hello-world" target="_blank" role="button"><img class="img-responsive pull-left" src="{{ plugin_path('PlentyPluginShowcase') }}/images/github-logo.png"  style="width: 40px;"/><span>Download on GitHub</span></a>
+    </div>
+</div>
+<!-- GitHub button end -->
+
+<h3 id="plugin-structure-before">The HelloWorld plugin structure</h3>
+<div class="api-docs-basics">
+    <p>
+        Below, you find an overview of the existing structure of our <b>HelloWorld</b> plugin.
+    </p>
+</div>
+
+<!-- Plugin structure -->
+<div class="code-container">
+<pre class="prettyprint lang-plain grey-back">
+HelloWorld/
+    ├── resources/
+    │   └── views/
+    │       └── content/
+    │           └── hello.twig
+    │
+    ├── src/
+    │   ├── Providers/
+    │   │   ├── HelloWorldServiceProvider.php
+    │   │   └── HelloWorldRouteServiceProvider.php
+    │   │
+    │   └── Controllers/
+    │       └── ContentController.php
+    │
+    ├── plugin.json // plugin information
+    └── // additional files (Readme, license etc.)
+</pre>
+</div>
+<!-- Plugin structure end -->
+
+<h2 id="setup-ide">Step 2: Extending the plugin structure</h2>
+<div class="api-docs-basics">
+    <p>
+        In order to integrate the external SDK, we have to make changes to the following existing files. We also have to add a new folder with a new file:
+    </p>
+    <ol>
+        <li>
+            Update the <code>plugin.json</code>
+        </li>
+        <li>
+            Create the <b>resources/lib</b> folder and add the <code>guzzle_connector.php</code> file
+        </li>
+        <li>
+            Extend the <code>ContentController.php</code>
+        </li>
+        <li>
+            Extend the <code>hello.twig</code>
+        </li>
+    </ol>
+</div>
+
+
+<h3 id="update-pluginjson">Updating the plugin.json</h3>
+<div class="api-docs-basics">
+    <p>
+        First, we have to specify the dependencies of our plugin to the Guzzle SDK by updating the <code>plugin.json</code> file.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+<code>HelloWorld/plugin.json</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+{
+    "name":"HelloWorld",
+    "description":"My first plugin",
+    "namespace":"HelloWorld",
+    "author":"Your name",
+    "type":"template",
+    "serviceProvider":"HelloWorld\\Providers\\HelloWorldServiceProvider",
+    "dependencies" : {
+        "guzzlehttp/guzzle": "6.2.*"
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: We add the new attribute <code>dependencies</code>. The value for this attribute consists of the repository name on Packagist, here <a href="https://packagist.org/packages/guzzlehttp/guzzle" target="_blank"><code>guzzlehttp/guzzle</code></a> and the required version, e.g. version <code>6.2.*</code>. The asterisk means that any version starting with 6.2, e.g. 6.2.0, 6.2.1 or 6.2.2, is fine.
+</div>
+<!-- Code example end -->
+
+<h3 id="create-library-file">Creating the guzzle_connector.php</h3>
+<div class="api-docs-basics">
+    <p>
+        External PHP code can only be executed in PHP files that are saved in the <b>lib</b> folder. So, we create a new PHP file that will be the link between the plentymarkets plugin API and an external API.
+    </p>
+    <p>
+        We take the code example from <a href="http://docs.guzzlephp.org/en/latest/" target="_blank">Guzzle</a> and make some adaptions so that the code fits our needs. Remember that we want to send an HTTP request to the <a href="https://packagist.org/apidoc" target="_blank">Packagist API</a>. Let's <a href="https://packagist.org/apidoc#search-packages-by-name" target="_blank">search packages by name</a>.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+  <code>HelloWorld/resources/lib/guzzle_connector.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+$client = new \GuzzleHttp\Client();
+$res = $client->request(
+    'GET',
+    'https://packagist.org/search.json',
+    [
+        'query' => ['q' => SdkRestApi::getParam('packagist_query')]
+    ]
+);
+
+/** @return array */
+return json_decode($res->getBody(), true);
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The first 2 lines of code are taken from the Guzzle example. In the request function, we state the HTTP method, the URL and additional information in an array. In line 8, we use the <a href="http://docs.guzzlephp.org/en/latest/request-options.html#query" target="_blank">request option</a> <code>query</code> to add a query string to the request.<br /><br /><code>SdkRestApi</code> is a helper class that enables the communication between plentymarkets plugins and external SDKs. This class provides information about the requests sent by the plugin.<br /><br />In the <code>getParam</code> function of our query, we use <code>packagist_query</code>. This variable will be described in the code explanation of our <a href="#extend-contentcontroller">ContentController</a>.<br /><br />In line 13, we return the requested JSON data in decoded form. Note that if a <code>string</code> is returned, it must be <a href="http://php.net/manual/en/function.utf8-encode.php" target="_blank">UTF-8 encoded</a>.
+</div>
+<!-- Code example end -->
+
+<h3 id="extend-contentcontroller">Extending the ContentController</h3>
+<div class="api-docs-basics">
+    <p>
+        In order to execute the previously created PHP file, we need to enable HTTP requests in the ContentController, add functionality to address the PHP response and process the returned data.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+  <code>HelloWorld/src/Controllers/ContentController.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace HelloWorld\Controllers;
+
+use Plenty\Plugin\Controller;
+use Plenty\Plugin\Templates\Twig;
+use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
+use Plenty\Plugin\Http\Request;
+
+/**
+ * Class ContentController
+ * @package HelloWorld\Controllers
+ */
+class ContentController extends Controller
+{
+	/**
+	 * @param Twig $twig
+	 * @param LibraryCallContract $libCall
+	 * @param Request $request
+	 * @return string
+	 */
+	public function sayHello(
+		Twig $twig,
+		LibraryCallContract $libCall,
+		Request $request
+	)
+	{
+
+		$packagistResult =
+			$libCall->call(
+				'HelloWorld::guzzle_connector',
+				['packagist_query' => $request->get('search')]
+			);
+		return $twig->render('HelloWorld::content.hello', $packagistResult);
+	}
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: We add two new dependencies: <code>Request</code> allows us to obtain an instance of the current HTTP request and <a href="/api-doc/Plugin">LibraryCallContract</a> is used for addressing our PHP file and processing the response.<br /><br />In the lines 29 to 35, we add the functionality, to search for packages on Packagist and render the result in our template. In order to search for our own search terms, we create the <code>$packagistResult</code> variable.<br /><br />The <code>call()</code> method requires the <code>$libCall</code> parameter and an array of request parameters. In <code>$libCall</code>, we state that our connector is located in the <b>HelloWorld</b> plugin: <code>HelloWorld::guzzle_connector</code>.<br /><br />In the array of request parameters, we take up <code>packagist_query</code> and assign the <code>$request</code> parameter to it. This param allows us, to request any search term by adding <code>search</code> to our URL.<br />The <code>$packagistResult</code> is then passed to the <code>render</code> function and available in our template.<br /><br />Note that, we cannot directly return classes because the plentymarkets plugin interface is not familiar with these classes. We can only return simple data types or objects with an API that returns the objects as a JSON string.
+</div>
+<!-- Code example end -->
+
+<h3 id="make-request">Making a request</h3>
+<div class="api-docs-basics">
+    <p>We mentioned above that we want to search Packagist packages by name. So when sending the HTTP request to get all packages with the name <b>plentymarkets</b>, e.g. with <a href="https://www.getpostman.com/" target="_blank">Postman</a>, we receive the following response consisting of the results array and the total number of packages:</p>
+</div>
+
+<!-- Code example -->
+<div class="route-container" data-type="get">
+<code>https://packagist.org/search.json?q=plentymarkets</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+{
+    "results": [
+    {
+        "name": "plentymarkets/plugin-hack-api",
+        "description": "API for plentymarkets plugin development with Hack",
+        "url": "https://packagist.org/packages/plentymarkets/plugin-hack-api",
+        "repository": "https://github.com/plentymarkets/plugin-hack-api",
+        "downloads": 13,
+        "favers": 1
+    },
+    {
+        "name": "composer/installers",
+        "description": "A multi-framework Composer library installer",
+        "url": "https://packagist.org/packages/composer/installers",
+        "repository": "https://github.com/composer/installers",
+        "downloads": 4931419,
+        "favers": 641
+    },
+    {
+        "name": "alexcold/yii2-plentyconnector",
+        "description": "PlentyMarkets SOAP API connector",
+        "url": "https://packagist.org/packages/alexcold/yii2-plentyconnector",
+        "repository": "https://github.com/alexcold/yii2-plentyconnector",
+        "downloads": 10,
+        "favers": 0
+    },
+    {
+        "name": "plentymarkets/plugin-hello-world",
+        "description": "Creates an empty frontend plugin for plentymarkets plugin development",
+        "url": "https://packagist.org/packages/plentymarkets/plugin-hello-world",
+        "repository": "https://github.com/plentymarkets/plugin-hello-world",
+        "downloads": 12,
+        "favers": 0
+    }
+    ],
+    "total": 4
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<!-- Code example end -->
+
+<h3 id="extend-template">Extending the twig template</h3>
+<div class="api-docs-basics">
+    <p>
+        In our TWIG template we don't need all the information of the JSON response. We only want to display the total number of packages, the package name and the package repository. If no packages were found, we want to display the text <b>No entries</b>.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+  <code>HelloWorld/resources/views/content/hello.twig</code>
+</div>
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+&lt;h1>Hello World!&lt;/h1>
+
+&lt;p>{{ packagistResult.total }} Results&lt;/p>
+&lt;ul>
+    {% for packagistItem in packagistResult.results %}
+        &lt;li>{{ packagistItem.name }} : {{ packagistItem.repository }}&lt;/li>
+    {% else %}
+        &lt;li>No entries&lt;/li>
+    {% endfor %}
+&lt;/ul>
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: <code>packagistResult</code> is defined in the ContentController and contains the information of our HTTP response.<br />We use the variable <code><span>{</span>{ packagistResult.total }<span>}</span></code> to render the total number of results.<br /><br />In the <code><span>{</span>% for %}</code> loop, we loop over each item in the results array and list each package in the browser with <b>name</b> and <b>repository</b> by using the variables <code><span>{</span>{ packagistResult.name }<span>}</span></code> and <code><span>{</span>{ packagistResult.repository }<span>}</span></code>.<br />The <code><span>{</span>% else %}</code> clause will render <b>No entries</b> if no iteration took place because the sequence was empty.
+</div>
+<!-- Code example end -->
+    
+<h1 id="search-package">Searching for packages</h1>
+<div class="api-docs-basics">
+    <p>
+        Next, we <a href="/dev-doc/basics#provisioning">provision</a> the plugin in <b>Productive</b>. Now, we are able to search for packages via the address bar of the browser. Open your browser and go to <code>www.your-plentystore.com/hello</code>. The template will be rendered and an empty result list will be displayed.
+    </p>
+    <figure>
+        <a data-toggle="modal" data-target="#modal1" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/SDK-empty-result.png" />
+        </a>
+    </figure>
+</div>
+<div class="api-docs-basics">
+    <p>
+        By adding <code>?search=plentymarkets</code> to the URL, we will send an HTTP request to Packagist that returns all packages with the search word <b>plentymarkets</b>. The items of the result will be rendered in the result list. Requests are limited to prevent an overflow of queries.
+    </p>
+    <figure>
+        <a data-toggle="modal" data-target="#modal2" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/SDK-search-results.png" />
+        </a>
+    </figure>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Info</b>: Once you have changed the files in your local <code>HelloWorld</code> folder, the changes must be pushed to GitHub. You also have to update the plugin in your plentymarkets inbox by pulling the changes from GitHub. Finally, you have to provision the plugin again to display the changes in your browser. You can also check out the branch for this <a href="https://github.com/plentymarkets/plugin-hello-world/tree/tutorial/external_SDKs" target="_blank">tutorial</a> on GitHub.
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">External SDK: empty result list</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/SDK-empty-result.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">External SDK: result list with search results</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/SDK-search-results.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

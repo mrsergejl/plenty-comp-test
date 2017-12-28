@@ -1,0 +1,629 @@
+
+
+
+
+
+
+
+
+
+
+
+<div class="docs-api"><hr>
+  <h5 class="docs-api-module-import">Import
+    <h6 class="api-class-headers">
+      import { <span class="codeTag">TerraDataTableComponent</span> } from <span class="codeTag">'@plentymarkets/terra-components';</span>
+    </h6>
+  </h5><h5 class="docs-api-h3">Directives</h5>
+    
+    <h6 class="docs-api-class-named api-class-headers">
+  <span class="codeTag">TerraDataTableComponent</span>
+</h6>
+<p class="docs-api-class-description"></p><div class="docs-api-directive-selectors">
+  <h5 class="docs-api-class-selector-label">Selector</h5>
+  
+   <h6 class="docs-api-class-selector-name codeTag api-class-headers">terra-data-table</h6>
+  
+</div><h5 class="docs-api-h5 docs-api-method-header">Properties</h5>
+  <table class="docs-api-properties-table table table-bordered table-striped table-condensed table-hover">
+    <tr class="docs-api-properties-header-row">
+      <th class="docs-api-properties-th">Type</th>
+      <th class="docs-api-properties-th">Name</th>
+      <th class="docs-api-properties-th">Description</th>
+    </tr>
+    
+      <tr class="docs-api-properties-row">
+    <td>
+        <span class="docs-api-property-type codeTag">string</span>
+    </td>
+    <td class="docs-api-properties-name-cell"><span class="docs-api-input-marker">
+            @Input()</span><span class="docs-api-property-name">
+         inputDataType
+        </span>
+    </td>
+    <td class="docs-api-property-description">
+    </td>
+    </tr>
+
+
+    
+      <tr class="docs-api-properties-row">
+    <td>
+        <span class="docs-api-property-type codeTag">boolean</span>
+    </td>
+    <td class="docs-api-properties-name-cell"><span class="docs-api-input-marker">
+            @Input()</span><span class="docs-api-property-name">
+         inputHasCheckboxes
+        </span>
+    </td>
+    <td class="docs-api-property-description">
+    </td>
+    </tr>
+
+
+    
+      <tr class="docs-api-properties-row">
+    <td>
+        <span class="docs-api-property-type codeTag">boolean</span>
+    </td>
+    <td class="docs-api-properties-name-cell"><span class="docs-api-input-marker">
+            @Input()</span><span class="docs-api-property-name">
+         inputHasInitialLoading
+        </span>
+    </td>
+    <td class="docs-api-property-description">
+    </td>
+    </tr>
+
+
+    
+      <tr class="docs-api-properties-row">
+    <td>
+        <span class="docs-api-property-type codeTag">boolean</span>
+    </td>
+    <td class="docs-api-properties-name-cell"><span class="docs-api-input-marker">
+            @Input()</span><span class="docs-api-property-name">
+         inputHasPager
+        </span>
+    </td>
+    <td class="docs-api-property-description">
+    </td>
+    </tr>
+
+
+    
+      <tr class="docs-api-properties-row">
+    <td>
+        <span class="docs-api-property-type codeTag">Array&lt;TerraButtonInterface&gt;</span>
+    </td>
+    <td class="docs-api-properties-name-cell"><span class="docs-api-input-marker">
+            @Input()</span><span class="docs-api-property-name">
+         inputNoResultButtons
+        </span>
+    </td>
+    <td class="docs-api-property-description">
+    </td>
+    </tr>
+
+
+    
+      <tr class="docs-api-properties-row">
+    <td>
+        <span class="docs-api-property-type codeTag">string</span>
+    </td>
+    <td class="docs-api-properties-name-cell"><span class="docs-api-input-marker">
+            @Input()</span><span class="docs-api-property-name">
+         inputNoResultTextPrimary
+        </span>
+    </td>
+    <td class="docs-api-property-description">
+    </td>
+    </tr>
+
+
+    
+      <tr class="docs-api-properties-row">
+    <td>
+        <span class="docs-api-property-type codeTag">string</span>
+    </td>
+    <td class="docs-api-properties-name-cell"><span class="docs-api-input-marker">
+            @Input()</span><span class="docs-api-property-name">
+         inputNoResultTextSecondary
+        </span>
+    </td>
+    <td class="docs-api-property-description">
+    </td>
+    </tr>
+
+
+    
+      <tr class="docs-api-properties-row">
+    <td>
+        <span class="docs-api-property-type codeTag">S</span>
+    </td>
+    <td class="docs-api-properties-name-cell"><span class="docs-api-input-marker">
+            @Input()</span><span class="docs-api-property-name">
+         inputService
+        </span>
+    </td>
+    <td class="docs-api-property-description">
+    </td>
+    </tr>
+
+
+    
+      <tr class="docs-api-properties-row">
+    <td>
+        <span class="docs-api-property-type codeTag">new EventEmitter&lt;TerraPagerInterface&gt;()</span>
+    </td>
+    <td class="docs-api-properties-name-cell"><span class="docs-api-output-marker">
+            @Output()</span><span class="docs-api-property-name">
+         outputDoPagingEvent
+        </span>
+    </td>
+    <td class="docs-api-property-description">
+    </td>
+    </tr>
+
+
+    
+      <tr class="docs-api-properties-row">
+    <td>
+        <span class="docs-api-property-type codeTag">EventEmitter&lt;TerraDataTableRowInterface&lt;D&gt;&gt;</span>
+    </td>
+    <td class="docs-api-properties-name-cell"><span class="docs-api-output-marker">
+            @Output()</span><span class="docs-api-property-name">
+         outputRowCheckBoxChanged
+        </span>
+    </td>
+    <td class="docs-api-property-description">
+    </td>
+    </tr>
+
+
+    
+      <tr class="docs-api-properties-row">
+    <td>
+        <span class="docs-api-property-type codeTag">TerraCheckboxComponent</span>
+    </td>
+    <td class="docs-api-properties-name-cell"><span class="docs-api-property-name">
+         viewChildHeaderCheckbox
+        </span>
+    </td>
+    <td class="docs-api-property-description">
+    </td>
+    </tr>
+
+
+    
+  </table>
+
+
+<h5 class="docs-api-h5 docs-api-method-header">Methods</h5>
+  
+    <div class ="method-loop-margin">
+        <span><table class="docs-api-method-table">
+    <tr class="docs-api-method-name-row">
+    
+    <tr colspan="2" class="docs-api-method-name-cell">
+        <div class="method_container">
+            <span>public</span>
+            <strong>defaultPagingSize</strong>
+            <span>(</span>
+            <span class="docs-api-method-parameter-name">
+         value:
+          <span class="docs-api-method-parameter-type codeTag">number</span><span></span></span>
+            <span>)</span><span>:</span><span class="codeTag docs-api-method-returns-type"> void</span></div>
+    <tr><span class="docs-api-method-description-cell">
+            
+        </span>
+    </tr><div class="method_description_table">
+        <strong>
+            Parameters
+        </strong>
+        <table class="table table-condensed">
+            
+            <tr>
+                <td class="docs-api-method-parameter-type codeTag">
+                    number
+                </td>
+                <td class="docs-api-method-parameter-name">
+                    value</td>
+                <td class="docs-api-method-parameter-description"></td>
+            </tr>
+            
+        </table>
+    </div></tr>
+    </tr>
+
+</table>
+
+</span>
+    </div>
+    <div class ="method-loop-border"></div>
+  
+  
+    <div class ="method-loop-margin">
+        <span><table class="docs-api-method-table">
+    <tr class="docs-api-method-name-row">
+    
+    <tr colspan="2" class="docs-api-method-name-cell">
+        <div class="method_container">
+            <span>public</span>
+            <strong>deleteRow</strong>
+            <span>(</span>
+            <span class="docs-api-method-parameter-name">
+         rowToDelete:
+          <span class="docs-api-method-parameter-type codeTag">TerraDataTableRowInterface&lt;D&gt;</span><span></span></span>
+            <span>)</span><span>:</span><span class="codeTag docs-api-method-returns-type"> void</span></div>
+    <tr><span class="docs-api-method-description-cell">
+            
+        </span>
+    </tr><div class="method_description_table">
+        <strong>
+            Parameters
+        </strong>
+        <table class="table table-condensed">
+            
+            <tr>
+                <td class="docs-api-method-parameter-type codeTag">
+                    TerraDataTableRowInterface&lt;D&gt;
+                </td>
+                <td class="docs-api-method-parameter-name">
+                    rowToDelete</td>
+                <td class="docs-api-method-parameter-description"></td>
+            </tr>
+            
+        </table>
+    </div></tr>
+    </tr>
+
+</table>
+
+</span>
+    </div>
+    <div class ="method-loop-border"></div>
+  
+  
+    <div class ="method-loop-margin">
+        <span><table class="docs-api-method-table">
+    <tr class="docs-api-method-name-row">
+    
+    <tr colspan="2" class="docs-api-method-name-cell">
+        <div class="method_container">
+            <span>public</span>
+            <strong>doPaging</strong>
+            <span>(</span>
+            <span class="docs-api-method-parameter-name">
+         pagerData:
+          <span class="docs-api-method-parameter-type codeTag">TerraPagerInterface</span><span></span></span>
+            <span>)</span><span>:</span><span class="codeTag docs-api-method-returns-type"> void</span></div>
+    <tr><span class="docs-api-method-description-cell">
+            
+        </span>
+    </tr><div class="method_description_table">
+        <strong>
+            Parameters
+        </strong>
+        <table class="table table-condensed">
+            
+            <tr>
+                <td class="docs-api-method-parameter-type codeTag">
+                    TerraPagerInterface
+                </td>
+                <td class="docs-api-method-parameter-name">
+                    pagerData</td>
+                <td class="docs-api-method-parameter-description"></td>
+            </tr>
+            
+        </table>
+    </div></tr>
+    </tr>
+
+</table>
+
+</span>
+    </div>
+    <div class ="method-loop-border"></div>
+  
+  
+    <div class ="method-loop-margin">
+        <span><table class="docs-api-method-table">
+    <tr class="docs-api-method-name-row">
+    
+    <tr colspan="2" class="docs-api-method-name-cell">
+        <div class="method_container">
+            <span>public</span>
+            <strong>doSearch</strong>
+            <span>(</span>
+            <span class="docs-api-method-parameter-name">
+         restCall:
+          <span class="docs-api-method-parameter-type codeTag">Observable&lt;I&gt;</span><span></span></span>
+            <span>)</span><span>:</span><span class="codeTag docs-api-method-returns-type"> void</span></div>
+    <tr><span class="docs-api-method-description-cell">
+            
+        </span>
+    </tr><div class="method_description_table">
+        <strong>
+            Parameters
+        </strong>
+        <table class="table table-condensed">
+            
+            <tr>
+                <td class="docs-api-method-parameter-type codeTag">
+                    Observable&lt;I&gt;
+                </td>
+                <td class="docs-api-method-parameter-name">
+                    restCall</td>
+                <td class="docs-api-method-parameter-description"></td>
+            </tr>
+            
+        </table>
+    </div></tr>
+    </tr>
+
+</table>
+
+</span>
+    </div>
+    <div class ="method-loop-border"></div>
+  
+  
+    <div class ="method-loop-margin">
+        <span><table class="docs-api-method-table">
+    <tr class="docs-api-method-name-row">
+    
+    <tr colspan="2" class="docs-api-method-name-cell">
+        <div class="method_container">
+            <span>public</span>
+            <strong>getTextAlign</strong>
+            <span>(</span>
+            <span class="docs-api-method-parameter-name">
+         item:
+          <span class="docs-api-method-parameter-type codeTag">TerraDataTableHeaderCellInterface</span><span></span></span>
+            <span>)</span><span>:</span><span class="codeTag docs-api-method-returns-type"> any</span></div>
+    <tr><span class="docs-api-method-description-cell">
+            
+        </span>
+    </tr><div class="method_description_table">
+        <strong>
+            Parameters
+        </strong>
+        <table class="table table-condensed">
+            
+            <tr>
+                <td class="docs-api-method-parameter-type codeTag">
+                    TerraDataTableHeaderCellInterface
+                </td>
+                <td class="docs-api-method-parameter-name">
+                    item</td>
+                <td class="docs-api-method-parameter-description"></td>
+            </tr>
+            
+        </table>
+    </div></tr>
+    </tr>
+
+</table>
+
+</span>
+    </div>
+    <div class ="method-loop-border"></div>
+  
+  
+    <div class ="method-loop-margin">
+        <span><table class="docs-api-method-table">
+    <tr class="docs-api-method-name-row">
+    
+    <tr colspan="2" class="docs-api-method-name-cell">
+        <div class="method_container">
+            <span>public</span>
+            <strong>headerList</strong>
+            <span>(</span>
+            <span class="docs-api-method-parameter-name">
+         value:
+          <span class="docs-api-method-parameter-type codeTag">Array&lt;TerraDataTableHeaderCellInterface&gt;</span><span></span></span>
+            <span>)</span><span>:</span><span class="codeTag docs-api-method-returns-type"> void</span></div>
+    <tr><span class="docs-api-method-description-cell">
+            
+        </span>
+    </tr><div class="method_description_table">
+        <strong>
+            Parameters
+        </strong>
+        <table class="table table-condensed">
+            
+            <tr>
+                <td class="docs-api-method-parameter-type codeTag">
+                    Array&lt;TerraDataTableHeaderCellInterface&gt;
+                </td>
+                <td class="docs-api-method-parameter-name">
+                    value</td>
+                <td class="docs-api-method-parameter-description"></td>
+            </tr>
+            
+        </table>
+    </div></tr>
+    </tr>
+
+</table>
+
+</span>
+    </div>
+    <div class ="method-loop-border"></div>
+  
+  
+    <div class ="method-loop-margin">
+        <span><table class="docs-api-method-table">
+    <tr class="docs-api-method-name-row">
+    
+    <tr colspan="2" class="docs-api-method-name-cell">
+        <div class="method_container">
+            <span>public</span>
+            <strong>onSuccessFunction</strong>
+            <span>(</span>
+            <span class="docs-api-method-parameter-name">
+         value:
+          <span class="docs-api-method-parameter-type codeTag">(res</span><span></span></span>
+            <span>)</span><span>:</span><span class="codeTag docs-api-method-returns-type"> void</span></div>
+    <tr><span class="docs-api-method-description-cell">
+            
+        </span>
+    </tr><div class="method_description_table">
+        <strong>
+            Parameters
+        </strong>
+        <table class="table table-condensed">
+            
+            <tr>
+                <td class="docs-api-method-parameter-type codeTag">
+                    (res
+                </td>
+                <td class="docs-api-method-parameter-name">
+                    value</td>
+                <td class="docs-api-method-parameter-description"></td>
+            </tr>
+            
+        </table>
+    </div></tr>
+    </tr>
+
+</table>
+
+</span>
+    </div>
+    <div class ="method-loop-border"></div>
+  
+  
+    <div class ="method-loop-margin">
+        <span><table class="docs-api-method-table">
+    <tr class="docs-api-method-name-row">
+    
+    <tr colspan="2" class="docs-api-method-name-cell">
+        <div class="method_container">
+            <span>public</span>
+            <strong>pagingData</strong>
+            <span>(</span><span>)</span><span>:</span><span class="codeTag docs-api-method-returns-type"> TerraPagerInterface</span></div>
+    <tr><span class="docs-api-method-description-cell">
+            
+        </span>
+    </tr><br></tr>
+    </tr>
+
+</table>
+
+</span>
+    </div>
+    <div class ="method-loop-border"></div>
+  
+  
+    <div class ="method-loop-margin">
+        <span><table class="docs-api-method-table">
+    <tr class="docs-api-method-name-row">
+    
+    <tr colspan="2" class="docs-api-method-name-cell">
+        <div class="method_container">
+            <span>public</span>
+            <strong>pagingSize</strong>
+            <span>(</span>
+            <span class="docs-api-method-parameter-name">
+         value:
+          <span class="docs-api-method-parameter-type codeTag">Array&lt;TerraSelectBoxValueInterface&gt;</span><span></span></span>
+            <span>)</span><span>:</span><span class="codeTag docs-api-method-returns-type"> void</span></div>
+    <tr><span class="docs-api-method-description-cell">
+            
+        </span>
+    </tr><div class="method_description_table">
+        <strong>
+            Parameters
+        </strong>
+        <table class="table table-condensed">
+            
+            <tr>
+                <td class="docs-api-method-parameter-type codeTag">
+                    Array&lt;TerraSelectBoxValueInterface&gt;
+                </td>
+                <td class="docs-api-method-parameter-name">
+                    value</td>
+                <td class="docs-api-method-parameter-description"></td>
+            </tr>
+            
+        </table>
+    </div></tr>
+    </tr>
+
+</table>
+
+</span>
+    </div>
+    <div class ="method-loop-border"></div>
+  
+  
+    <div class ="method-loop-margin">
+        <span><table class="docs-api-method-table">
+    <tr class="docs-api-method-name-row">
+    
+    <tr colspan="2" class="docs-api-method-name-cell">
+        <div class="method_container">
+            <span>public</span>
+            <strong>rowList</strong>
+            <span>(</span>
+            <span class="docs-api-method-parameter-name">
+         value:
+          <span class="docs-api-method-parameter-type codeTag">Array&lt;TerraDataTableRowInterface&lt;D&gt;&gt;</span><span></span></span>
+            <span>)</span><span>:</span><span class="codeTag docs-api-method-returns-type"> void</span></div>
+    <tr><span class="docs-api-method-description-cell">
+            
+        </span>
+    </tr><div class="method_description_table">
+        <strong>
+            Parameters
+        </strong>
+        <table class="table table-condensed">
+            
+            <tr>
+                <td class="docs-api-method-parameter-type codeTag">
+                    Array&lt;TerraDataTableRowInterface&lt;D&gt;&gt;
+                </td>
+                <td class="docs-api-method-parameter-name">
+                    value</td>
+                <td class="docs-api-method-parameter-description"></td>
+            </tr>
+            
+        </table>
+    </div></tr>
+    </tr>
+
+</table>
+
+</span>
+    </div>
+    <div class ="method-loop-border"></div>
+  
+  
+    <div class ="method-loop-margin">
+        <span><table class="docs-api-method-table">
+    <tr class="docs-api-method-name-row">
+    
+    <tr colspan="2" class="docs-api-method-name-cell">
+        <div class="method_container">
+            <span>public</span>
+            <strong>selectedRowList</strong>
+            <span>(</span><span>)</span><span>:</span><span class="codeTag docs-api-method-returns-type"> Array&lt;TerraDataTableRowInterface&lt;D&gt;&gt;</span></div>
+    <tr><span class="docs-api-method-description-cell">
+            
+        </span>
+    </tr><br></tr>
+    </tr>
+
+</table>
+
+</span>
+    </div>
+    <div class ="method-loop-border"></div>
+  
+  
+
+
+
+    </div>

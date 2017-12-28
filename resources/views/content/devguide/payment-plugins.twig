@@ -1,0 +1,1730 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="payment-introduction">Introducing payment plugins</h1>
+<div class="api-docs-basics">
+    <p>
+        On this page, you will find an overview of relevant information about payment plugins. In the first chapter, we will explain the workflow and interaction of payment plugins with the plentymarkets <a href="https://github.com/plentymarkets/plugin-ceres" target="_blank">Ceres</a> and <a href="https://github.com/plentymarkets/plugin-io" target="_blank">IO</a> plugins. In the second chapter, you will find a short description for each plugin feature that you can use to create your own payment plugins.
+    </p>
+</div>
+
+<h3 id="payment-further-reading">Further reading</h3>
+
+<div class="api-docs-basics">
+    <ul>
+        <li>
+            <a href="/dev-doc/basics#plugin-structure">Plugin structure</a>
+        </li>
+        <li>
+            <a href="/tutorials/payment">Payment plugin tutorial</a>
+        </li>
+        <li>
+            <a href="/api-doc/Payment">Payment interface</a>
+        </li>
+        <li>
+            <a href="/rest-doc/payment">Payment REST routes</a>
+        </li>
+        <li>
+            Get the complete code of the PayPal plugin developed by plentymarkets:
+        </li>
+    </ul>
+</div>
+
+<div class="connect">
+    <div class="btn btn-primary btn-block btn-github" title="Clone or download this plentymarkets plugin on Github.">
+        <a href="https://github.com/plentymarkets/plugin-payment-paypal" target="_blank" role="button"><img class="img-responsive pull-left" src="{{ plugin_path('PlentyPluginShowcase') }}/images/github-logo.png"  style="width: 40px;"/><span>Download on GitHub</span></a>
+    </div>
+</div>
+
+<h1 id="payment-plugin-workflow">Payment plugin workflow</h1>
+<div class="api-docs-basics">
+    <p>
+        The flowchart below describes the general workflow of payment plugins and the interaction of payment and template plugins.
+    </p>
+    <figure>
+        <a data-toggle="modal" data-target="#modal2" href="#">
+            <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/payment-plugin-flowchart.png" />
+        </a>
+    </figure>
+</div>
+
+<h2 id="payment-prepare-payment">Getting the payment method content</h2>
+<div class="api-docs-basics">
+    <p>
+        Active payment plugins will be displayed in the checkout of the template plugin. When the customer clicks on the <b>Order now</b> button, the <code>GetPaymentMethodContent</code> event is triggered. Depending on the content type the following results are possible:
+    </p>
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td><b>errorCode</b></td>
+            <td>The payment will not be prepared. An error message will be displayed on the <b>Checkout</b> page.</td>
+        </tr>
+        <tr>
+            <td><b>continue</b></td>
+            <td>The payment will be processed by the <b>IO</b> plugin. Payment plugins that do not require specific code for displaying own content in the template or redirecting to a payment provider can use this type.</td>
+        </tr>
+        <tr>
+            <td><b>externalContentUrl</b>; <br /><b>htmlContent</b></td>
+            <td>Payment plugins with specific code for displaying own content in the template can use these types to show either HTML content or external content by defining an external content URL. A pop-up window will be displayed on the <b>Checkout</b> page. The customer must click <b>Confirm</b> to continue the payment process.</td>
+        </tr>
+        <tr>
+            <td><b>redirectUrl</b></td>
+            <td>The customer will be forwarded to the payment provider. After entering the required data on the payment provider page, the customer will be directed back and the payment plugin continues the payment process with the entered payment data.</td>
+        </tr>
+        </tbody>
+
+    </table>
+    </div>
+
+<h2 id="payment-create-order">Creating the order</h2>
+<div class="api-docs-basics">
+    <p>The order will be created. This can be done in two different ways:</p>
+    <ul>
+        <li>
+            <b>IO:</b> An order will be created by the <b>IO</b> plugin using the <code>place-order</code> URL. Then, the <code>executePayment</code> event is triggered in the <b>IO</b> plugin. If no order is created, an error message will be displayed on the <b>Checkout</b> page.
+        </li>
+        <li>
+            <b>Payment plugin:</b> An order will be created by the payment plugin. Then, the <code>execute-payment</code> URL is used to trigger the <code>executePayment</code> event in the payment plugin. If no order is created, an error message will be displayed on the <b>Checkout</b> page.
+        </li>
+    </ul>
+</div>
+
+<h2 id="payment-execute-payment">Executing the payment</h2>
+<div class="api-docs-basics">
+    <p>The <code>executePayment</code> event is triggered. The payment plugin checks whether the payment is executed. If the payment is executed, the customer will be forwarded to the <b>Confirmation</b> page displaying an overview of the order. If no payment is executed, the customer will also be forwarded to the <b>Confirmation</b> page, but an <b>Order not paid</b> note will be displayed.
+    </p>
+</div>
+
+
+<h1 id="payment-features">Payment plugin features</h1>
+<div class="api-docs-basics">
+    <p>
+        Find detailed information about payment plugin features below. The <a href="https://github.com/plentymarkets/plugin-payment-paypal" target="_blank">PayPal plugin</a> developed by plentymarkets is used as a reference for explaining payment plugin features. The <b>PayPal</b> plugin can be the starting point for developing other payment plugins.
+    </p>
+</div>
+
+<h2 id="payment-method-registration">Registering payment methods</h2>
+<div class="api-docs-basics">
+    <p>
+        In order to make a payment method available for a plentymarkets system, the payment method must be registered by the plugin. This is done in the ServiceProvider that is saved in the <b>src/providers</b> folder. The ServiceProvider itself is specified in the <code>plugin.json</code> file. In the ServiceProvider a payment method is registered with the <code>boot()</code> method. Multiple payment methods can be registered that way. A payment method is registered with a unique key consisting of the <b>PluginKey</b> and the <b>PaymentKey</b>. Registering a payment method is always based on one or multiple events. When the event is triggered, the payment method is loaded.
+    </p>
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/providers/PayPalServiceProvider.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+...
+
+/**
+ * Boot additional PayPal services
+ *
+ * @param Dispatcher               $eventDispatcher
+ * @param PaymentHelper            $paymentHelper
+ * @param PaymentService           $paymentService
+ * @param BasketRepositoryContract $basket
+ * @param PaymentMethodContainer   $payContainer
+ * @param EventProceduresService   $eventProceduresService
+ */
+  public function boot( Dispatcher $eventDispatcher, PaymentHelper $paymentHelper, PaymentService $paymentService,
+                          BasketRepositoryContract $basket, PaymentMethodContainer $payContainer, EventProceduresService $eventProceduresService)
+  {
+        // Register the PayPal Express payment method in the payment method container
+        $payContainer->register('plentyPayPal::PAYPALEXPRESS', PayPalExpressPaymentMethod::class,
+                                [ AfterBasketChanged::class, AfterBasketItemAdd::class, AfterBasketCreate::class ]);
+        // Register the PayPal payment method in the payment method container
+        $payContainer->register('plentyPayPal::PAYPAL', PayPalPaymentMethod::class,
+                                [ AfterBasketChanged::class, AfterBasketItemAdd::class, AfterBasketCreate::class ]);
+
+...
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In line 20, the PayPal payment method is registered. The unique key of this payment method is <code>plentyPayPal::PAYPAL</code>. The next element in this line of code is <code>PayPalPaymentMethod::class</code>, a reference to the <code>PayPalPaymentMethod</code> class. This class can be found in the <code>PayPalPaymentMethod.php</code> file in the <b>src/methods</b> folder. An array of events is also part of the <code>register()</code> method. The payment method is loaded, when an event is triggered.
+</div>
+
+<h2 id="payment-method-values">Defining payment methods</h2>
+
+<div class="api-docs-basics">
+    <p>
+        Every payment method that was registered as described above can provide different values for the template. These values can either be generated by functions or read from the configuration of the plugin. This information is saved in the <code>PayPalPaymentMethod.php</code> file in the <b>src/methods</b> folder. The following functions are currently available:
+    </p>
+    <ul>
+        <li>
+            <code>isActive():bool</code>
+        </li>
+        <li>
+            <code>isSelectable():bool</code>
+        </li>
+        <li>
+            <code>isExpressCheckout():bool</code>
+        </li>
+        <li>
+            <code>getName():string</code>
+        </li>
+        <li>
+            <code>getFee():float</code>
+        </li>
+        <li>
+            <code>getIcon():string</code>
+        </li>
+        <li>
+            <code>getDescription():string</code>
+        </li>
+        <li>
+            <code>getSourceUrl():string</code>
+        </li>
+    </ul>
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/methods/PayPalPaymentMethod.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace PayPal\Methods;
+
+use Plenty\Modules\Account\Contact\Contracts\ContactRepositoryContract;
+use Plenty\Modules\Basket\Contracts\BasketRepositoryContract;
+use Plenty\Modules\Payment\Method\Contracts\PaymentMethodService;
+use Plenty\Plugin\ConfigRepository;
+
+/**
+ * Class PayPalPaymentMethod
+ * @package PayPal\Methods
+ */
+class PayPalPaymentMethod extends PaymentMethodService
+{
+
+    ...
+
+    /**
+     * Check whether the plugin is active. Active plugins are displayed in the list of payment methods.
+     *
+     * @return bool
+     */
+    public function isActive()
+    {
+        return true;
+    }
+    /**
+     * Check whether the plugin is selectable. If the plugin is active and not selectable, it is displayed, but cannot be chosen as payment method. Default is true.
+     *
+     * @return bool
+     */
+    public function isSelectable()
+    {
+        return true;
+    }
+    /**
+     * Check whether the plugin can be used as Express Checkout. Default is false.
+     *
+     * @return bool
+     */
+    public function isExpressCheckout()
+    {
+        return false;
+    }
+
+    /**
+     * Get the name of the plugin
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        $name = $this->configRepo->get('PayPal.name');
+        if(!strlen($name))
+        {
+            $name = 'PayPal';
+        }
+        return $name;
+    }
+
+    /**
+     * Get additional costs for PayPal. Additional costs can be entered in the config.json.
+     *
+     * @return float
+     */
+    public function getFee()
+    {
+        $fee = $this->configRepo->get('PayPal.fee');
+        if(strlen($fee))
+        {
+            $fee = str_replace(',', '.', $fee);
+        }
+        else
+        {
+            $fee = 0;
+        }
+        return (float)$fee;
+    }
+
+    /**
+     * Get the path of the icon
+     *
+     * @return string
+     */
+    public function getIcon()
+    {
+        $icon = 'layout/plugins/production/paypal/images/logos/de-pp-logo.png';
+        return $icon;
+    }
+
+    /**
+     * Get the description of the payment method. The description can be entered in the back end UI of the plugin and is limited to 150 characters.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        /** @var FrontendSessionStorageFactoryContract $session */
+        $session = pluginApp(FrontendSessionStorageFactoryContract::class);
+        $lang = $session->getLocaleSettings()->language;
+
+        if( array_key_exists('language', $this->paymentService->settings) &&
+            array_key_exists($lang, $this->paymentService->settings['language']) &&
+            array_key_exists('description', $this->paymentService->settings['language'][$lang]))
+        {
+            return $this->paymentService->settings['language'][$lang]['description'];
+        }
+        return '';
+    }
+
+    /**
+     * Get the details page for the payment method. This can be a category page or an external page, e.g., the homepage of the payment provider.
+     *
+     * @return string
+     */
+    public function getSourceUrl()
+    {
+        /** @var FrontendSessionStorageFactoryContract $session */
+        $session = pluginApp(FrontendSessionStorageFactoryContract::class);
+        $lang = $session->getLocaleSettings()->language;
+
+        if( array_key_exists('infoPageType', $this->paymentService->settings))
+        {
+            if( array_key_exists('language', $this->paymentService->settings) &&
+                array_key_exists($lang, $this->paymentService->settings['language']))
+            {
+                switch ($this->paymentService->settings['infoPageType'])
+                {
+                    case 1:
+                        if(array_key_exists('internalInfoPage', $this->paymentService->settings['language'][$lang]))
+                        {
+                            // internal
+                            $categoryId = (int) $this->paymentService->settings['language'][$lang]['internalInfoPage'];
+                            if($categoryId  > 0)
+                            {
+                                /** @var CategoryRepositoryContract $categoryContract */
+                                $categoryContract = pluginApp(CategoryRepositoryContract::class);
+                                return $categoryContract->getUrl($categoryId, $lang);
+                            }
+                        }
+                        return '';
+                    case 2:
+                        if(array_key_exists('externalInfoPage', $this->paymentService->settings['language'][$lang]))
+                        {
+                            return $this->paymentService->settings['language'][$lang]['externalInfoPage'];
+                        }
+                        return '';
+                    default:
+                        return '';
+                }
+            }
+        }
+        return '';
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: As you can see in the code example, all functions are used in the <code>PayPalPaymentMethod</code> class. For example, in line 81, the description information entered and saved in the back end UI is made available for the template.<br />If a payment method is to be used solely as Express Checkout and not be displayed in the list of payment methods, set <code>isExpressCheckout</code> to true and <code>isActive</code> to false.
+</div>
+
+<h2 id="payment-events">Registering event listener and events</h2>
+
+<div class="api-docs-basics">
+    <p>
+        In order to respond to different events, a listener for the respective events must be registered. The listener is registered in the <code>boot()</code> method of the ServiceProvider. Every event to be responded to must be registered here, too.
+    </p>
+
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/providers/PayPalServiceProvider.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+...
+
+// Listen for the event that gets the payment method content
+$eventDispatcher->listen(GetPaymentMethodContent::class,
+                   function(GetPaymentMethodContent $event) use( $paymentHelper, $basket, $paymentService)
+                   {
+                        if($event->getMop() == $paymentHelper->getPayPalMopId())
+                        {
+                              $basket = $basket->load();
+                              $event->setValue($paymentService->getPaymentContent($basket));
+                              $event->setType( $paymentService->getReturnType());
+                        }
+                   });
+
+// Listen for the event that executes the payment
+$eventDispatcher->listen(ExecutePayment::class,
+                  function(ExecutePayment $event) use ( $paymentHelper, $paymentService)
+                  {
+                        if($event->getMop() == $paymentHelper->getPayPalMopId())
+                        {
+                              // Execute the payment
+                              $payPalPayment = $paymentService->executePayment();
+                              // Check whether the PayPal payment has been executed successfully
+                              if($paymentService->getReturnType() != 'errorCode')
+                              {
+                                    // Create a payment in plentymarkets with the PayPal payment data
+                                    $plentyPayment = $paymentHelper->createPlentyPaymentFromJson($payPalPayment);
+                                    if($plentyPayment instanceof Payment)
+                                    {
+                                          // Assign the payment to an order in plentymarkets
+                                          $paymentHelper->assignPlentyPaymentToPlentyOrder($plentyPayment, $event->getOrderId());
+                                          $event->setType('success');
+                                          $event->setValue('The payment has been executed successfully!');
+                                    }
+                              }
+                              else
+                              {
+                                  $event->setType('error');
+                                  $event->setValue('The PayPal payment could not be executed!');
+                              }
+                        }
+                  });
+
+...
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In the <code>boot()</code> method, the <code>$eventDispatcher</code> is registered. This is our event listener. It used the <code>listen()</code> method, to register the necessary events. In the PayPal plugin, two events are specified.<br />The first event checks if the payment method is <b>PayPal</b> and then loads the necessary content by using the <code>getPaymentContent()</code> and <code>getReturnType()</code> methods that are part of the <code>PaymentService</code> class.<br />The second event is for executing the payment and assigning the payment to an order in plentymarkets.
+</div>
+
+<h2 id="payment-routes">Registering routes</h2>
+
+<div class="api-docs-basics">
+    <p>
+        A plugin can register its own routes that can be used to map specific functions. These routes are used, e.g. as end points for payment confirmations or other notifications.
+    </p>
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/providers/PayPalRouteServiceProvider.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace PayPal\Providers;
+
+use Plenty\Plugin\RouteServiceProvider;
+use Plenty\Plugin\Routing\Router;
+
+/**
+ * Class PayPalRouteServiceProvider
+ * @package PayPal\Providers
+ */
+class PayPalRouteServiceProvider extends RouteServiceProvider
+{
+    /**
+     * @param Router $router
+     */
+    public function map(Router $router)
+    {
+        // Get the PayPal success and cancellation URLs
+        $router->get('payPal/checkoutSuccess', 'PayPal\Controllers\PaymentController@checkoutSuccess');
+        $router->get('payPal/checkoutCancel' , 'PayPal\Controllers\PaymentController@checkoutCancel' );
+        $router->get('payPal/expressCheckout', 'PayPal\Controllers\PaymentController@expressCheckout');
+        $router->post('payPal/notification'  , 'PayPal\Controllers\PaymentNotificationController@handleNotification');
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In the code example, routes for success and cancellation URLs are registered in the RouteServiceProvider. Additionally, routes for the express checkout and for posting payment notifications are registered
+</div>
+
+<h2 id="payment-template-functions">Using template functions</h2>
+
+<div class="api-docs-basics">
+    <p>
+        In order to load particular content into the layout of the online store, the <code>paymentContent</code> is used and filled by the plugin. This is done with the help of an event. The plugin must respond to the event and the event will provide the respective content. The <code>GetPaymentMethodContent</code> event registered in the ServiceProvider must set the content and the content type. The following <code>paymentContent</code> types are available:
+    </p>
+    <ul>
+        <li>
+            <code>htmlContent</code>
+        </li>
+        <li>
+            <code>externalContentUrl</code>
+        </li>
+        <li>
+            <code>redirectUrl</code>
+        </li>
+        <li>
+            <code>errorCode</code>
+        </li>
+        <li>
+            <code>continue</code>
+        </li>
+    </ul>
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/services/PaymentService.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+...
+
+/**
+ * Get the PayPal payment content
+ *
+ * @param Basket $basket
+ * @return string
+ */
+public function getPaymentContent(Basket $basket, $mode = 'paypal'):string
+{
+
+...
+
+    // Get the content of the PayPal container
+    $paymentContent = '';
+    $links = $resultJson->links;
+    if(is_array($links))
+    {
+        foreach($links as $key => $value)
+        {
+            // Get the redirect URLs for the content
+            if($value->method == 'REDIRECT')
+            {
+                $paymentContent = $value->href;
+                $this->returnType = 'redirectUrl';
+            }
+        }
+    }
+    // Check whether the content is set. Else, return an error code.
+    if(!strlen($paymentContent))
+    {
+        $this->returnType = 'errorCode';
+        return 'An unknown error occurred, please try again.';
+    }
+    return $paymentContent;
+}
+
+...
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In the code example, the return type <code>redirectUrl</code> is set. The customer will be forwarded to the PayPal page in the payment process.
+</div>
+
+<h2 id="payment-create-payments">Creating payments</h2>
+
+<div class="api-docs-basics">
+    <p>
+        An order should only be further processed in the plentymarkets system, if a payment is assigned to the order. Therefore the plugin must ensure that a payment is created and assigned. Depending on the payment method, assigning a payment can be done right after placing an order, e.g. by responding to the respective event. Another possibility to create a payment is by calling a certain route. The payment must be structured according to the <a href="/api-doc/Payment">Payment model</a>.
+    </p>
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/helper/PaymentHelper.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+...
+
+/**
+ * Create a payment in plentymarkets from the JSON data
+ *
+ * @param string $json
+ * @return Payment
+ */
+public function createPlentyPaymentFromJson(string $json)
+{
+    $payPalPayment = json_decode($json);
+    $paymentData = array();
+    // Set the payment data
+    $paymentData['mopId']           = (int)$this->getPayPalMopId();
+    $paymentData['transactionType'] = 2;
+    $paymentData['status']          = $this->mapStatus($payPalPayment->status);
+    $paymentData['currency']        = $payPalPayment->currency;
+    $paymentData['amount']          = $payPalPayment->amount;
+    $paymentData['receivedAt']       = $payPalPayment->entryDate;
+    $payment = $this->paymentRepository->createPayment($paymentData);
+    /**
+     * Add payment property with type booking text
+     */
+    $this->addPaymentProperty($payment->id, array('typeId'=>3, 'value'=>'PayPalPayID: '.(string)$payPalPayment->bookingText));
+    /**
+     * Add payment property with type origin
+     */
+    $originConstants        = $this->paymentRepository->getOriginConstants();
+    $paymentPropertyValue      = '';
+    if(!is_null($originConstants) && is_array($originConstants))
+    {
+        $paymentPropertyValue = (string)$originConstants['plugin'];
+    }
+    $this->addPaymentProperty($payment->id, array('typeId'=>23, 'value'=>$paymentPropertyValue));
+    return $payment;
+}
+
+...
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: As an example, a payment is created in the <code>createPlentyPayment</code> method of the PayPal plugin.
+</div>
+
+<h2 id="payment-assign-order">Assigning payments to orders</h2>
+
+<div class="api-docs-basics">
+    <p>
+        After creating a payment, the payment can be assigned to an order. For this purpose a relation is created in the <code>assignPlentyPaymentToPlentyOrder</code> method that uses the <a href="/api-doc/Order">OrderRepositoryContract</a>.
+    </p>
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/helper/PaymentHelper.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+...
+
+/**
+ * Assign the payment to an order in plentymarkets
+ *
+ * @param Payment $payment
+ * @param int $orderId
+ */
+public function assignPlentyPaymentToPlentyOrder(Payment $payment, int $orderId)
+{
+    // Get the order by the given order ID
+    $order = $this->orderRepo->findOrderById($orderId);
+    // Check whether the order truly exists in plentymarkets
+    if(!is_null($order) && $order instanceof Order)
+    {
+        // Assign the given payment to the given order
+        $this->paymentOrderRelationRepo->createOrderRelation($payment, $order);
+    }
+}
+
+...
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<h2 id="payment-reject-payment">Rejecting payments</h2>
+
+<div class="api-docs-basics">
+    <p>
+        When a payment provider rejects a payment, this information must be saved in the payment. This is done with the help of the payment status. The payment status can be changed. The plugin can change the status of a payment via a predefined route. For this purpose, the <a href="/api-doc/Payment">PaymentRepositoryContract</a> with the <code>updatePayment</code> method must be used.
+    </p>
+</div>
+
+<!--div class="route-container">
+    <code>PayPal/src/helper/PaymentHelper.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums">
+...
+
+// TODO
+
+...
+</pre>
+</div-->
+
+<h2 id="payment-addresses">Retrieving addresses from the payment provider</h2>
+
+<div class="api-docs-basics">
+    <p>
+        Provided that the payment method requires the addresses from the payment provider, a new <b>Contact</b> must be created in the online store as soon as the addresses are available. To do so, the <a href="/api-doc/Account">ContactRepositoryContract</a> must be used in the <code>ContactService.php</code> file.
+    </p>
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/services/ContactService.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace PayPal\Services;
+
+use Plenty\Modules\Account\Contact\Contracts\ContactRepositoryContract;
+use Plenty\Modules\Account\Contact\Models\Contact;
+
+/**
+ * Class ContactService
+ * @package PayPal\Services
+ */
+class ContactService
+{
+    /**
+     * @var ContactRepositoryContract
+     */
+    private $contactRepository;
+    /**
+     * ContactService constructor.
+     * @param ContactRepositoryContract $contactRepository
+     */
+    public function __construct(ContactRepositoryContract $contactRepository)
+    {
+        $this->contactRepository = $contactRepository;
+    }
+
+    /**
+     * Get a contact by ID
+     *
+     * @param int $contactId
+     * @return Contact
+     */
+    public function getContactById(int $contactId):Contact
+    {
+        return $this->contactRepository->findContactById($contactId);
+    }
+
+    /**
+     * Create a contact
+     *
+     * @param array $contact
+     * @return Contact
+     */
+    public function createContact(array $contact):Contact
+    {
+        return $this->contactRepository->createContact($contact);
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The <code>getContactById()</code> and <code>createContact</code> methods are contained in the <code>ContactService</code> class.
+</div>
+
+<div class="api-docs-basics">
+    <p>
+        A <b>Contact</b> must be structured according to the <a href="/api-doc/Account#contact_contact_account">Contact</a> model. Any number of addresses can be saved in the <b>Contact</b>. Addresses are divided into two types - delivery addresses and invoice addresses. Both types must be structured according to the <a href="/api-doc/Account#address_address_account">Address</a> model.
+    </p>
+</div>
+
+<h2 id="payment-map-status">Mapping payment statuses</h2>
+
+<div class="api-docs-basics">
+    <p>
+        If you want to use the payment statuses of a payment provider and map them to the plentymarkets payment statuses, you can use the <code>mapStatus</code> method.
+    </p>
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/helper/PaymentHelper.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+...
+
+/**
+ * Map the PayPal payment status to the plentymarkets payment status
+ *
+ * @param string $status
+ * @return int
+ *
+ */
+public function mapStatus(string $status)
+{
+    if(!is_array($this->statusMap) || count($this->statusMap) <= 0)
+    {
+        $statusConstants = $this->paymentRepository->getStatusConstants();
+        if(!is_null($statusConstants) && is_array($statusConstants))
+        {
+            $this->statusMap['created']               = $statusConstants['captured'];
+            $this->statusMap['approved']              = $statusConstants['approved'];
+            $this->statusMap['failed']                = $statusConstants['refused'];
+            $this->statusMap['partially_completed']   = $statusConstants['partially_captured'];
+            $this->statusMap['completed']             = $statusConstants['captured'];
+            $this->statusMap['in_progress']           = $statusConstants['awaiting_approval'];
+            $this->statusMap['pending']               = $statusConstants['awaiting_approval'];
+            $this->statusMap['refunded']              = $statusConstants['refunded'];
+            $this->statusMap['denied']                = $statusConstants['refused'];
+        }
+    }
+    return (int)$this->statusMap[$status];
+}
+
+...
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In the code example, the payment statuses of PayPal are mapped to the equivalent statuses used by plentymarkets.
+</div>
+
+<h2 id="payment-content-containers">Providing content for template containers</h2>
+
+<div class="api-docs-basics">
+    <p>
+        Buttons, logos or other content to be displayed in the template can be made available for template plugins with the help data providers. A data provider is the source for content. A content container in the layout is the target. If a data provider is linked to a content container, the content provided by the data provider is displayed in the content container.
+    </p>
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/providers/PayPalExpressButtonDataProvider.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace PayPal\Providers;
+
+use Plenty\Plugin\Templates\Twig;
+
+/**
+ * Class PayPalExpressButtonDataProvider
+ * @package PayPal\Providers
+ */
+class PayPalExpressButtonDataProvider
+{
+    /**
+     * @param Twig $twig
+     * @param $args
+     * @return string
+     */
+    public function call( Twig $twig, $args)
+    {
+        return $twig->render('PayPal::PayPalExpress.PayPalExpressButton');
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The <code>PayPalExpressButtonDataProvider</code> class renders the PayPal Express button. The button is saved in the <b>resources/images/buttons</b> folder.
+</div>
+
+<h3 id="payment-content-container-gui">Linking content to containers</h3>
+<div class="api-docs-basics">
+    <p>
+        In the plentymarkets back end, you can link the content to one or multiple containers. To do so, go to <b>Plugins » Content</b> and activate the content in the desired container. In the image below, the PayPal Express button is linked to the <code>AfterCheckoutButton</code> container.
+    </p>
+    <figure>
+        <a data-toggle="modal" data-target="#modal3" href="#">
+            <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/payment-content-container-gui.png" />
+        </a>
+    </figure>
+    </div>
+
+<h3 id="payment-button-template">Displaying the content in the online store</h3>
+<div class="api-docs-basics">
+    <p>
+        A large number of content containers are available in different views of the template, e.g. the shopping cart preview, the item view, the checkout etc. Let's have a look at how these containers are implemented in the template.
+    </p>
+</div>
+
+<div class="route-container">
+    <code>Ceres/resources/views/Basket/Components/BasketPreview.twig</code>
+</div>
+
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+&lt;div class="col-xs-12 col-sm-6">
+{{ LayoutContainer.show("Ceres::BasketPreview.BeforeCheckoutButton") }}
+    &lt;a v-resource-if:user="isLoggedIn" href="/checkout" class="btn btn-primary btn-block checkOutBtn" title="{{ trans("Ceres::Ceres.basketToCheckout") }}">
+    {{ trans("Ceres::Ceres.basketToCheckout") }} &lt;i class="fa fa-arrow-right" aria-hidden="true">&lt;/i>
+    &lt;/a>
+    &lt;a v-resource-if:user="!isLoggedIn" href="/login" class="btn btn-primary btn-block checkOutBtn" title="{{ trans("Ceres::Ceres.basketToCheckout") }}">
+    {{ trans("Ceres::Ceres.basketToCheckout") }} &lt;i class="fa fa-arrow-right" aria-hidden="true">&lt;/i>
+    &lt;/a>
+    {{ LayoutContainer.show("Ceres::BasketPreview.AfterCheckoutButton") }}
+&lt;/div>
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In line 9, you can see the Twig function <code>LayoutContainer.show()</code>. The PayPal Express button from the PayPal plugin will be displayed with the help of this function.
+</div>
+
+<div class="api-docs-basics">
+    <p>
+        In the Ceres template, the PayPal Express button will be displayed below the normal <b>Go to checkout</b> button.
+    </p>
+    <figure>
+        <a data-toggle="modal" data-target="#modal4" href="#">
+            <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/paypal-express-button-preview.png" />
+        </a>
+    </figure>
+</div>
+
+<h2 id="payment-change-method">Changing the payment method subsequently</h2>
+<div class="api-docs-basics">
+    <p>Every payment plugin can specify whether you can switch the payment method in the <b>My account</b> area after the order has been placed. For this purpose, the two methods <code>isSwitchableTo</code> and <code>isSwitchableFrom</code> can be used.</p>
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/Methods/PayPalPaymentMethod.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace PayPal\Methods;
+
+use PayPal\Services\PaymentService;
+use Plenty\Modules\Basket\Contracts\BasketRepositoryContract;
+use Plenty\Modules\Payment\Method\Contracts\PaymentMethodService;
+use Plenty\Plugin\ConfigRepository;
+use Plenty\Modules\Frontend\Contracts\Checkout;
+use Plenty\Plugin\Application;
+
+...
+
+    /**
+     * Check if it is allowed to switch to this payment method
+     *
+     * @param int $orderId
+     * @return bool
+     */
+    public function isSwitchableTo($orderId)
+    {
+        return false;
+    }
+
+    /**
+     * Check if it is allowed to switch from this payment method
+     *
+     * @param int $orderId
+     * @return bool
+     */
+    public function isSwitchableFrom($orderId)
+    {
+        return true;
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In the example the method <code>isSwitchableTo</code> is set to <code>false</code> for the order with the respective <code>$orderId</code> which means that this payment method will not appear in the list of payment methods the customer will be able to switch to. The second method <code>isSwitchableFrom</code> returns <code>true</code> and enables the customer to switch from this payment method to another payment method even after purchasing the product in the online store.<!-- TODO: Add reference to configuration when functionality was implemented -->
+</div>
+
+<div class="api-docs-basics">
+    <p>A button will be displayed in the <b>My account</b> area of Ceres next to the respective order in the order history. When clicking the button <b>Change payment method</b>, a list of available payment methods will be shown. When the customer clicks the button a REST call is sent and triggers a method in the <code>OrderHistory.twig</code> template.</p>
+</div>
+
+<div class="route-container">
+    <code>Ceres/resources/views/MyAccount/Components/OrderHistory.twig</code>
+</div>
+
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+...
+
+{{ component( "Ceres::MyAccount.Components.ChangePaymentMethod" ) }}
+
+...
+
+                                            &lt;change-payment-method  template="#vue-change-payment-method"
+                                                                    :current-order="{{ entry | json_encode() }}"
+                                                                    :change-possible="{{ services.order.allowPaymentMethodSwitchFrom(paymentMethodId, entry.order.id) | json_encode() }}"
+                                                                    :allowed-payment-methods="{{ services.order.getPaymentMethodListForSwitch(paymentMethodId, entry.order.id) | json_encode() }}">
+                                            &lt;/change-payment-method>
+
+...
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The <code>ChangePaymentMethod</code> component is used in this template. The code <code><span>{</span>{ services.order.getPaymentMethodListForSwitch(paymentMethodId, entry.order.id) | json_encode() }}</code> accesses a method for getting a list of payment methods.
+</div>
+
+
+<div class="api-docs-basics">
+    <p>
+        The <code>getPaymentMethodListForSwitch</code> method is located in the file <code>OrderService.php</code> of the plugin IO. Here, a new plugin interface is used:</p>
+</div>
+
+<div class="route-container">
+    <code>IO/src/Services/OrderService.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace IO\Services;
+
+use IO\Models\LocalizedOrder;
+use Plenty\Modules\Frontend\PaymentMethod\Contracts\FrontendPaymentMethodRepositoryContract;
+use Plenty\Modules\Order\Contracts\OrderRepositoryContract;
+use Plenty\Modules\Order\Property\Contracts\OrderPropertyRepositoryContract;
+use Plenty\Modules\Order\Property\Models\OrderProperty;
+use Plenty\Modules\Order\Property\Models\OrderPropertyType;
+use Plenty\Modules\Payment\Method\Contracts\PaymentMethodRepositoryContract;
+use IO\Builder\Order\OrderBuilder;
+use IO\Builder\Order\OrderType;
+use IO\Builder\Order\OrderOptionSubType;
+use IO\Builder\Order\AddressType;
+use IO\Constants\OrderStatusTexts;
+use Plenty\Repositories\Models\PaginatedResult;
+use IO\Constants\SessionStorageKeys;
+
+...
+
+    /**
+     * List all payment methods available for switch in MyAccount
+     * @param int $currentPaymentMethodId
+     * @param int $orderId
+     * @return \Plenty\Modules\Payment\Method\Models\PaymentMethod[]
+     */
+    public function getPaymentMethodListForSwitch($currentPaymentMethodId = 0, $orderId = null)
+    {
+        return $this->frontendPaymentMethodRepository->getCurrentPaymentMethodsListForSwitch($currentPaymentMethodId, $orderId);
+    }
+
+...
+
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The plugin interface <code>FrontendPaymentMethodRepositoryContract</code> is used in this service. This interface enables us to get a list of payment methods to which the customer can switch from the current payment method. This interface doesn't use the data stored in the session.
+</div>
+
+<div class="api-docs-basics">
+    <p>As mentioned before, a Vue component is used for changing the payment method. This component consists of a Twig template and a Vue.js file.</p>
+</div>
+
+<div class="route-container">
+    <code>Ceres/resources/views/MyAccount/Components/ChangePaymentMethod.twig</code>
+</div>
+
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+&lt;script type="x/template" id="vue-change-payment-method">
+
+    &lt;button v-if="changePossible" class="btn btn-primary btn-block" @click="openPaymentChangeModal()">
+        {{ trans("Ceres::Template.myAccountChangePayment") }}
+    &lt;/button>
+
+    &lt;div v-if="!changePossible" class="payment-align-center">
+        &lt;h1 class="h4 text-mute font-italic payment-change-text">{{ trans("Ceres::Template.myAccountChangePaymentNotAllowed") }}&lt;/h1>
+    &lt;/div>
+
+    <!-- CHANGE_PAYMENT_MODAL -->
+    &lt;div v-el:change-payment-modal>
+        &lt;div class="modal fade" data-backdrop="static">
+            &lt;div class="modal-dialog" role="dialog">
+                &lt;div class="modal-content">
+                    &lt;div class="modal-header">
+                        &lt;button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeModal()">
+                            &lt;span aria-hidden="true">&times;&lt;/span>
+                        &lt;/button>
+                        &lt;h4 class="modal-title">{{ trans("Ceres::Template.myAccountChooseNewPayment") }}&lt;/h4>
+                    &lt;/div>
+                    &lt;div class="modal-body form-horizontal">
+
+                        &lt;div class="cmp cmp-method-list m-b-3">
+                            &lt;ul class="method-list">
+                                &lt;li v-for="paymentProvider in allowedPaymentMethods" class="method-list-item" data-id="${paymentProvider.id}">
+                                    &lt;input
+                                            type="radio"
+                                            id="paymentMethod${ _uid }${ paymentProvider.id }"
+                                            name="MethodOfPaymentID_${ currentOrder.order.id }"
+                                            v-model="paymentMethod"
+                                            :value="paymentProvider.id"
+                                    >
+                                    &lt;label for="paymentMethod${ _uid }${ paymentProvider.id }">
+                                        &lt;div class="icon">
+                                            &lt;div class="square-container">
+                                                &lt;div class="square-inner center-xy">
+                                                    &lt;img alt="${ paymentProvider.name }" :src="paymentProvider.icon">
+                                                &lt;/div>
+                                            &lt;/div>
+                                        &lt;/div>
+                                        &lt;div class="content">
+                                        ${ paymentProvider.name }
+                                            &lt;div>
+                                                &lt;small>
+                                                    ${ paymentProvider.fee | currency }
+                                                &lt;/small>
+                                            &lt;/div>
+                                            &lt;div>
+                                                &lt;small>
+                                                    ${ paymentProvider.description }
+                                                &lt;/small>
+                                            &lt;/div>
+                                        &lt;/div>
+                                    &lt;/label>
+                                &lt;/li>
+                            &lt;/ul>
+                        &lt;/div>
+
+                    &lt;/div>
+                    &lt;div class="modal-footer">
+                        &lt;button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            &lt;i class="fa fa-times" aria-hidden="true">&lt;/i> {{ trans("Ceres::Template.generalCancel") }}
+                        &lt;/button>
+                        &lt;button type="button" :class="{'disabled': isPending}" class="btn btn-primary" @click="changePaymentMethod()">
+                            &lt;i class="fa fa-check" aria-hidden="true">&lt;/i> {{ trans("Ceres::Template.generalChange") }}
+                        &lt;/button>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/div>
+    &lt;/div>
+    <!-- ./CHANGE_PAYMENT_MODAL -->
+
+&lt;/script>
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The template initialises the Vue component <code>change-payment-method</code>. If the customer is allowed to change the payment method, a button is displayed and opens a modal when clicked: <code>@click="openPaymentChangeModal()"</code>. Within the modal, a list of available payment methods is rendered, see line 26. <br /><br />If the customer is not allowed to change the payment method, a text note is displayed.
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+<code>Ceres/resources/js/src/app/components/myAccount/ChangePaymentMethod.js</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+const ModalService        = require("services/ModalService");
+const ApiService          = require("services/ApiService");
+
+Vue.component("change-payment-method", {
+
+    props: [
+        "template",
+        "currentOrder",
+        "allowedPaymentMethods",
+        "changePossible"
+    ],
+
+    data()
+    {
+        return {
+            changePaymentModal: {},
+            paymentMethod: 0,
+            isPending: false
+        };
+    },
+
+    created()
+    {
+        this.$options.template = this.template;
+    },
+
+    /**
+     * Initialize the change payment modal
+     */
+    ready()
+    {
+        this.changePaymentModal = ModalService.findModal(this.$els.changePaymentModal);
+    },
+
+    methods:
+    {
+        checkChangeAllowed()
+        {
+            ApiService.get("/rest/io/order/payment", {orderId: this.currentOrder.order.id, paymentMethodId: this.paymentMethod})
+                .done(response =>
+                {
+                    this.changePossible = response;
+                })
+                .fail(() =>
+                {
+                    this.changePossible = false;
+                });
+        },
+
+        openPaymentChangeModal()
+        {
+            this.changePaymentModal.show();
+        },
+
+        getPaymentStateText(paymentStates)
+        {
+            for (const paymentState in paymentStates)
+            {
+                if (paymentStates[paymentState].typeId == 4)
+                {
+                    return Translations.Template["paymentStatus_" + paymentStates[paymentState].value];
+                }
+            }
+
+            return "";
+        },
+
+        closeModal()
+        {
+            this.changePaymentModal.hide();
+            this.isPending = false;
+        },
+
+        updateOrderHistory(updatedOrder)
+        {
+            document.getElementById("payment_name_" + this.currentOrder.order.id).innerHTML = updatedOrder.paymentMethodName;
+            document.getElementById("payment_state_" + this.currentOrder.order.id).innerHTML = this.getPaymentStateText(updatedOrder.order.properties);
+
+            this.checkChangeAllowed();
+
+            this.closeModal();
+        },
+
+        changePaymentMethod()
+        {
+            this.isPending = true;
+
+            ApiService.post("/rest/io/order/payment", {orderId: this.currentOrder.order.id, paymentMethodId: this.paymentMethod})
+                .done(response =>
+                {
+                    document.dispatchEvent(new CustomEvent("historyPaymentMethodChanged", {detail: {oldOrder: this.currentOrder, newOrder: response}}));
+
+                    this.updateOrderHistory(response);
+                })
+                .fail(() =>
+                {
+                });
+        }
+    }
+
+});
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: This is the Vue part of the component for changing the payment method. All methods for the process of changing the payment method are contained, e.g. the method <code>changePaymentMethod()</code> in line 84 which sends a <b>POST</b> request to the plugin IO for changing the payment method of the current order. In line 91 the custom event <code>historyPaymentMethodChanged</code> is introduced to enable payment methods to react when the payment method is switched.
+</div>
+<!-- Code example end -->
+
+<h2 id="reinitialise-payment">Reinitialising the payment method</h2>
+
+<div class="api-docs-basics">
+    <p>
+        After having changed the payment method, the new payment method has to be initialised. To do so, the plugin needs two containers: one for a button in the <strong>My account</strong> area and another one for the script that manages it. These containers need to be set up first.
+    </p>
+</div>
+
+<div class="route-container">
+    <code>PayPal/plugin.json</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+...
+
+{
+    "key":"PayPal\\Providers\\DataProvider\\PayPalReinitializePayment",
+    "name":"PayPal Reinitialize Payment",
+    "description":"Display the PayPal Button after the Payment changed to PayPal"
+},
+{
+    "key":"PayPal\\Providers\\DataProvider\\PayPalReinitializePaymentScript",
+    "name":"PayPal Reinitialize Payment Script",
+    "description":"A Script for displaying the PayPal Button after the Payment changed to PayPal"
+}
+
+...
+</pre>
+    <button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The two containers are implemented as <code>key</code> in the <code>plugin.json</code>.
+</div>
+
+<div class="api-docs-basics">
+    <p>
+        The functionality for the button is constructed in two parts: the button needs to be rendered and the script needs to be provided.
+    </p>
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/Providers/DataProvider/PayPalReinitializePayment.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace PayPal\Providers\DataProvider;
+
+use PayPal\Helper\PaymentHelper;
+use Plenty\Plugin\Templates\Twig;
+
+class PayPalReinitializePayment
+{
+    public function call(Twig $twig, $arg):string
+    {
+        $paymentHelper = pluginApp(PaymentHelper::class);
+        $paymentMethodId = $paymentHelper->getPayPalMopIdByPaymentKey(PaymentHelper::PAYMENTKEY_PAYPAL);
+        return $twig->render('PayPal::PayPalReinitializePayment', ["order" => $arg[0], "paymentMethodId" => $paymentMethodId]);
+    }
+}
+</pre>
+    <button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: This function will render the button with the <code>order</code> and <code>paymentMethodId</code> to determine for each order whether the button is displayed or not.
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/Providers/DataProvider/PayPalReinitializePaymentScript.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace PayPal\Providers\DataProvider;
+
+use Plenty\Plugin\Templates\Twig;
+use PayPal\Helper\PaymentHelper;
+
+class PayPalReinitializePaymentScript
+{
+
+    public function call(Twig $twig):string
+    {
+        $paymentHelper = pluginApp(PaymentHelper::class);
+        $pp = $paymentHelper->getPayPalMopIdByPaymentKey(PaymentHelper::PAYMENTKEY_PAYPAL);
+        return $twig->render('PayPal::PayPalReinitializePaymentScript', ['mopIds' => ['pp' => $pp]]);
+    }
+}
+</pre>
+    <button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: This function will provide the script independently from the button. The script listens for the event <code>historyPaymentMethodChanged</code> and the on-click function for the button.
+</div>
+
+<div class="api-docs-basics">
+    <p>
+        The button has to be displayed in the <code>My account</code> area for every order with an applicable payment method. In addition, the button is displayed on the <strong>Order confirmation page</strong>.
+    </p>
+</div>
+
+<div class="route-container">
+    <code>PayPal/resources/views/PayPalReinitializePayment.twig</code>
+</div>
+
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+{% set paymentId = 0 %}
+{% set paidStatus = '' %}
+
+{% set properties = order.properties %}
+
+{% for property in properties %}
+    {% if property.typeId == 3 %}
+        {% set paymentId = property.value %}
+    {% endif %}
+    {% if property.typeId == 4 %}
+        {% set paidStatus = property.value %}
+    {% endif %}
+{% endfor %}
+{% if (paymentId == paymentMethodId) and (paidStatus != 'fullyPaid') %}
+    {% set display = "block" %}
+{% else %}
+    {% set display = "none" %}
+{% endif %}
+
+{% if services.template.isCurrentTemplate('tpl.my-account') %}
+
+    &lt;button id="reinitPayPalPlus-{{order.id}}" class="btn btn-primary btn-block" @click="" data-toggle="modal" data-target="#payPalPlusWall" :disabled="" style="display: {{ display }}; margin-top: 0.5rem">
+        {{ trans("PayPal::PayPal.myAccountReinitPayment") }}
+    &lt;/button>
+
+{% elseif services.template.isCurrentTemplate('tpl.confirmation') %}
+
+    &lt;div id="reinitPayPalPlus-{{order.id}}" class="row con-reinit" style="display: {{ display }};">
+        &lt;strong class="col-xs-6 col-sm-5">&lt;/strong>
+        &lt;span class="col-xs-6 col-sm-7">
+            &lt;a class="payment-confirmation-btn" @click="" data-toggle="modal" data-target="#payPalPlusWall" :disabled="">
+                &lt;span>{{ trans("PayPal::PayPal.myAccountReinitPayment") }}&lt;/span>
+            &lt;/a>
+        &lt;/span>
+    &lt;/div>
+
+{% endif %}
+</pre>
+{% endraw %}
+    <button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: This template identifies the current template and renders the button respectively, i.e., in the <code>My account</code> area or on the <strong>order confirmation page</strong>. It also checks if the <code>paymentId</code> of the order matches the <code>paymentMethodId</code> and if the order is already paid.
+</div>
+
+<div class="route-container">
+    <code>PayPal/resources/views/PayPalReinitializePaymentScript.twig</code>
+</div>
+
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+&lt;script type="text/javascript">
+    $(function () {
+        $("[id^='reinitPayPal-']").click(function () {
+            var orderId = $(this).attr('id').split('-')[1];
+            $.get("/payment/payPal/payOrderNow/"+orderId, function(data)
+            {
+                window.location = data;
+            });
+        });
+    });
+
+    document.addEventListener('historyPaymentMethodChanged', e => {
+        for(let property in e.detail.newOrder.order.properties){
+        if(e.detail.newOrder.order.properties[property].typeId === 3){
+            if (e.detail.newOrder.order.properties[property].value == {{ mopIds.pp }}) {
+                document.getElementById("reinitPayPal-" + e.detail.oldOrder.order.id).style.display = "block";
+            }else {
+                document.getElementById("reinitPayPal-" + e.detail.oldOrder.order.id).style.display = "none";
+            }
+        }
+    }
+    });
+&lt;/script>
+</pre>
+{% endraw %}
+    <button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+    <div class="alert alert-info" role="alert">
+        <b>Explanation</b>: This template listens for the event <code>historyPaymentMethodChanged</code> to determine whether the button is displayed or not. It also provides the on-click listener for the button which will redirect the customer to the PayPal URL.
+    </div>
+
+<h2 id="payment-event-procedures">Creating event procedures</h2>
+
+<div class="api-docs-basics">
+    <p>
+        The <strong>src/procedures</strong> folder contains the <code>RefundEventProcedure.php</code> file and other files that are used to integrate event procedures for the payment method in plentymarkets. For detailed information about event procedures, refer to <a href="https://www.plentymarkets.co.uk/manual/settings/orders/event-procedures/new-event-procedure/" target="_blank">New event procedure</a>. Under <b>Procedures</b>, the procedure type <b>Plugins</b> is available. All event procedures that are registered in a plugin, will be listed under the <b>Plugins</b> procedure type.
+    </p>
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/events/RefundEventProcedure.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace PayPal\Procedures;
+
+use Plenty\Modules\Order\Models\Order;
+use Plenty\Modules\Payment\Models\Payment;
+use Plenty\Modules\EventProcedures\Events\EventProceduresTriggered;
+use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
+use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
+use PayPal\Services\PaymentService;
+use PayPal\Helper\PaymentHelper;
+
+/**
+ * Class RefundEventProcedure
+ * @package PayPal\Procedures
+ */
+class RefundEventProcedure
+{
+    /**
+     * @param EventProceduresTriggered $eventProceduresTriggered
+     * @param PaymentService $paymentService
+     * @param PaymentRepositoryContract $paymentContract
+     */
+    public function run(EventProceduresTriggered $eventProceduresTriggered,
+                        PaymentService $paymentService,
+                        PaymentRepositoryContract $paymentContract)
+    {
+        /** @var Order $order */
+        $order = $eventProceduresTriggered->getOrder();
+        /** @var Payment $payment */
+        $payment = $paymentContract->getPaymentsByOrderId($order->id);
+        $paymentData = array(   'currency' => $payment->currency,
+                                'total'    => $payment->amount);
+        $result = $paymentService->refundPayment($paymentData);
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The order is retrieved in the <code>run()</code> method of the <code>RefundEventProcedure</code> class. The payment data assigned to the order is required for sending a refund to PayPal. Afterwards the order is updated.
+</div>
+
+<div class="api-docs-basics">
+    <p>
+        The event procedure must be registered in the ServiceProvider.
+    </p>
+
+    <figure>
+        <a data-toggle="modal" data-target="#modal1" href="#">
+            <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/backend-event-procedures.png" />
+        </a>
+    </figure>
+</div>
+
+<div class="route-container">
+    <code>PayPal/src/providers/PayPalServiceProvider.php</code>
+</div>
+
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace PayPal\Providers;
+
+use Plenty\Modules\EventProcedures\Services\Entries\ProcedureEntry;
+use Plenty\Modules\EventProcedures\Services\EventProceduresService;
+
+...
+
+use PayPal\Procedures\RefundEventProcedure;
+
+...
+
+/**
+ * Class PayPalServiceProvider
+ * @package PayPal\Providers
+ */
+class PayPalServiceProvider extends ServiceProvider
+{
+
+      /**
+       * Register the route service provider and bind event procedures
+       */
+      public function register()
+      {
+          $this->getApplication()->register(PayPalRouteServiceProvider::class);
+          $this->getApplication()->bind(RefundEventProcedure::class);
+      }
+
+...
+
+            // Register PayPal Refund Event Procedure
+            $eventProceduresService->registerProcedure('plentyPayPal', ProcedureEntry::PROCEDURE_GROUP_ORDER,
+            [   'de' => 'Rückzahlung der PayPal-Zahlung',
+                'en' => 'Refund the PayPal payment'],
+            '\PayPal\Procedures\RefundEventProcedure@run');
+
+...
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The <code>registerProcedure</code> method is used to register the event procedure in the plentymarkets back end. The plugin key <code>plentyPayPal</code>, the entry point <code>PROCEDURE_GROUP_ORDER</code> and the text to be shown in German and English are specified.
+</div>
+
+<!--div class="api-docs-basics">
+    <p>
+       The following entry points for event procedures are available:
+    </p>
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Entry point</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td><b>EVENT_TYPE_ORDER</b></td>
+            <td>##</td>
+        </tr>
+        <tr>
+            <td><b>EVENT_TYPE_REORDER</b></td>
+            <td>##</td>
+        </tr>
+        <tr>
+            <td><b>EVENT_TYPE_TICKET</b></td>
+            <td>##</td>
+        </tr>
+        <tr>
+            <td><b>PROCEDURE_GROUP_ITEM</b></td>
+            <td>##</td>
+        </tr>
+        <tr>
+            <td><b>PROCEDURE_GROUP_ORDER</b></td>
+            <td>##</td>
+        </tr>
+        <tr>
+            <td><b>PROCEDURE_GROUP_DOCUMENT</b></td>
+            <td>##</td>
+        </tr>
+        <tr>
+            <td><b>PROCEDURE_GROUP_CONTACT</b></td>
+            <td>##</td>
+        </tr>
+        <tr>
+            <td><b>PROCEDURE_GROUP_SHIPPING</b></td>
+            <td>##</td>
+        </tr>
+        <tr>
+            <td><b>PROCEDURE_GROUP_PAYMENT</b></td>
+            <td>##</td>
+        </tr>
+        <tr>
+            <td><b>PROCEDURE_GROUP_RETURN</b></td>
+            <td>##</td>
+        </tr>
+        <tr>
+            <td><b>PROCEDURE_GROUP_LISTING</b></td>
+            <td>##</td>
+        </tr>
+        </tbody>
+
+    </table>
+</div-->
+
+<!--h2 id="payment-notifications">Notifications</h2>
+
+<div class="api-docs-basics">
+    <p>
+        TODO
+    </p>
+</div-->
+
+<!-- Modal -->
+<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add procedure: Plugins</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/backend-event-procedures.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Payment plugin flowchart</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/payment-plugin-flowchart.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog img-horizontal" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Content container GUI in the plentymarkets back end</h4>
+                </div>
+                <div class="modal-body">
+                    <figure>
+                        <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/payment-content-container-gui.png" />
+                    </figure>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modal4" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog img-horizontal" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">PayPal Express button in the shopping cart preview</h4>
+                </div>
+                <div class="modal-body">
+                    <figure>
+                        <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/paypal-express-button-preview.png" />
+                    </figure>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,494 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="marketplace-requirements">Plugin requirements</h1>
+<div class="api-docs-basics">
+    <p>
+        A plugin must fulfil certain requirements in order to be offered on <a href="https://marketplace.plentymarkets.com" target="_blank">plentyMarketplace</a>. The plugin must have a valid <code>plugin.json</code> file. Furthermore, the plugin must contain a <b>meta</b> folder that includes sub-folders with multiple required files, e.g. preview images, user guides and change logs.
+    </p>
+</div>
+
+<h2 id="marketplace-overview">Schematic overview of plugin data and files</h2>
+<div class="api-docs-basics">
+    <p>
+        Find a schematic overview of the item view on plentyMarketplace below.
+    </p>
+    <figure>
+        <a data-toggle="modal" data-target="#modal3" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/marketplace/marketplace-item-view.png" />
+        </a>
+    </figure>
+</div>
+
+<div class="api-docs-basics">
+    <p>
+        In this table, the different elements of the item view as well as the category view are described.
+    </p>
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>
+                No.
+            </th>
+            <th>
+                Description
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td colspan="2" style="text-align: center"><b>Meta data</b></td>
+        </tr>
+        <tr>
+            <td>
+                1
+            </td>
+            <td>
+                The preview images of the plugin. For further information, refer to <a href="#marketplace-metadata">Other meta data</a>.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                2
+            </td>
+            <td>
+                The user guide of the plugin. For further information, refer to <a href="#marketplace-user-guide">User guide</a>.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                3
+            </td>
+            <td>
+                The change log of the plugin. For further information, refer to <a href="#marketplace-changelog">Change log</a>.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                4
+            </td>
+            <td>
+                The support contact data of the plugin. For further information, refer to <a href="#marketplace-support-contact">Support contact data</a>.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                5
+            </td>
+            <td>
+                The plugin icon. For further information, refer to <a href="#marketplace-metadata">Other meta data</a>. The plugin icon is also displayed in the <b>Plugins » Plugin overview</b> menu of the plentymarkets back end. The icon path must be specified in the <code>plugin.json</code>.
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align: center"><b>Plugin data</b></td>
+        </tr>
+        <tr>
+            <td>
+                6-12
+            </td>
+            <td>
+                The plugin information properties specified in the <code>plugin.json</code>:
+                <ul>
+                    <li>
+                        marketplaceName or name
+                    </li>
+                    <li>
+                        version
+                    </li>
+                    <li>
+                        author
+                    </li>
+                    <li>
+                        license
+                    </li>
+                    <li>
+                        short description
+                    </li>
+                    <li>
+                        price
+                    </li>
+                    <li>
+                        category
+                    </li>
+                </ul>
+                        For further information, refer to <a href="#marketplace-pluginjson">Plugin data</a>.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="api-docs-basics">
+    <p>
+        A schematic overview of the category view on plentyMarketplace.
+    </p>
+    <figure>
+        <a data-toggle="modal" data-target="#modal4" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/marketplace/marketplace-category-view.png" />
+        </a>
+    </figure>
+</div>
+
+<h2 id="marketplace-pluginjson">Plugin data</h2>
+<div class="api-docs-basics">
+    <p>
+        The <code>plugin.json</code> file is the essential part for plugin provisioning. It must contain certain information, such as the plugin name, the version etc. Find an example of a valid <code>plugin.json</code> below.
+    </p>
+</div>
+
+<!-- DocBlock with plugin.json information -->
+{% include "PlentyPluginShowcase::content.devguide.docblocks.block_plugin_json" %}
+
+<h2 id="marketplace-changelog">Change log</h2>
+<div class="api-docs-basics">
+    <p>
+        The change log for the plugin is saved in the sub-folder <b>documents</b> in the <b>meta</b> folder. The change log must be available in German and English and saved in MD file format, e.g. <code>changelog_de.md</code> and <code>changelog_en.md</code>. Change logs in other languages are optional. Change the language code in the file name accordingly. The following guidelines must be taken into consideration when writing the <a href="https://github.com/plentymarkets/plenty-plugin-showcase/blob/master/resources/examples/changelog_en.md" target="_blank">change log</a>:
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>PluginXY/meta/documents/changelog_en.md</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-plain grey-back linenums code-example">
+# Release Notes for PluginXY // Include the plugin name in headline 1
+
+## v1.0.1 (2016-12-24) // List version releases (MAJOR.MINOR.PATCH) with
+                       // the release date (YYYY-MM-DD) in reverse-chronological
+                       // order (newest on top) in headline 2
+
+### Added // List added features and functions in an unordered list
+- Added new feature 1
+- Added new feature 2
+
+### Changed // List all changes made to existing functionality in an unordered list
+- Replaced icon 1 with icon 2
+
+### Fixed // List all bug fixes and fixed issues in an unordered list
+- Fixed bug 1
+
+### Removed // List all removed features and functions in this release in an unordered list
+- Removed redundant function 1
+
+## v1.0.0 (2016-11-08) // Add one sub-section for each version with the release date in headline 2
+
+### Added // List added features and functions in an unordered list
+- Added function 1
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<!-- Code example end -->
+
+<!-- Image -->
+<div>
+    <figure>
+        <a data-toggle="modal" data-target="#modal1" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/marketplace/marketplace-changelog.png" />
+        </a>
+    </figure>
+</div>
+<!-- Image end -->
+
+<h2 id="marketplace-user-guide">User guide</h2>
+<div class="api-docs-basics">
+    <p>
+        The user guide for the plugin is saved in the sub-folder <b>documents</b> in the <b>meta</b> folder. The user guide must be available in German and English and saved in MD file format, e.g. <code>user_guide_de.md</code> and <code>user_guide_en.md</code>. User guides in other languages are optional. Change the language code in the file name accordingly. The following guidelines must be taken into consideration when writing the <a href="https://github.com/plentymarkets/plenty-plugin-showcase/blob/master/resources/examples/user_guide_en.md" target="_blank">guide</a>.
+    </p>
+</div>
+
+<div class="route-container">
+    <code>PluginXY/meta/documents/user_guide_en.md</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-plain grey-back linenums code-example">
+# This is the headline of your user guide
+
+Below the headline, include a short introduction describing your plugin, the scope of functionality and link the main features.
+
+## Getting started and requirements
+
+In the first chapter, provide information about setting up the plugin. Provide a short **Getting started** section. Also, mention required plugins, that must be installed to run your plugin.
+
+## Plugin configuration
+
+Main chapters can be used to give a detailed description of the settings of your plugins. You can group settings descriptions.
+
+### The first feature of the plugin
+
+Single features are described in a sub-section. If you want to give instructions for setting up a function in the plentymarkets back end, use the following template:
+
+##### Setting up a feature:
+
+1. Go to the **Plugins » Plugin overview** menu.
+2. Click on **My plugin**.<span><</span>br />→ A new window will open.
+3. Select a value from the **My plugin feature** drop-down.
+4. **Save** the settings.
+
+### Another feature
+
+Add the instructions. In this case we want to describe more than one setting, so we use a table below the instructions.
+
+![Add an image](http://placehold.it/350x150?text=Add+an+image)
+
+##### Setting up another feature with multiple settings:
+
+1. Go to the **Plugins » Plugin overview** menu.
+2. Click on **My plugin**.<span><</span>br />→ A new window will open.
+3. Carry out the settings. Pay attention to the information given in table 1.
+4. **Save** the settings.
+
+| Settings  | Explanation   |
+|-----------|---------------|
+| Setting 1 | Description 1 |
+| Setting 2 | Description 2 |
+| Setting 3 | Description 3 |
+
+Table 1: Settings for another feature
+
+## Highlighting
+
+### Boldface
+
+Use **bold** for highlighting UI texts, menus and options.
+
+### Code
+
+A single line of code is highlighted using <span><</span>code>`<span><</span>/code> at the beginning and at the end of the line:
+
+`This is a line of code`
+
+If you want to include multiple lines of code, use <span><</span>code>```<span><</span>/code> before and after a code example.
+
+```
+Line 1 of code
+Line 2 of code
+Line 3 of code
+```
+
+
+### Warning
+
+<span><</span>div class="alert alert-danger" role="alert">
+    This is a red box. Use this box for warning messages.
+<span><</span>/div>
+
+### Important
+
+<span><</span>div class="alert alert-warning" role="alert">
+    This is a yellow box. Use this box for important information.
+<span><</span>/div>
+
+### Example
+
+<span><</span>div class="alert alert-success" role="alert">
+    This is a green box. Use this box for examples.
+<span><</span>/div>
+
+### Note
+
+<span><</span>div class="alert alert-info" role="alert">
+    This is a blue box. Use this box for notes.
+<span><</span>/div>
+
+
+## Further reading
+
+Add links to further information.
+
+* Here you can find a [markdown cheatsheet](https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf)
+* [More markdown](http://www.markdowntutorial.com/)
+
+## License
+
+In this section, you can add information about your license, e.g. this project is licensed under the GNU AFFERO GENERAL PUBLIC LICENSE - see the [LICENSE.md](/LICENSE.md) file for details.
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div>
+    <figure>
+        <a data-toggle="modal" data-target="#modal2" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/marketplace/marketplace-userguide.png" />
+        </a>
+    </figure>
+</div>
+
+<h2 id="marketplace-support-contact">Support contact data</h2>
+<div class="api-docs-basics">
+    <p>
+        The contact data for plugin support is saved in the sub-folder <b>documents</b> in the <b>meta</b> folder. The contact data must be available in German and English and saved in MD file format, e.g. <code>support_contact_de.md</code> and <code>support_contact_en.md</code>. Contact data in other languages is optional. Change the language code in the file name accordingly. The contact data for support issues should include:
+    </p>
+    <ul>
+        <li>
+            Your web page
+        </li>
+        <li>
+            Your email address
+        </li>
+        <li>
+            Your phone number
+        </li>
+    </ul>
+</div>
+
+<div class="route-container">
+    <code>PluginXY/meta/documents/support_contact_en.md</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-plain grey-back linenums code-example">
+## Web page
+
+Add your web page, e.g. as a link
+
+## Email
+
+Add your email address for support issues, e.g. as a link
+
+## Phone
+
+Add your phone number
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<h2 id="marketplace-metadata">Other meta data</h2>
+<div class="api-docs-basics">
+    <p>
+        The <b>meta</b> folder also contains the <b>images</b> folder with files that are needed to display your plugin as an item in plentyMarketplace, such as preview images, the author icon and the plugin icon.
+    </p>
+</div>
+
+<div class="api-docs-basics">
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>File</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>Author icon</td>
+                <td>The author icon. Valid file formats are PNG and JPEG. The author icon must be specified in the <code>plugin.json</code>. One author icon is required for plentyMarketplace. The icon can have the following image sizes: <span class="label label-danger">required</span>
+                    <ul>
+                        <li>
+                            <b>icon_author_xs</b>: 32x32 px
+                        </li>
+                        <li>
+                            <b>icon_author_sm</b>: 256x256 px
+                        </li>
+                        <li>
+                            <b>icon_author_md</b>: 512x512 px
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Plugin icon</td>
+                <td>The plugin icon. Valid file formats are PNG and JPEG. The plugin icon must be specified in the <code>plugin.json</code>. One plugin icon is required for plentyMarketplace. The icon can have the following image sizes: <span class="label label-danger">required</span>
+                    <ul>
+                        <li>
+                            <b>icon_plugin_xs</b>: 32x32 px
+                        </li>
+                        <li>
+                            <b>icon_plugin_sm</b>: 256x256 px
+                        </li>
+                        <li>
+                            <b>icon_plugin_md</b>: 512x512 px
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Preview images</td>
+                <td>The preview images of the plugin to be displayed in plentyMarketplace. Valid file formats are PNG and JPEG. The maximum file size for preview images is 1 MB. One image is required for plentyMarketplace. Upload up to 7 preview images, e.g. <code>preview_0.jpeg</code>, <code>preview_1.jpeg</code> etc. <span class="label label-danger">required</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Example of a changelog</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/marketplace/marketplace-changelog.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Example of a user guide</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/marketplace/marketplace-userguide.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">The item view on plentyMarketplace</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/marketplace/marketplace-item-view.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal4" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">The category view on plentyMarketplace</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/marketplace/marketplace-category-view.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

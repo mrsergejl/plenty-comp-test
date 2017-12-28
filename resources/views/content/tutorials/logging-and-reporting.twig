@@ -1,0 +1,622 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="introduction">Adding log functionality to your plugin</h1>
+<div class="api-docs-basics">
+    <p>
+        In this tutorial, you will learn how to integrate log functionality in your plugin.
+    </p>
+</div>
+
+<h2 id="clone-repository">Step 1: Cloning the ToDoList plugin</h2>
+<div class="api-docs-basics">
+    <p>
+        We will extend the functionality of the <a href="/tutorials/data-storage">ToDoList</a> plugin by integrating a log function. We then use this log to retrieve certain information.
+    </p>
+</div>
+
+<!-- GitHub button -->
+<div class="connect">
+    <div class="btn btn-primary btn-block btn-github" title="Clone or download this plentymarkets plugin on Github.">
+        <a href="https://github.com/plentymarkets/plugin-tutorial-todolist" target="_blank" role="button"><img class="img-responsive pull-left" src="{{ plugin_path('PlentyPluginShowcase') }}/images/github-logo.png"  style="width: 40px;"/><span>Download on GitHub</span></a>
+    </div>
+</div>
+<!-- GitHub button end -->
+
+
+<h3 id="plugin-structure-before">The ToDoList plugin structure</h3>
+<div class="api-docs-basics">
+    <p>
+        Below, you find an overview of the existing structure of our <b>ToDoList</b> plugin.
+    </p>
+</div>
+
+<!-- Plugin structure -->
+<div class="code-container">
+<pre class="prettyprint lang-plain grey-back code-example">
+ToDoList/
+    ├── resources/
+    │   ├── css/
+    │   │   └── main.css
+    │   │
+    │   ├── js/
+    │   │   └── todo.js
+    │   │
+    │   └── views/
+    │       └── content/
+    │           └── todo.twig
+    │
+    ├── src/
+    │   ├── Contracts
+    │   │   └── ToDoRepositoryContract.php
+    │   │
+    │   ├── Controllers/
+    │   │   └── ContentController.php
+    │   │
+    │   ├── Migrations/
+    │   │   └── CreateToDoTable.php
+    │   │
+    │   ├── Models/
+    │   │   └── ToDo.php
+    │   │
+    │   ├── Providers/
+    │   │   ├── ToDoServiceProvider.php
+    │   │   └── ToDoRouteServiceProvider.php
+    │   │
+    │   ├── Repositories
+    │   │   └── ToDoRepository.php
+    │   │
+    │   └── Validators
+    │       └──ToDoValidators.php
+    │
+    ├── plugin.json // plugin information
+    └── // additional files (Readme, license, etc.)
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<!-- Plugin structure end -->
+
+
+<h2 id="extend-plugin-structure">Step 2: Extending the plugin structure</h2>
+<div class="api-docs-basics">
+    <p>
+        In order to integrate the Loggable trait, we have to make changes to the following existing files. We also have to create two new folders with two new files:
+    </p>
+    <ul>
+        <li>
+            Extend the <code>CreateToDoTable.php</code>.
+        </li>
+        <li>
+            Create the <b>resources/lang/en</b> and <b>resources/lang/de</b> folder and add the respective <code>migration.properties</code> file to each one.
+        </li>
+        <li>
+            Extend the <code>ToDoServiceProvider.php</code>.
+        </li>
+        <li>
+            Extend the <code>ContentController.php</code>.
+        </li>
+    </ul>
+</div>
+
+
+<h3 id="extend-createtodotable">Extending the CreateToDoTable</h3>
+<div class="api-docs-basics">
+    <p>
+        In order to log the creation of a to do table, we need to enter the functionality in the <code>CreateToDoTable.php</code> file. This example shows a simple log; you can find a reference type log <a href="#extend-todoserviceprovider">here</a>.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+  <code>ToDoList/src/Migrations/CreateToDoTable.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace ToDoList\Migrations;
+
+use ToDoList\Models\ToDo;
+use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
+use Plenty\Plugin\Log\Loggable;
+
+/**
+ * Class CreateToDoTable
+ */
+class CreateToDoTable
+{
+    use Loggable;
+
+    /**
+     * @param Migrate $migrate
+     */
+    public function run(Migrate $migrate)
+    {
+        $migrate->createTable(ToDo::class);
+
+        $this->getLogger("CreateToDoTable_run")->debug('ToDoList::migration.successMessage', ['tableName' => 'ToDo']);
+
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: We add <code>use Plenty\Plugin\Log\Loggable</code> and <code>$this->getLogger("CreateToDoTable_run")->debug('ToDoList::migration.successMessage',</code> <code>['tableName' => 'ToDo'])</code>.<br /><br />
+    After the dependency injection in line 7, employ the <code>getLogger()</code> method in line 14 to introduce the log. In line 23, employ getLogger; it automatically identifies the integration key, in this case the plugin namespace. In the <code>getLogger()</code> method, you have to specify the log identifier for display in the back end. In this example, this is the class <code>CreateToDoTable</code> with the added method <code>run</code>. As an alternative, you can use a <a href="http://php.net/manual/en/language.oop5.magic.php" target="_blank"><strong>php magic method</strong></a>, e.g. <code>__METHOD__</code> or <code>__FUNCTION__</code>.<br /><br />
+    The employed log level is <strong>debug</strong>. In the debug method, the first parameter is the path to the message (which will be provided by the <code>migration.properties</code> file in the next step), the second parameter can provide additional information, in this case, the table name.
+</div>
+<!-- Code example end -->
+
+
+<h3 id="create-migrationproperties">Creating the translations</h3>
+<div class="api-docs-basics">
+    <p>
+        To display messages in all selected languages, we have to set these up in the correct file structure.
+    </p>
+    <ol>
+        <li>
+            Create the <b>resources/lang</b> folder.
+        </li>
+        <li>
+            Create the <b>en</b> sub-folder.
+        </li>
+        <li>
+            Create a sub-folder for any language you want to add, e.g. <b>de</b> for German.
+        </li>
+        <li>
+            In each folder, create a <code>.properties</code> file that will contain all the translations. E.g <code>migration.properties</code>.
+        </li>
+        <li>
+            Add the following code.
+        </li>
+    </ol>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+  <code>ToDoList/resources/lang/en/migration.properties</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+successMessage = "Table created"
+createToDoInformation = "Task created"
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<!-- Code example end -->
+
+
+<h3 id="extend-todoserviceprovider">Extending the ToDoServiceProvider</h3>
+<div class="api-docs-basics">
+    <p>
+        We have to boot a reference container in the ToDoServiceProvider to store the reference type and value.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>ToDoList/src/Providers/ToDoServiceProvider.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace ToDoList\Providers;
+
+use Plenty\Plugin\ServiceProvider;
+use ToDoList\Contracts\ToDoRepositoryContract;
+use ToDoList\Repositories\ToDoRepository;
+use Plenty\Log\Services\ReferenceContainer;
+use Plenty\Log\Exceptions\ReferenceTypeException;
+
+/**
+ * Class ToDoServiceProvider
+ * @package ToDoList\Providers
+ */
+class ToDoServiceProvider extends ServiceProvider
+{
+
+    /**
+     * Register the service provider.
+     */
+    public function register()
+    {
+        $this->getApplication()->register(ToDoRouteServiceProvider::class);
+        $this->getApplication()->bind(ToDoRepositoryContract::class, ToDoRepository::class);
+    }
+
+
+    public function boot(ReferenceContainer $referenceContainer)
+    {
+        // Register reference types for logs.
+        try
+        {
+            $referenceContainer->add([ 'toDoId' => 'toDoId' ]);
+        }
+        catch(ReferenceTypeException $ex)
+        {
+        }
+    }
+}
+</pre>
+        <button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+    </div>
+
+    <div class="alert alert-info" role="alert">
+        <b>Explanation</b>: We introduce the reference container and reference type exception classes in line 8 and 9. Then we boot a reference container in line 28 to use in the ContentController.<br /><br />We want to log the id of a to do task, so we use the <code>add</code> function to provide a <code>toDoId</code> in an array. If needed, you can add more data.<br /><br />We employ <code>try</code> and <code>catch</code> to make sure the reference type isn't used yet. If it is used, this will result in an exception. To avoid this, choose a specific reference type.
+    </div>
+    <!-- Code example end -->
+
+
+<h3 id="extend-contentcontroller">Extending the ContentController</h3>
+<div class="api-docs-basics">
+    <p>
+        The ContentController manages the creation, update and deletion of our to dos. In order to log the creation of a new to do, we have to enter the necessary code here.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+  <code>ToDoList/src/Controllers/ContentController.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+ namespace ToDoList\Controllers;
+
+ use Plenty\Plugin\Controller;
+ use Plenty\Plugin\Http\Request;
+ use Plenty\Plugin\Templates\Twig;
+ use ToDoList\Contracts\ToDoRepositoryContract;
+ use Plenty\Plugin\Log\Loggable;
+
+ /**
+  * Class ContentController
+  * @package ToDoList\Controllers
+  */
+ class ContentController extends Controller
+ {
+     use Loggable;
+
+     /**
+      * @param Twig                   $twig
+      * @param ToDoRepositoryContract $toDoRepo
+      * @return string
+      */
+     public function showToDo(Twig $twig, ToDoRepositoryContract $toDoRepo): string
+     {
+         $toDoList = $toDoRepo->getToDoList();
+         $templateData = array("tasks" => $toDoList);
+         return $twig->render('ToDoList::content.todo', $templateData);
+     }
+
+     /**
+      * @param  \Plenty\Plugin\Http\Request $request
+      * @param ToDoRepositoryContract       $toDoRepo
+      * @return string
+      */
+     public function createToDo(Request $request, ToDoRepositoryContract $toDoRepo): string
+     {
+         $newToDo = $toDoRepo->createTask($request->all());
+
+         $this
+             ->getLogger('ContentController_createToDo')
+             ->setReferenceType('toDoId') // optional
+             ->setReferenceValue($newToDo->id) // optional
+             ->info('ToDoList::migration.createToDoInformation', ['userId' => $newToDo->userId ]);
+
+         return json_encode($newToDo);
+     }
+
+     /**
+      * @param int                    $id
+      * @param ToDoRepositoryContract $toDoRepo
+      * @return string
+      */
+     public function updateToDo(int $id, ToDoRepositoryContract $toDoRepo): string
+     {
+         $updateToDo = $toDoRepo->updateTask($id);
+         return json_encode($updateToDo);
+     }
+
+     /**
+      * @param int                    $id
+      * @param ToDoRepositoryContract $toDoRepo
+      * @return string
+      */
+     public function deleteToDo(int $id, ToDoRepositoryContract $toDoRepo): string
+     {
+         $deleteToDo = $toDoRepo->deleteTask($id);
+         return json_encode($deleteToDo);
+     }
+ }
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: We use the the Loggable class as in the <code>CreateToDoTable.php</code> file. To ensure that we log the creation of the to do, we have to enter the code in the <code>createToDo</code>, after the task has been created, but before the return. As above, enter the identifier or a magic method. Set the reference type and value as in the service provider - in this case, the ID of the to do - and store both in the reference container. Choose a different log level, e.g. <strong>info</strong>. You can offer additional information in an array; in this example, we provide the <code>userId</code> of the task creator.
+</div>
+<!-- Code example end -->
+
+    <div class="alert alert-warning" role="alert">
+        <b>Conditions for log messages to be displayed</b>
+        <p>Log messages have to fulfill certain conditions to be shown to the customer in the plentymarkets back end:</p>
+        <ul>
+            <li>Log codes must have translations. If no translation is provided the log message will be ignored.</li>
+            <li>Log codes must be activated in the <b>Log</b> settings back end. Logs that are not activated will be ignored.</li>
+            <li>The above conditions do not apply if the log level is set to <span class="text-danger">error</span>, <span class="text-danger">critical</span>, <span class="text-danger">alert</span> or <span class="text-danger">emergency</span></li>
+        </ul>
+
+    </div>
+
+    <h1 id="using-reportable">Using the Reportable trait</h1>
+<div class="api-docs-basics">
+    <p>
+        There are certain cases where we need to display logs even if they are not activated in the Log settings back end, e.g. at the end of every order import process to let users know how many new orders were imported or skipped.
+    </p>
+    <p>
+        For these cases we use the <code>Reportable</code> trait. This one is similar to the <code>Loggable</code> trait described above.
+    </p>
+
+<!-- Code example -->
+<div class="route-container">
+  <code>ToDoList/src/Controllers/ContentController.php</code>
+</div>
+<div class="code-container">
+    <pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+ namespace ToDoList\Controllers;
+
+ use Plenty\Plugin\Controller;
+ use Plenty\Plugin\Http\Request;
+ use Plenty\Plugin\Templates\Twig;
+ use ToDoList\Contracts\ToDoRepositoryContract;
+ use Plenty\Plugin\Log\Reportable;
+
+ /**
+  * Class ContentController
+  * @package ToDoList\Controllers
+  */
+ class ContentController extends Controller
+ {
+     use Reportable;
+
+     ...
+
+     /**
+      * @param  \Plenty\Plugin\Http\Request $request
+      * @param ToDoRepositoryContract       $toDoRepo
+      * @return string
+      */
+     public function createToDo(Request $request, ToDoRepositoryContract $toDoRepo): string
+     {
+         $newToDo = $toDoRepo->createTask($request->all());
+
+         $this-report('ContentController_createToDo', 'ToDoList::migration.createToDoInformation', ['userId' => $newToDo->userId ], ['toDoId' => $newToDo->id]);
+
+         return json_encode($newToDo);
+     }
+
+     ...
+ }
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+
+<h1 id="run-log">See what you did there</h1>
+<div class="api-docs-basics">
+    <p>
+        To see the log functionality at work, you have to go to your plentymarkets back end. There, you go through the following steps:
+    </p>
+    <ol>
+        <li>
+            Go to <strong>Data exchange » Log</strong>.
+        </li>
+        <li>
+            Click on <strong>Configure</strong>.<br />
+            → The log configuration window will open.
+        </li>
+        <li>Select the ToDoList plugin.<br />
+        </li>
+        <li>
+            Select a time from the <strong>Duration</strong> drop-down menu.<br />
+            → This is the time for which the plugin will be logged.
+        </li>
+        <li>
+            Select a log level from the <strong>Log level</strong> drop-down menu.
+        </li>
+        <li>
+            <strong>Save</strong> the settings.
+        </li>
+    </ol>
+    <div class="alert alert-info" role="alert">
+        In choosing a log level, you set the minimum level to be triggered; any higher level occurrence will be triggered as well. If you choose <strong>debug</strong>, the lowest level, every event that occurs will also be logged. If you choose <strong>critical</strong>, only <strong>critical</strong>, <strong>alert</strong>, and <strong>emergency</strong> will be logged. You can find a detailed description <a href="https://laravel.com/docs/5.3/errors#log-severity-levels" target="_blank"><strong>here</strong></a>.
+    </div>
+    <p>
+        Finally, you can log your newly created tasks in your back end.
+    </p>
+    <ol>
+        <li>
+            Enter <code>http://your-plentystore.co.uk/todo</code> in your browser to open the ToDoList plugin.
+        </li>
+        <li>
+            Enter one or more tasks.
+        </li>
+        <li>
+            Return to your plentymarkets back end.
+        </li>
+        <li>
+            Go to <strong>Data exchange » Log</strong>.<br />
+            → Find the logs to the tasks you just created.
+        </li>
+    </ol>
+
+    <figure>
+        <a data-toggle="modal" data-target="#modal1" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/logging-backend.png" />
+        </a>
+    </figure>
+</div>
+
+<h1 id="log-structure">Log structure</h1>
+<div class="api-docs-basics">
+    <p>
+        This code shows the Loggable trait in the <code>ContentController.php</code> file.
+    </p>
+</div>
+<!-- Code example -->
+        <div class="route-container">
+            <code>ToDoList/src/Controllers/ContentController</code>
+        </div>
+        <div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+$this
+     ->getLogger('ContentController_createToDo')
+     ->setReferenceType('toDoId')
+     ->setReferenceValue($newToDo->id)
+     ->info('ToDoList::migration.createToDoInformation', ['userId' => $newToDo->userId ]);
+</pre>
+            <button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+        </div>
+<!-- Code example end -->
+
+<div class="api-docs-basics">
+    <p>The following table contains explanations of the individual code elements.
+    </p>
+</div>
+
+<div class="api-docs-basics">
+        <table class="table table-striped table-responsive table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>
+                    Element
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+            </thead>
+        <tbody>
+        <tr>
+            <td><strong>Integration key</strong></td>
+            <td>The Loggable trait automatically identifies the plugin it is used in and displays the namespace under <strong>Configure</strong> and <strong>Integration</strong> in the menu <strong>Data exchange » Log</strong> in the plentymarkets back end.</td>
+        </tr>
+        <tr>
+            <td><strong>Identifier</strong></td>
+            <td>The identifier will be shown under <strong>Identifier</strong> in the menu <strong>Data exchange » Log</strong> in the plentymarkets back end. In our example, it is <code>ContentController_createToDo</code>.</td>
+        </tr>
+        <tr>
+            <td><strong>Reference type (optional)</strong></td>
+            <td>This part has to be clearly defined and as specific as possible to avoid doublings. In case of a doubling, the <code>try</code> and <code>catch</code> method in the ServiceProvider will throw an exception. We chose <code>toDoId</code>.</td>
+        </tr>
+        <tr>
+            <td><strong>Reference value (optional)</strong></td>
+            <td>Add the specific value for the reference type, In our example, we store the ID of the new task using <code>$newToDo->id</code>.</td>
+        </tr>
+        <tr>
+            <td><strong>Debug level</strong></td>
+            <td>The chosen debug level, in our example <code>info</code>.</td>
+        </tr>
+        <tr>
+            <td><strong>Code</strong></td>
+            <td>This element uses the key-value pairs from the <code>migrations.properties</code> file, in this example, the  <code>createToDoInformation</code> key. It is shown under <strong>Code</strong> in the plentymarkets back end.</td>
+        </tr>
+        <tr>
+            <td><strong>Additional information (optional)</strong></td>
+            <td>After the code element, you can add further information. In this example, we have chosen <code>['userId' => $newToDo->userId ]</code> to get the ID of the user who created the to do task.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h1 id="log-structure">Available log levels</h1>
+<div class="api-docs-basics">
+    <p>In this table, find all the available log levels and explanations of the individual level.</p>
+</div>
+<div class="api-docs-basics">
+        <table class="table table-striped table-responsive table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>
+                    Level
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><span class="text-success">report</span></td>
+                <td>Report information. Will always be logged without prior log key activation.</td>
+            </tr>
+            <tr>
+                <td><span class="text-info">debug</span></td>
+                <td>Detailed debug information</td>
+            </tr>
+            <tr>
+                <td><span class="text-success">info</span></td>
+                <td>Interesting events</td>
+            </tr>
+            <tr>
+                <td><span class="text-warning">notice</span></td>
+                <td>Normal but significant events</td>
+            </tr>
+
+            <tr>
+                <td><span class="text-warning">warning</span></td>
+                <td>Exceptional occurrences that are not errors</td>
+            </tr>
+
+            <tr>
+                <td><span class="text-danger">error</span></td>
+                <td>Runtime errors that do not require immediate action but should typically be logged and monitored</td>
+            </tr>
+
+            <tr>
+                <td><span class="text-danger">critical</span></td>
+                <td>Critical conditions</td>
+            </tr>
+
+            <tr>
+                <td><span class="text-danger">alert</span></td>
+                <td>Action must be taken immediately</td>
+            </tr>
+
+            <tr>
+                <td><span class="text-danger">emergency</span></td>
+                <td>System is unusable</td>
+            </tr>
+            </tbody>
+        </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">The logging back end view</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/logging-backend.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

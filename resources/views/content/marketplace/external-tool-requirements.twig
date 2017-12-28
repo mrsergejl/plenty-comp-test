@@ -1,0 +1,77 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+    <h1 id="marketplace-requirements">External tool requirements</h1>
+    <div class="api-docs-basics">
+        <p>
+            An external tool is a software that provides functionality for a plentymarkets system without being deployed through the plugin structure. To offer a tool on plentyMarketplace, all the <a href="https://developers.plentymarkets.com/marketplace/plugin-requirements" target="_blank">plugin requirements</a> must be met, e.g., changelog, user guide, etc.<br />In addition, you have to provide at least one operational link for the customer to download your tool.
+        </p>
+    </div>
+
+    <h2 id="marketplace-overview">Overview of the differences between external tools and plugins</h2>
+    <div class="api-docs-basics">
+        <p>
+            Find a complete list of all the required information in the <code>plugin.json</code> file not covered by the basic plugin requirements below.
+        </p>
+        <table class="table table-striped table-responsive table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>
+                    Property
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td colspan="2" style="text-align: center"><b>Plugin data</b></td>
+            </tr>
+            <tr>
+                <td>
+                    type
+                </td>
+                <td>
+                    An external tool must be of type tool.<span class="label label-danger">required</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    serviceProvider
+                </td>
+                <td>
+                    This field has to be filled with any string.<span class="label label-danger">required</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    isExternalTool
+                </td>
+                <td>
+                    The value of this field must be of type <code>bool</code>.<br /> The value <true>true</true> defines the software as an external tool instead of a plugin.<br /><strong><i>Note:</i></strong> Any external tool requires at least one of the following properties to be filled. <span class="label label-danger">required</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    directDownloadLinks
+                </td>
+                <td>
+                    An array of strings that provides direct download links for different operating systems, e.g. <code>"directDownloadLinks" : {"Windows":"download-link", "MacOs":"download-link", "Linux":"download-link"}</code>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    forwardLink
+                </td>
+                <td>
+                    A string that provides a forward link to a website where the customer can download the tool, e.g. <code>"forwardLink" : "https://download-page.com"</code>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}

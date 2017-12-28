@@ -1,0 +1,773 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="shipping-plugin">A basic shipping plugin</h1>
+<div class="api-docs-basics">
+    <p>
+        In this tutorial, we will develop a basic plugin to integrate a shipping service provider in plentymarkets. We are going to enable the user to register shipping orders using the well-known processes in the plentymarkets shipping centre and the plentymarkets Client.
+    </p>
+</div>
+
+<!-- GitHub button -->
+<div class="connect">
+    <div class="btn btn-primary btn-block btn-github" title="Clone or download this plentymarkets plugin on GitHub.">
+        <a href="https://github.com/plentymarkets/plugin-shipping-tutorial" target="_blank" role="button"><img class="img-responsive pull-left" src="{{ plugin_path('PlentyPluginShowcase') }}/images/github-logo.png"  style="width: 40px;"/><span>Download on GitHub</span></a>
+    </div>
+</div>
+<!-- GitHub button end -->
+
+<h2 id="create-plugin-files">Step 1: Creating the plugin files</h2>
+<div class="api-docs-basics">
+    <p>
+        Our plugin consists of <a href="/dev-doc/basics#plugin-information">plugin.json</a> and the <a href="/dev-doc/basics#plugin-options">config.json</a>. When interacting with an API, which will surely be necessary in most cases, you will also need the classes required for this communication.
+    </p>
+</div>
+
+<!-- Folder structure -->
+<div class="code-container">
+<pre class="prettyprint lang-plain grey-back">
+PluginShippingTutorial/
+    ├── src/
+    │   ├── Controllers/
+    │   │   └── ShippingTutorialController.php
+    │   │
+    │   └── Providers/
+    │       └── ShippingTutorialServiceProvider.php
+    │
+    ├── config.json // admin's plugin options
+    ├── plugin.json // plugin information
+    └── README.md // plugin's README file
+</pre>
+</div>
+<!-- Folder structure end -->
+
+<h2 id="fill-source-files">Step 2: Filling the source files</h2>
+<div class="api-docs-basics">
+    <p>
+        We start by creating the <code>plugin.json</code> file. We will also need a <code>config.json</code> as well as a ServiceProvider. Create these files and copy the code examples.
+    </p>
+</div>
+
+<h3 id="code-pluginjson">Code for the plugin.json</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>PluginShippingTutorial/plugin.json</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+{
+      "name"                : "ShippingTutorial",
+      "marketplaceName"     : {"en":"shipping plugin tutorial", "de":"Versandplugin-Tutorial"},
+      "description"         : "A basic shipping plugin by plentymarkets",
+      "namespace"           : "ShippingTutorial",
+      "author"              : "plentymarkets GmbH",
+      "type"                : "shipping",
+      "serviceProvider"     : "ShippingTutorial\\Providers\\ShippingTutorialServiceProvider",
+      "version"             : "0.1.0",
+      "license"             : "AGPL-3.0",
+      "pluginIcon"          : "icon_plugin_xs.png",
+      "price"               : 0.00,
+      "shortDescription"    : {"en": "A basic shipping plugin", "de": "Ein einfaches Versand-Plugin"},
+      "keywords"            : ["plugin", "shipping", "tutorial"],
+      "authorIcon"          : "icon_author_xs.png",
+      "email"               : "sales@plentymarkets.com",
+      "phone"               : "+49 561 98 681 100"
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The plugin is of the <code>shipping</code> type. A list of keywords describing the plugin is entered under <code>keywords</code>.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-configjson">Code for the config.json</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>PluginShippingTutorial/config.json</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+[
+    {
+        "tab": "General",
+        "key": "mode",
+        "label": "Mode",
+        "type": "dropdown",
+        "possibleValues": {
+            "0": "Test",
+            "1": "Productive"
+        },
+        "default": "0"
+    },
+    {
+        "tab": "General",
+        "key": "username",
+        "label": "Username",
+        "type": "text",
+        "default": ""
+    },
+    {
+        "tab": "General",
+        "key": "password",
+        "label": "Password",
+        "type": "password",
+        "default": ""
+    },
+    {
+        "tab": "Sender",
+        "key": "senderName",
+        "label": "Name",
+        "type": "text",
+        "default": ""
+    },
+    {
+        "tab": "Sender",
+        "key": "senderStreet",
+        "label": "Street",
+        "type": "text",
+        "default": ""
+    },
+    {
+        "tab": "Sender",
+        "key": "senderNo",
+        "label": "No",
+        "type": "text",
+        "default": ""
+    },
+    {
+        "tab": "Sender",
+        "key": "senderPostalCode",
+        "label": "Postal code",
+        "type": "text",
+        "default": ""
+    },
+    {
+        "tab": "Sender",
+        "key": "senderTown",
+        "label": "Town",
+        "type": "text",
+        "default": ""
+    },
+    {
+        "tab": "Sender",
+        "key": "senderCountry",
+        "label": "Country",
+        "type": "dropdown",
+        "possibleValues": {
+            "0": "Germany",
+            "1": "Austria"
+        },
+        "default": "0"
+    }
+]
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: We have several different settings options available for configuring our plugin. These options will be displayed in the <b>Config</b> tab of the plugin in the plentymarkets back end.<br /><br />The <code>tab</code> property organises all our options in the <b>Settings</b> tab. Under <code>label</code>, we enter the name of each option.<br /><br />In this <code>config.json</code> we use 3 different <code>types</code>: text, dropdown and password. The <code>text</code> type displays a normal input field. The <code>dropdown</code> type creates a drop-down list with the values stated under <code>possibleValues</code>. The <code>password</code> type creates a password field.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-serviceprovider">Code for the ServiceProvider</h3>
+
+<!-- Code example -->
+<div class="route-container">
+  <code>PluginShippingTutorial/src/Providers/ShippingTutorialServiceProvider.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace PluginShippingTutorial\Providers;
+
+use Plenty\Modules\Order\Shipping\ServiceProvider\Services\ShippingServiceProviderService;
+use Plenty\Plugin\ServiceProvider;
+
+/**
+ * Class ShippingTutorialServiceProvider
+ * @package PluginShippingTutorial\Providers
+ */
+class ShippingTutorialServiceProvider extends ServiceProvider
+{
+
+	/**
+	 * Register the service provider.
+	 */
+	public function register()
+	{
+	    // add REST routes by registering a RouteServiceProvider if necessary
+//	     $this->getApplication()->register(ShippingTutorialRouteServiceProvider::class);
+    }
+
+    public function boot(ShippingServiceProviderService $shippingServiceProviderService)
+    {
+
+        $shippingServiceProviderService->registerShippingProvider(
+            'PluginShippingTutorial',
+            ['de' => '*** Plenty shipping tutorial ***', 'en' => '*** Plenty shipping tutorial ***'],
+            [
+                'PluginShippingTutorial\\Controllers\\ShippingController@registerShipments',
+                'PluginShippingTutorial\\Controllers\\ShippingController@deleteShipments',
+            ]);
+    }
+}
+
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In the first part of our ServiceProvider, we include (<code>use</code>) a service that allows to register different methods of this shipping service provider for usage in the plentymarkets shipping centre and the plentymarkets Client.<br /><br />In the second part of the code, we have a list of functions, e.g. the <code>boot</code> function. This function boots the additional service for the shipping centre. The function contains two values to map methods from within the controller inside the plugin to standard functions in plentymarkets.
+</div>
+<!-- Code example end -->
+
+    <h3 id="code-serviceprovider">Code for the ShippingController</h3>
+
+    <!-- Code example -->
+    <div class="route-container">
+        <code>PluginShippingTutorial/src/Controllers/ShippingController.php</code>
+    </div>
+    <div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace PluginShippingTutorial\Controllers;
+
+use Plenty\Modules\Account\Address\Contracts\AddressRepositoryContract;
+use Plenty\Modules\Account\Address\Models\Address;
+use Plenty\Modules\Cloud\Storage\Models\StorageObject;
+use Plenty\Modules\Order\Contracts\OrderRepositoryContract;
+use Plenty\Modules\Order\Shipping\Contracts\ParcelServicePresetRepositoryContract;
+use Plenty\Modules\Order\Shipping\Information\Contracts\ShippingInformationRepositoryContract;
+use Plenty\Modules\Order\Shipping\Package\Contracts\OrderShippingPackageRepositoryContract;
+use Plenty\Modules\Order\Shipping\PackageType\Contracts\ShippingPackageTypeRepositoryContract;
+use Plenty\Modules\Order\Shipping\ParcelService\Models\ParcelServicePreset;
+use Plenty\Modules\Plugin\Storage\Contracts\StorageRepositoryContract;
+use Plenty\Plugin\Controller;
+use Plenty\Plugin\Http\Request;
+use Plenty\Plugin\ConfigRepository;
+
+/**
+ * Class ShippingController
+ */
+class ShippingController extends Controller
+{
+
+	/**
+	 * @var Request
+	 */
+	private $request;
+
+	/**
+	 * @var OrderRepositoryContract $orderRepository
+	 */
+	private $orderRepository;
+
+	/**
+	 * @var AddressRepositoryContract $addressRepository
+	 */
+	private $addressRepository;
+
+	/**
+	 * @var OrderShippingPackageRepositoryContract $orderShippingPackage
+	 */
+	private $orderShippingPackage;
+
+	/**
+	 * @var ShippingInformationRepositoryContract
+	 */
+	private $shippingInformationRepositoryContract;
+
+	/**
+	 * @var StorageRepositoryContract $storageRepository
+	 */
+	private $storageRepository;
+
+	/**
+	 * @var ShippingPackageTypeRepositoryContract
+	 */
+	private $shippingPackageTypeRepositoryContract;
+
+    /**
+     * @var  array
+     */
+    private $createOrderResult = [];
+
+    /**
+     * @var ConfigRepository
+     */
+    private $config;
+
+	/**
+	 * ShipmentController constructor.
+     *
+	 * @param Request $request
+	 * @param OrderRepositoryContract $orderRepository
+	 * @param AddressRepositoryContract $addressRepositoryContract
+	 * @param OrderShippingPackageRepositoryContract $orderShippingPackage
+	 * @param StorageRepositoryContract $storageRepository
+	 * @param ShippingInformationRepositoryContract $shippingInformationRepositoryContract
+	 * @param ShippingPackageTypeRepositoryContract $shippingPackageTypeRepositoryContract
+     * @param ConfigRepository $config
+     */
+	public function __construct(Request $request,
+								OrderRepositoryContract $orderRepository,
+								AddressRepositoryContract $addressRepositoryContract,
+								OrderShippingPackageRepositoryContract $orderShippingPackage,
+								StorageRepositoryContract $storageRepository,
+								ShippingInformationRepositoryContract $shippingInformationRepositoryContract,
+								ShippingPackageTypeRepositoryContract $shippingPackageTypeRepositoryContract,
+                                ConfigRepository $config)
+	{
+		$this->request = $request;
+		$this->orderRepository = $orderRepository;
+		$this->addressRepository = $addressRepositoryContract;
+		$this->orderShippingPackage = $orderShippingPackage;
+		$this->storageRepository = $storageRepository;
+
+		$this->shippingInformationRepositoryContract = $shippingInformationRepositoryContract;
+		$this->shippingPackageTypeRepositoryContract = $shippingPackageTypeRepositoryContract;
+
+		$this->config = $config;
+	}
+
+
+	/**
+	 * Registers shipment(s)
+	 *
+	 * @param Request $request
+	 * @param array $orderIds
+	 * @return string
+	 */
+	public function registerShipments(Request $request, $orderIds)
+	{
+		$orderIds = $this->getOrderIds($request, $orderIds);
+		$orderIds = $this->getOpenOrderIds($orderIds);
+		$shipmentDate = date('Y-m-d');
+
+		foreach($orderIds as $orderId)
+		{
+			$order = $this->orderRepository->findOrderById($orderId);
+
+            // gathering required data for registering the shipment
+
+            /** @var Address $address */
+            $address = $order->deliveryAddress;
+
+            $receiverFirstName     = $address->firstName;
+            $receiverLastName      = $address->lastName;
+            $receiverStreet        = $address->street;
+            $receiverNo            = $address->houseNumber;
+            $receiverPostalCode    = $address->postalCode;
+            $receiverTown          = $address->town;
+            $receiverCountry       = $address->country->name; // or: $address->country->isoCode2
+
+            // reads sender data from plugin config. this is going to be changed in the future to retrieve data from backend ui settings
+            $senderName           = $this->config->get('PluginShippingTutorial.senderName', 'plentymarkets GmbH - Timo Zenke');
+            $senderStreet         = $this->config->get('PluginShippingTutorial.senderStreet', 'Bürgermeister-Brunner-Str.');
+            $senderNo             = $this->config->get('PluginShippingTutorial.senderNo', '15');
+            $senderPostalCode     = $this->config->get('PluginShippingTutorial.senderPostalCode', '34117');
+            $senderTown           = $this->config->get('PluginShippingTutorial.senderTown', 'Kassel');
+            $senderCountryID      = $this->config->get('PluginShippingTutorial.senderCountry', '0');
+            $senderCountry        = ($senderCountryID == 0 ? 'Germany' : 'Austria');
+
+            // gets order shipping packages from current order
+            $packages = $this->orderShippingPackage->listOrderShippingPackages($order->id);
+
+            // iterating through packages
+            foreach($packages as $package)
+            {
+                // weight
+                $weight = $package->weight;
+
+                // determine packageType
+                $packageType = $this->shippingPackageTypeRepositoryContract->findShippingPackageTypeById($package->packageId);
+
+                // package dimensions
+                list($length, $width, $height) = $this->getPackageDimensions($packageType);
+
+
+                try
+                {
+                    // check wether we are in test or productive mode, use different login or connection data
+                    $mode = $this->config->get('PluginShippingTutorial.mode', '0');
+
+                    // shipping service providers API should be used here
+                    $response = [
+                        'labelUrl' => 'https://developers.plentymarkets.com/layout/plugins/production/plentypluginshowcase/images/landingpage/why-plugin-2.svg',
+                        'shipmentNumber' => '1111112222223333',
+                        'sequenceNumber' => 1,
+                        'status' => 'shipment successfully registered'
+                    ];
+
+                    // handles the response
+                    $shipmentItems = $this->handleAfterRegisterShipment($response['labelUrl'], $response['shipmentNumber'], $package->id);
+
+                    // adds result
+                    $this->createOrderResult[$orderId] = $this->buildResultArray(
+                        true,
+                        $this->getStatusMessage($response),
+                        false,
+                        $shipmentItems);
+
+                    // saves shipping information
+                    $this->saveShippingInformation($orderId, $shipmentDate, $shipmentItems);
+
+
+                }
+                catch(\SoapFault $soapFault)
+                {
+                    // handle exception
+                }
+
+            }
+
+		}
+
+		// return all results to service
+		return $this->createOrderResult;
+	}
+
+
+
+    /**
+     * Cancels registered shipment(s)
+     *
+     * @param Request $request
+     * @param array $orderIds
+     * @return array
+     */
+    public function deleteShipments(Request $request, $orderIds)
+    {
+        $orderIds = $this->getOrderIds($request, $orderIds);
+        foreach ($orderIds as $orderId)
+        {
+            $shippingInformation = $this->shippingInformationRepositoryContract->getShippingInformationByOrderId($orderId);
+
+            if (isset($shippingInformation->additionalData) && is_array($shippingInformation->additionalData))
+            {
+                foreach ($shippingInformation->additionalData as $additionalData)
+                {
+                    try
+                    {
+                        $shipmentNumber = $additionalData['shipmentNumber'];
+
+                        // use the shipping service provider's API here
+                        $response = '';
+
+                        $this->createOrderResult[$orderId] = $this->buildResultArray(
+                            true,
+                            $this->getStatusMessage($response),
+                            false,
+                            null);
+
+                    }
+                    catch(\SoapFault $soapFault)
+                    {
+                        // exception handling
+                    }
+
+                }
+
+                // resets the shipping information of current order
+                $this->shippingInformationRepositoryContract->resetShippingInformation($orderId);
+            }
+
+
+        }
+
+        // return result array
+        return $this->createOrderResult;
+    }
+
+
+	/**
+     * Retrieves the label file from a given URL and saves it in S3 storage
+     *
+	 * @param $labelUrl
+	 * @param $key
+	 * @return StorageObject
+	 */
+	private function saveLabelToS3($labelUrl, $key)
+	{
+		$ch = curl_init();
+
+		// Set URL to download
+		curl_setopt($ch, CURLOPT_URL, $labelUrl);
+
+		// Include header in result? (0 = yes, 1 = no)
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+
+		// Should cURL return or print out the data? (true = return, false = print)
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		// Timeout in seconds
+		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+		// Download the given URL, and return output
+		$output = curl_exec($ch);
+
+		// Close the cURL resource, and free system resources
+		curl_close($ch);
+		return $this->storageRepository->uploadObject('PluginShippingTutorial', $key, $output);
+
+	}
+
+	/**
+	 * Returns the parcel service preset for the given Id.
+	 *
+	 * @param int $parcelServicePresetId
+	 * @return ParcelServicePreset
+	 */
+	private function getParcelServicePreset($parcelServicePresetId)
+	{
+		/** @var ParcelServicePresetRepositoryContract $parcelServicePresetRepository */
+		$parcelServicePresetRepository = pluginApp(ParcelServicePresetRepositoryContract::class);
+
+		$parcelServicePreset = $parcelServicePresetRepository->getPresetById($parcelServicePresetId);
+
+		if($parcelServicePreset)
+		{
+			return $parcelServicePreset;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
+     * Returns a formatted status message
+     *
+	 * @param array $response
+	 * @return string
+	 */
+	private function getStatusMessage($response)
+	{
+		return 'Code: '.$response['status']; // should contain error code and descriptive part
+	}
+
+    /**
+     * Saves the shipping information
+     *
+     * @param $orderId
+     * @param $shipmentDate
+     * @param $shipmentItems
+     */
+	private function saveShippingInformation($orderId, $shipmentDate, $shipmentItems)
+	{
+		$transactionIds = array();
+		foreach ($shipmentItems as $shipmentItem)
+		{
+			$transactionIds[] = $shipmentItem['shipmentNumber'];
+
+		}
+
+        $shipmentAt = date(\DateTime::W3C, strtotime($shipmentDate));
+        $registrationAt = date(\DateTime::W3C);
+
+		$data = [
+			'orderId' => $orderId,
+			'transactionId' => implode(',', $transactionIds),
+			'shippingServiceProvider' => 'PluginShippingTutorial',
+			'shippingStatus' => 'registered',
+			'shippingCosts' => 0.00,
+			'additionalData' => $shipmentItems,
+			'registrationAt' => $registrationAt,
+			'shipmentAt' => $shipmentAt
+
+		];
+		$this->shippingInformationRepositoryContract->saveShippingInformation(
+			$data);
+	}
+
+    /**
+     * Returns all order ids with shipping status 'open'
+     *
+     * @param array $orderIds
+     * @return array
+     */
+	private function getOpenOrderIds($orderIds)
+	{
+
+		$openOrderIds = array();
+		foreach ($orderIds as $orderId)
+		{
+			$shippingInformation = $this->shippingInformationRepositoryContract->getShippingInformationByOrderId($orderId);
+			if ($shippingInformation->shippingStatus == null || $shippingInformation->shippingStatus == 'open')
+			{
+				$openOrderIds[] = $orderId;
+			}
+		}
+		return $openOrderIds;
+	}
+
+
+	/**
+     * Returns an array in the structure demanded by plenty service
+     *
+	 * @param bool $success
+	 * @param string $statusMessage
+	 * @param bool $newShippingPackage
+	 * @param array $shipmentItems
+	 * @return array
+	 */
+	private function buildResultArray($success = false, $statusMessage = '', $newShippingPackage = false, $shipmentItems = [])
+	{
+		return [
+			'success' => $success,
+			'message' => $statusMessage,
+			'newPackagenumber' => $newShippingPackage,
+			'packages' => $shipmentItems,
+		];
+	}
+
+	/**
+     * Returns shipment array
+     *
+	 * @param string $labelUrl
+	 * @param string $shipmentNumber
+	 * @return array
+	 */
+	private function buildShipmentItems($labelUrl, $shipmentNumber)
+	{
+		return  [
+			'labelUrl' => $labelUrl,
+			'shipmentNumber' => $shipmentNumber,
+		];
+	}
+
+	/**
+     * Returns package info
+     *
+	 * @param string $packageNumber
+	 * @param string $labelUrl
+	 * @return array
+	 */
+	private function buildPackageInfo($packageNumber, $labelUrl)
+	{
+		return [
+			'packageNumber' => $packageNumber,
+			'label' => $labelUrl
+		];
+	}
+
+	/**
+     * Returns all order ids from request object
+     *
+	 * @param Request $request
+	 * @param $orderIds
+	 * @return array
+	 */
+	private function getOrderIds(Request $request, $orderIds)
+	{
+		if (is_numeric($orderIds))
+		{
+			$orderIds = array($orderIds);
+		}
+		else if (!is_array($orderIds))
+		{
+			$orderIds = $request->get('orderIds');
+		}
+		return $orderIds;
+	}
+
+	/**
+     * Returns the package dimensions by package type
+     *
+	 * @param $packageType
+	 * @return array
+	 */
+	private function getPackageDimensions($packageType): array
+	{
+		if ($packageType->length > 0 && $packageType->width > 0 && $packageType->height > 0)
+		{
+			$length = $packageType->length;
+			$width = $packageType->width;
+			$height = $packageType->height;
+		}
+		else
+		{
+			$length = null;
+			$width = null;
+			$height = null;
+		}
+		return array($length, $width, $height);
+	}
+
+
+	/**
+     * Handling of response values, fires S3 storage and updates order shipping package
+     *
+	 * @param string $labelUrl
+     * @param string $shipmentNumber
+     * @param string $sequenceNumber
+	 * @return array
+	 */
+	private function handleAfterRegisterShipment($labelUrl, $shipmentNumber, $sequenceNumber)
+	{
+		$shipmentItems = array();
+		$storageObject = $this->saveLabelToS3(
+			$labelUrl,
+			$shipmentNumber . '.pdf');
+
+		$shipmentItems[] = $this->buildShipmentItems(
+			$labelUrl,
+			$shipmentNumber);
+
+		$this->orderShippingPackage->updateOrderShippingPackage(
+			$sequenceNumber,
+			$this->buildPackageInfo(
+				$shipmentNumber,
+				$storageObject->key));
+		return $shipmentItems;
+	}
+}
+
+</pre>
+        <button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+    </div>
+
+    <div class="alert alert-info" role="alert">
+        <b>Explanation</b>: Again, we <code>use</code> different things to be used in this controller.<br /><br />The main part can be found in the <code>registerShipments</code> function. This function is being called from within the plentymarkets shipping centre (and the plentymarkets Client) and gets one or more order IDs as a parameter.<br />There is a fixed array structure which has to be returned to the internal calling function.
+    </div>
+    <!-- Code example end -->
+
+<h1 id="open-plugin">Testing what we have just created</h1>
+<div class="api-docs-basics">
+    <p>
+        After creating the plugin and configuring the settings in the configuration, we have to <a href="/dev-doc/basics#add-repository">add</a> our new plugin to the plentymarkets inbox.
+    </p>
+</div>
+    <ol>
+      <li>
+          Go to <b>Plugins » Plugin overview</b>.
+      </li>
+      <li>
+          In the list of plugins, click on <b>PluginShippingTutorial</b>.<br />
+          → The plugin config file will open.
+      </li>
+      <li>
+          Enter the values for the <b>mode</b> and the login data for an API in the <b>General</b> tab.
+      </li>
+      <li>
+      Enter the sender's address data in the second tab <b>Sender</b>.
+      </li>
+      <li>
+          <b>Save</b> the settings.
+      </li>
+    </ol>
+<div class="api-docs-basics">
+    <p>
+        And finally, we <a href="/dev-doc/basics#provisioning">provision</a> the plugin in <b>Productive</b>. Our shipping service provider <b>Plenty Shipping tutorial</b> will be available both in the drop-down menu of the shipping service providers in the plentymarkets shipping centre and in the procedure <b>Shipping centre</b> in the plentymarkets Client. Now we can register a shipping order using our newly added plugin code. Additional information such as shipment numbers are saved in the <b>Order Shipping Package</b>; the shipping status is saved in the <b>Shipping Information</b>. Both are related to the order.
+    </p>
+</div>
+
+
+{% endblock %}

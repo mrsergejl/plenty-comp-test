@@ -1,0 +1,35 @@
+<h2 id="auth-helper">Executing code without authentication</h2>
+
+<div class="api-docs-basics">
+
+<p>
+If you want to execute individual code blocks in the plugin without being restricted by authentication, use the <code>AuthHelper</code> class. For further information, refer to the code example below:
+</p>
+
+<!-- Code example -->
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+/** @var \Plenty\Modules\Account\Address\Contracts\AddressRepositoryContract $addressRepo */
+$addressRepo = pluginApp(AddressRepositoryContract::class);
+
+/** @var \Plenty\Modules\Authorization\Services\AuthHelper $authHelper */
+$authHelper = pluginApp(AuthHelper::class);
+
+$address = null;
+
+//guarded
+$address = $authHelper->processUnguarded(
+    function () use ($addressRepo, $address) {
+        //unguarded
+        return $addressRepo->findAddressById(42);
+    }
+);
+//guarded
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<!-- Code example end -->
+
+</div>

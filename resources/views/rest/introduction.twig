@@ -1,0 +1,2154 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="rest-introduction">Introducing the plentymarkets REST API</h1>
+
+<div class="api-docs-basics">
+    <p>
+        The plentymarkets REST API expands the functionality of the plentymarkets CMS and allows access to resources, i.e. data records, via unique URI paths. To use the REST API, you need to run an HTTP request and analyse the result. The REST API uses JSON as the communication format combined with the default HTTP methods GET, PUT, POST and DELETE:
+    </p>
+    <ul>
+        <li>
+            <b>GET</b> returns data. This method does not modify data saved on the server.
+        </li>
+        <li>
+            <b>PUT</b> modifies an existing data record.
+        </li>
+        <li>
+            <b>POST</b> creates a new data record.
+        </li>
+        <li>
+            <b>DELETE</b> deletes an existing data record.
+        </li>
+    </ul>
+</div>
+
+<h2 id="rest-authentication">Authentication</h2>
+
+<div class="api-docs-basics">
+    <p>
+        plentymarkets REST API uses <b>OAuth 2.0</b>. Most REST API calls do not require any specific authentication. There are a few exceptions, as some calls are only permitted for logged in front end or in some cases back end users. Calls that require authentication are flagged in the documentation.
+    </p>
+    <div class="route-container" data-type="post" data-middleware="oauth">
+        <code>/rest/logout</code>
+    </div>
+    <p>
+        The API uses the "Bearer" authentication scheme to transmit the access token. To get the token for authentication, the call <a href="/rest-doc/authentication#login">Login</a> can be used.
+    </p>
+    <p>
+        The POST method <code>/rest/login?username={username}&password={password}</code> will return a JSON object with the necessary data.
+    </p>
+
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#search-plugins_response_example" role="tab" data-toggle="tab">
+                Response (example)
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="search-plugins_response_example" role="tabpanel" class="tab-pane active">
+            <div class="editor-container" ace-mode="json">{"token_type":"Bearer","expires_in":86400,"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImQ2M2MzYjkyZjNkNjgzMGQyOWE5MjQxYmNjYWZmYThlMmQyMmVmODc4MGU0MjZmYmFmMjQ1Mjc3ZTcwNWY1Y2RiZmNkZmMwNmEyNDA1MmQ4In0.eyJhdWQiOiIxIiwianRpIjoiZDYzYzNiOTJmM2Q2ODMwZDI5YTkyNDFiY2NhZmZhOGUyZDIyZWY4NzgwZTQyNmZiYWYyNDUyNzdlNzA1ZjVjZGJmY2RmYzA2YTI0MDUyZDgiLCJpYXQiOjE1MDQ2NzY3OTEsIm5iZiI6MTUwNDY3Njc5MSwiZXhwIjoxNTA0NzYzMTkwLCJzdWIiOiIzIiwic2NvcGVzIjpbIioiXX0.D5g9On1SNTYyYqd02BjGm_2eOVs0H5aBKqJ0oxL9bcKbDlBzwVw2Mo6ObNRXmcgCW4YHK-U67MiZLAmJ8IuqTaq3JkvRbLLuSaB4rhktTE-i5OPPBx0TNZ4D1v9bIz5q56BEnE4YpJ3fw_WmU2xUIcuJPnRfSkDFYlnS3JvEonV3X5LS6_-JQNKKCgaQTETioiu-GdRLmq3Gq22L9Xpd4SGDQYDY8gKgLdzuYtw3swoPrscIQVxF_ZxtMRz4BN9qI2YKKsBk6b28jdQ8SopYUzN3C82GXfHgBkUEkCR4Q574IqfBuR3-8s-XORTdqmN_okgnm2AQGKf2Ka1fmsco4WOqzgdenPoEWyeuBG0AB5FfF_BnZ3wQ5Y6r7ohUXo5qsbolaKe1x8EPLrGLl4xCiEbWuv06t56r9YeeuJnmhTgI-fwGC_2sCBo_APHb6LIUeP47ptfzQhMVyCMJ56lnMw-oawm2lFqwMRchbD5GYfHEdWOwMkuuk0cZACeWeV2qmnC01uWoiaYGFRr6rRQxM9OnijR-Qzwq7kgPiu0WGx6ik8G7YgaDJyYZzGKR-I3aL40ho1bGTtKGIIgsY4fpvTdiaDUa-0usWFnvZ1zXD0ta8V7acQEbLjUo4KE8PMYdLvTGD1YcTiJqe0g890B7rs2IoUsJK4rR8tTUpiciQ40","refresh_token":"def502003d741bf9f7336c3c08cd610cd93da9ecc4ff9ad2e9342810a61d21e064c1101029ab4b00e8e934fefce93ab2139bafd4d69d5d9d057871df7ac5287e023d78bbd5701e687db148376e749325cb6ac3bfd9fef970b7166cb6d3fc8c0e735101014b565fcbcf9acafc39d7c446fa133b9cec7e218e4762e58b882a2519ed5c6e9387df505216767d50ac814b13c8d84739b62b32e618997998c32a9ea55124aaee2640871734c2541f6fa99304d3de3933f98f97b34557ea485810c6a834439ecdc01be1d675746019650a7307b31c66d3118a00c0b36512761a6eb902611f26a87e573193d54af03aad17d325673f1cd3198f8d4bc347326e591a18472492516fe56c5461a314247b576a28b4c505a302b12103dfa2ada519b04682a7eedc27981d0d038a4cda9093ab0f45a4e5200fde64ea9105c3f3207869130735d4a444cdac581a56b2104020c3b4752d332dc0fdc59efdf51ccd3bade8c113562efc"}</div>
+        </div>
+    </div>
+    <br />
+    <p>
+        Enter the <code>Authorization</code> key together with the token as the value in the HTTP header:
+    </p>
+    <ul>
+        <li>
+            <code>Authorization: Bearer <b>TOKEN</b></code>
+        </li>
+    </ul>
+</div>
+
+<h2 id="rest-throttling">Throttling</h2>
+
+<h3 id="rest-throttling-limits">Limits</h3>
+<div class="api-docs-basics">
+    <p>
+        To prevent misuse of the REST API and ensure a system's performance and stability, access to the REST API of any given plentymarkets
+        system is <strong>throttled</strong>. The following limits apply:
+    </p>
+    <ul>
+        <li>
+            <strong>Short period limit:</strong> {{ callLimits.short_period.total }} calls per user and minute, consisting of
+            <strong>{{ callLimits.short_period.read }} reading calls</strong> and <strong>{{ callLimits.short_period.write}} writing calls</strong>
+        </li>
+        <li>
+            <strong>Long period limit:</strong> {{ callLimits.long_period.total }} calls per system and day, consisting of <strong>{{ callLimits.long_period.read }}
+                reading calls</strong> and <strong>{{ callLimits.long_period.write }} writing calls</strong>
+        </li>
+    </ul>
+    <p>
+        In addition to these limits, specific routes may be fitted with an individual limit, only applying to this route. For these routes,
+        the limit will be visible in the REST documentation here on the plentymarkets developers website. The route will be labeled with a
+        "THROTTLING" badge, the exact limit can be seen in the "Errors" section of that call. An example for a route with an individual call limit
+        is
+        the <a href="/rest-doc/authentication/details#login"><code>/rest/login</code></a> route.
+    </p>
+</div>
+
+<h3 id="rest-throttling-handling">Handling</h3>
+<div class="api-docs-basics">
+    <p>
+        To give external clients the ability to adjust to these limits and react accordingly, we will send additional headers with each response to a
+        REST call. These headers are prefixed with one of these three prefixes, telling you what specific limitation they are informing about:
+    </p>
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Header-Prefix</th>
+            <th>Meaning</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><code>X-Plenty-Global-Long-Period</code></td>
+            <td>The information in this header field refers to the <strong>Long period limit</strong></td>
+        </tr>
+        <tr>
+            <td><code>X-Plenty-Global-Short-Period</code></td>
+            <td>The information in this header field refers to the <strong>Short period limit</strong></td>
+
+        </tr>
+        <tr>
+            <td><code>X-Plenty-Route</code></td>
+            <td>The information in this header field refers to the <strong>individual route limit</strong></td>
+        </tr>
+        </tbody>
+    </table>
+    <p>
+        Depending on what follows the prefix, the headers have the following meanings:
+    </p>
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Header</th>
+                <th>Meaning</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>$PREFIX$-Limit</code></td>
+                <td>The maximum number of calls for this limit</td>
+            </tr>
+            <tr>
+                <td><code>$PREFIX$-Decay</code></td>
+                <td>Seconds until the current period ends and number of calls gets reset</td>
+            </tr>
+            <tr>
+                <td><code>$PREFIX$-Calls-Left</code></td>
+                <td>Number of calls left for this period</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        In addition, the following headers will be sent to the client if one or more of these limits are exceeded:
+    </p>
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Header</th>
+            <th>Meaning</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><code>Retry-After</code></td>
+            <td>Seconds until the current period is over and the call count is reset. Hence, the number of seconds the client must wait until making the
+                next call.</td>
+        </tr>
+        <tr>
+            <td><code>$PREFIX$-Calls-Reset</code></td>
+            <td>Timestamp denoting the point in time when the call count for the specific limit (specified by the prefix) is reset</td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<h2 id="rest-versioning">Versioning</h2>
+
+<div class="api-docs-basics">
+    <p>
+        When using the plentymarkets REST API, versioning is optional. If no version is specified in the HTTP header, then the newest version of the API is used. Alternatively, you can enter the following line in the HTTP header and swap out the version:
+    </p>
+    <ul>
+        <li>
+            <code>Accept: application/x.plentymarkets.<b>v1</b>+json</code>
+        </li>
+    </ul>
+</div>
+
+<h2 id="rest-handling-json">Handling of JSON</h2>
+
+<div class="api-docs-basics">
+    <p>As a rule, a JSON document is returned when a REST resource of the HTTP method <code>GET</code> is called. This JSON document can be parsed to a JSON object.<br /><br />If PUT, POST or DELETE methods are also available for the resource, it accepts the JSON document received via GET. In many cases, this allows for a very efficient work flow based on the following principle:
+    </p>
+    <ol>
+        <li>
+            JSON document is retrieved via GET
+        </li>
+        <li>
+            JSON object is manipulated
+        </li>
+        <li>
+            Manipulated JSON object is transferred via PUT, POST or DELETE
+        </li>
+    </ol>
+</div>
+
+<h2 id="rest-pagination">Pagination</h2>
+
+<div class="api-docs-basics">
+    <p>For designated GET requests, you can use the request parameters <code>page</code> and <code>itemsPerPage</code> to limit your request to the specified values. Both parameters are optional. With <code>itemsPerPage</code>, the call returns the numbers of entries specified with this parameter. In case of a maximum limit for <code>itemsPerPage</code>, the limit is defined in the parameter definition. The <code>page</code> parameter returns the specified page. In the example below, the plugins 1 to 10 (if there are 10+ plugins) from the first page of the plugin inbox will be returned in the response JSON:
+    </p>
+    <br />
+    <div class="route-container" data-type="get" data-middleware="oauth">
+        <code>/rest/plugins/search?page=1&itemsPerPage=10</code>
+    </div>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+        <a href="#search-plugins_response_example" role="tab" data-toggle="tab">
+            Response (example)
+        </a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div id="search-plugins_response_example" role="tabpanel" class="tab-pane active">
+        <div class="editor-container" ace-mode="json">{"page":"1","totalsCount":1,"isLastPage":true,"entries":[{"name":"PlentyPluginShowcase","type":"template","activeStage":false,"activeProductive":false,"id":1,"position":"0","created_at":"2016-06-21 09:16:10","updated_at":"2016-06-21 09:16:10","inProductive":false,"inStage":false,"version":0.1,"description":"showcase of plentymarkets plugins","namespace":"Showcase","author":"plentymarkets GmbH","keywords":["plentymarkets","showcase","plugins"],"require":[],"authorIcon":null,"pluginIcon":null,"webstores":[],"permissions":[]}]}</div>
+    </div>
+</div>
+
+<h2 id="rest-resources">Resources</h2>
+
+<div class="api-docs-basics">
+    <p>Click on the <b>REST</b> dropdown list, to access the pages that provide information on all resources currently available. Listed are the possible HTTP methods, the required parameters and the server response for each resource.
+    </p>
+</div>
+
+<h2 id="languages">Language codes</h2>
+<div class="api-docs-basics">
+    <p>
+        The following language codes are used in the plentymarkets REST API.
+    </p>
+
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Code</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td><b>bg</b></td>
+            <td>Bulgarian</td>
+        </tr>
+        <tr>
+            <td><b>cn</b></td>
+            <td>Chinese</td>
+        </tr>
+        <tr>
+            <td><b>cz</b></td>
+            <td>Czech</td>
+        </tr>
+        <tr>
+            <td><b>da</b></td>
+            <td>Danish</td>
+        </tr>
+        <tr>
+            <td><b>de</b></td>
+            <td>German</td>
+        </tr>
+        <tr>
+            <td><b>en</b></td>
+            <td>English</td>
+        </tr>
+        <tr>
+            <td><b>es</b></td>
+            <td>Spanish</td>
+        </tr>
+        <tr>
+            <td><b>fr</b></td>
+            <td>French</td>
+        </tr>
+        <tr>
+            <td><b>it</b></td>
+            <td>Italian</td>
+        </tr>
+        <tr>
+            <td><b>nl</b></td>
+            <td>Dutch</td>
+        </tr>
+        <tr>
+            <td><b>nn</b></td>
+            <td>Norwegian</td>
+        </tr>
+        <tr>
+            <td><b>pl</b></td>
+            <td>Polish</td>
+        </tr>
+        <tr>
+            <td><b>pt</b></td>
+            <td>Portuguese</td>
+        </tr>
+        <tr>
+            <td><b>ro</b></td>
+            <td>Romanian</td>
+        </tr>
+        <tr>
+            <td><b>ru</b></td>
+            <td>Russian</td>
+        </tr>
+        <tr>
+            <td><b>se</b></td>
+            <td>Swedish</td>
+        </tr>
+        <tr>
+            <td><b>sk</b></td>
+            <td>Slovak</td>
+        </tr>
+        <tr>
+            <td><b>tr</b></td>
+            <td>Turkish</td>
+        </tr>
+        <tr>
+            <td><b>vn</b></td>
+            <td>Vietnamese</td>
+        </tr>
+        </tbody>
+
+    </table>
+</div>
+
+<h2 id="countries">Country IDs</h2>
+<div class="api-docs-basics">
+    <p>
+        The following country IDs are used in the plentymarkets REST API.
+    </p>
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Country</th>
+            <th>ISO 3166-1</th>
+            <th>plentymarkets ID</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Germany</td>
+            <td>DE</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>Austria</td>
+            <td>AT</td>
+            <td>2</td>
+        </tr>
+        <tr>
+            <td>Belgium</td>
+            <td>BE</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>Switzerland</td>
+            <td>CH</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>Cyprus</td>
+            <td>CY</td>
+            <td>5</td>
+        </tr>
+        <tr>
+            <td>Czech Republic</td>
+            <td>CZ</td>
+            <td>6</td>
+        </tr>
+        <tr>
+            <td>Denmark</td>
+            <td>DK</td>
+            <td>7</td>
+        </tr>
+        <tr>
+            <td>Spain</td>
+            <td>ES</td>
+            <td>8</td>
+        </tr>
+        <tr>
+            <td>Estonia</td>
+            <td>EE</td>
+            <td>9</td>
+        </tr>
+        <tr>
+            <td>France</td>
+            <td>FR</td>
+            <td>10</td>
+        </tr>
+        <tr>
+            <td>Finland</td>
+            <td>FI</td>
+            <td>11</td>
+        </tr>
+        <tr>
+            <td>United Kingdom</td>
+            <td>GB</td>
+            <td>12</td>
+        </tr>
+        <tr>
+            <td>Greece</td>
+            <td>GR</td>
+            <td>13</td>
+        </tr>
+        <tr>
+            <td>Hungary</td>
+            <td>HU</td>
+            <td>14</td>
+        </tr>
+        <tr>
+            <td>Italy</td>
+            <td>IT</td>
+            <td>15</td>
+        </tr>
+        <tr>
+            <td>Ireland</td>
+            <td>IE</td>
+            <td>16</td>
+        </tr>
+        <tr>
+            <td>Luxembourg</td>
+            <td>LU</td>
+            <td>17</td>
+        </tr>
+        <tr>
+            <td>Latvia</td>
+            <td>LV</td>
+            <td>18</td>
+        </tr>
+        <tr>
+            <td>Malta</td>
+            <td>MT</td>
+            <td>19</td>
+        </tr>
+        <tr>
+            <td>Norway</td>
+            <td>NO</td>
+            <td>20</td>
+        </tr>
+        <tr>
+            <td>Netherlands</td>
+            <td>NL</td>
+            <td>21</td>
+        </tr>
+        <tr>
+            <td>Portugal</td>
+            <td>PT</td>
+            <td>22</td>
+        </tr>
+        <tr>
+            <td>Poland</td>
+            <td>PL</td>
+            <td>23</td>
+        </tr>
+        <tr>
+            <td>Sweden</td>
+            <td>SE</td>
+            <td>24</td>
+        </tr>
+        <tr>
+            <td>Singapore</td>
+            <td>SG</td>
+            <td>25</td>
+        </tr>
+        <tr>
+            <td>Slovakia</td>
+            <td>SK</td>
+            <td>26</td>
+        </tr>
+        <tr>
+            <td>Slovenia</td>
+            <td>SI</td>
+            <td>27</td>
+        </tr>
+        <tr>
+            <td>USA</td>
+            <td>US</td>
+            <td>28</td>
+        </tr>
+        <tr>
+            <td>Australia</td>
+            <td>AU</td>
+            <td>29</td>
+        </tr>
+        <tr>
+            <td>Canada</td>
+            <td>CA</td>
+            <td>30</td>
+        </tr>
+        <tr>
+            <td>China</td>
+            <td>CN</td>
+            <td>31</td>
+        </tr>
+        <tr>
+            <td>Japan</td>
+            <td>JP</td>
+            <td>32</td>
+        </tr>
+        <tr>
+            <td>Lithuania</td>
+            <td>LT</td>
+            <td>33</td>
+        </tr>
+        <tr>
+            <td>Liechtenstein</td>
+            <td>LI</td>
+            <td>34</td>
+        </tr>
+        <tr>
+            <td>Monaco</td>
+            <td>MC</td>
+            <td>35</td>
+        </tr>
+        <tr>
+            <td>Mexico</td>
+            <td>MX</td>
+            <td>36</td>
+        </tr>
+        <tr>
+            <td>Canary Islands</td>
+            <td>IC</td>
+            <td>37</td>
+        </tr>
+        <tr>
+            <td>India</td>
+            <td>IN</td>
+            <td>38</td>
+        </tr>
+        <tr>
+            <td>Brazil</td>
+            <td>BR</td>
+            <td>39</td>
+        </tr>
+        <tr>
+            <td>Russia</td>
+            <td>RU</td>
+            <td>40</td>
+        </tr>
+        <tr>
+            <td>Romania</td>
+            <td>RO</td>
+            <td>41</td>
+        </tr>
+        <tr>
+            <td>Ceuta</td>
+            <td>EA</td>
+            <td>42</td>
+        </tr>
+        <tr>
+            <td>Melilla</td>
+            <td>EA</td>
+            <td>43</td>
+        </tr>
+        <tr>
+            <td>Bulgaria</td>
+            <td>BG</td>
+            <td>44</td>
+        </tr>
+        <tr>
+            <td>Kosovo</td>
+            <td>XZ</td>
+            <td>45</td>
+        </tr>
+        <tr>
+            <td>Kyrgyzstan</td>
+            <td>KG</td>
+            <td>46</td>
+        </tr>
+        <tr>
+            <td>Kazakhstan</td>
+            <td>KZ</td>
+            <td>47</td>
+        </tr>
+        <tr>
+            <td>Belarus</td>
+            <td>BY</td>
+            <td>48</td>
+        </tr>
+        <tr>
+            <td>Uzbekistan</td>
+            <td>UZ</td>
+            <td>49</td>
+        </tr>
+        <tr>
+            <td>Morocco</td>
+            <td>MA</td>
+            <td>50</td>
+        </tr>
+        <tr>
+            <td>Armenia</td>
+            <td>AM</td>
+            <td>51</td>
+        </tr>
+        <tr>
+            <td>Albania</td>
+            <td>AL</td>
+            <td>52</td>
+        </tr>
+        <tr>
+            <td>Egypt</td>
+            <td>EG</td>
+            <td>53</td>
+        </tr>
+        <tr>
+            <td>Croatia</td>
+            <td>HR</td>
+            <td>54</td>
+        </tr>
+        <tr>
+            <td>Maldives</td>
+            <td>MV</td>
+            <td>55</td>
+        </tr>
+        <tr>
+            <td>Malaysia</td>
+            <td>MY</td>
+            <td>56</td>
+        </tr>
+        <tr>
+            <td>Hong Kong</td>
+            <td>HK</td>
+            <td>57</td>
+        </tr>
+        <tr>
+            <td>Yemen</td>
+            <td>YE</td>
+            <td>58</td>
+        </tr>
+        <tr>
+            <td>Israel</td>
+            <td>IL</td>
+            <td>59</td>
+        </tr>
+        <tr>
+            <td>Taiwan</td>
+            <td>TW</td>
+            <td>60</td>
+        </tr>
+        <tr>
+            <td>Guadeloupe</td>
+            <td>GP</td>
+            <td>61</td>
+        </tr>
+        <tr>
+            <td>Thailand</td>
+            <td>TH</td>
+            <td>62</td>
+        </tr>
+        <tr>
+            <td>Turkey</td>
+            <td>TR</td>
+            <td>63</td>
+        </tr>
+        <tr>
+            <td>Greek Islands</td>
+            <td>GR</td>
+            <td>64</td>
+        </tr>
+        <tr>
+            <td>Balearic Islands</td>
+            <td>ES</td>
+            <td>65</td>
+        </tr>
+        <tr>
+            <td>New Zealand</td>
+            <td>NZ</td>
+            <td>66</td>
+        </tr>
+        <tr>
+            <td>Afghanistan</td>
+            <td>AF</td>
+            <td>67</td>
+        </tr>
+        <tr>
+            <td>Aland Islands</td>
+            <td>AX</td>
+            <td>68</td>
+        </tr>
+        <tr>
+            <td>Algeria</td>
+            <td>DZ</td>
+            <td>69</td>
+        </tr>
+        <tr>
+            <td>American Samoa</td>
+            <td>AS</td>
+            <td>70</td>
+        </tr>
+        <tr>
+            <td>Andorra</td>
+            <td>AD</td>
+            <td>71</td>
+        </tr>
+        <tr>
+            <td>Angola</td>
+            <td>AO</td>
+            <td>72</td>
+        </tr>
+        <tr>
+            <td>Anguilla</td>
+            <td>AI</td>
+            <td>73</td>
+        </tr>
+        <tr>
+            <td>Antarctica</td>
+            <td>AQ</td>
+            <td>74</td>
+        </tr>
+        <tr>
+            <td>Antigua and Barbuda</td>
+            <td>AG</td>
+            <td>75</td>
+        </tr>
+        <tr>
+            <td>Argentina</td>
+            <td>AR</td>
+            <td>76</td>
+        </tr>
+        <tr>
+            <td>Aruba</td>
+            <td>AW</td>
+            <td>77</td>
+        </tr>
+        <tr>
+            <td>Azerbaijan</td>
+            <td>AZ</td>
+            <td>78</td>
+        </tr>
+        <tr>
+            <td>The Bahamas</td>
+            <td>BS</td>
+            <td>79</td>
+        </tr>
+        <tr>
+            <td>Bahrain</td>
+            <td>BH</td>
+            <td>80</td>
+        </tr>
+        <tr>
+            <td>Bangladesh</td>
+            <td>BD</td>
+            <td>81</td>
+        </tr>
+        <tr>
+            <td>Barbados</td>
+            <td>BB</td>
+            <td>82</td>
+        </tr>
+        <tr>
+            <td>Belize</td>
+            <td>BZ</td>
+            <td>83</td>
+        </tr>
+        <tr>
+            <td>Benin</td>
+            <td>BJ</td>
+            <td>84</td>
+        </tr>
+        <tr>
+            <td>Bermuda</td>
+            <td>BM</td>
+            <td>85</td>
+        </tr>
+        <tr>
+            <td>Bhutan</td>
+            <td>BT</td>
+            <td>86</td>
+        </tr>
+        <tr>
+            <td>Bolivia</td>
+            <td>BO</td>
+            <td>87</td>
+        </tr>
+        <tr>
+            <td>Bosnia and Herzegovina</td>
+            <td>BA</td>
+            <td>88</td>
+        </tr>
+        <tr>
+            <td>Botswana</td>
+            <td>BW</td>
+            <td>89</td>
+        </tr>
+        <tr>
+            <td>Bouvet Island</td>
+            <td>BV</td>
+            <td>90</td>
+        </tr>
+        <tr>
+            <td>British Indian Ocean Territory</td>
+            <td>IO</td>
+            <td>91</td>
+        </tr>
+        <tr>
+            <td>Brunei Darussalam</td>
+            <td>BN</td>
+            <td>92</td>
+        </tr>
+        <tr>
+            <td>Burkina Faso</td>
+            <td>BF</td>
+            <td>93</td>
+        </tr>
+        <tr>
+            <td>Burundi</td>
+            <td>BI</td>
+            <td>94</td>
+        </tr>
+        <tr>
+            <td>Cambodia</td>
+            <td>KH</td>
+            <td>95</td>
+        </tr>
+        <tr>
+            <td>Cameroon</td>
+            <td>CM</td>
+            <td>96</td>
+        </tr>
+        <tr>
+            <td>Cape Verde</td>
+            <td>CV</td>
+            <td>97</td>
+        </tr>
+        <tr>
+            <td>Cayman Islands</td>
+            <td>KY</td>
+            <td>98</td>
+        </tr>
+        <tr>
+            <td>Central African Republic</td>
+            <td>CF</td>
+            <td>99</td>
+        </tr>
+        <tr>
+            <td>Chad</td>
+            <td>TD</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>Chile</td>
+            <td>CL</td>
+            <td>101</td>
+        </tr>
+        <tr>
+            <td>Christmas Island</td>
+            <td>CX</td>
+            <td>102</td>
+        </tr>
+        <tr>
+            <td>Cocos Islands/Keeling Islands</td>
+            <td>CC</td>
+            <td>103</td>
+        </tr>
+        <tr>
+            <td>Columbia</td>
+            <td>CO</td>
+            <td>104</td>
+        </tr>
+        <tr>
+            <td>Comoros</td>
+            <td>KM</td>
+            <td>105</td>
+        </tr>
+        <tr>
+            <td>Congo</td>
+            <td>CG</td>
+            <td>106</td>
+        </tr>
+        <tr>
+            <td>Democratic Republic of the Congo</td>
+            <td>CD</td>
+            <td>107</td>
+        </tr>
+        <tr>
+            <td>Cook Islands</td>
+            <td>CK</td>
+            <td>108</td>
+        </tr>
+        <tr>
+            <td>Costa Rica</td>
+            <td>CR</td>
+            <td>109</td>
+        </tr>
+        <tr>
+            <td>Ivory coast</td>
+            <td>CI</td>
+            <td>110</td>
+        </tr>
+        <tr>
+            <td>Cuba</td>
+            <td>CU</td>
+            <td>112</td>
+        </tr>
+        <tr>
+            <td>Djibouti</td>
+            <td>DJ</td>
+            <td>113</td>
+        </tr>
+        <tr>
+            <td>Dominica</td>
+            <td>DM</td>
+            <td>114</td>
+        </tr>
+        <tr>
+            <td>Dominican Republic</td>
+            <td>DO</td>
+            <td>115</td>
+        </tr>
+        <tr>
+            <td>Ecuador</td>
+            <td>EC</td>
+            <td>116</td>
+        </tr>
+        <tr>
+            <td>El Salvador</td>
+            <td>SV</td>
+            <td>117</td>
+        </tr>
+        <tr>
+            <td>Equatorial Guinea</td>
+            <td>GQ</td>
+            <td>118</td>
+        </tr>
+        <tr>
+            <td>Eritrea</td>
+            <td>ER</td>
+            <td>119</td>
+        </tr>
+        <tr>
+            <td>Ethiopia</td>
+            <td>ET</td>
+            <td>120</td>
+        </tr>
+        <tr>
+            <td>Falkland Islands</td>
+            <td>FK</td>
+            <td>121</td>
+        </tr>
+        <tr>
+            <td>Faroe Islands</td>
+            <td>FO</td>
+            <td>122</td>
+        </tr>
+        <tr>
+            <td>Fiji</td>
+            <td>FJ</td>
+            <td>123</td>
+        </tr>
+        <tr>
+            <td>French Guiana</td>
+            <td>GF</td>
+            <td>124</td>
+        </tr>
+        <tr>
+            <td>French Polynesia</td>
+            <td>PF</td>
+            <td>125</td>
+        </tr>
+        <tr>
+            <td>French Southern and Antarctic Lands</td>
+            <td>TF</td>
+            <td>126</td>
+        </tr>
+        <tr>
+            <td>Gabon</td>
+            <td>GA</td>
+            <td>127</td>
+        </tr>
+        <tr>
+            <td>Gambia</td>
+            <td>GM</td>
+            <td>128</td>
+        </tr>
+        <tr>
+            <td>Georgia</td>
+            <td>GE</td>
+            <td>129</td>
+        </tr>
+        <tr>
+            <td>Ghana</td>
+            <td>GH</td>
+            <td>130</td>
+        </tr>
+        <tr>
+            <td>Gibraltar</td>
+            <td>GI</td>
+            <td>131</td>
+        </tr>
+        <tr>
+            <td>Greenland</td>
+            <td>GL</td>
+            <td>132</td>
+        </tr>
+        <tr>
+            <td>Grenada</td>
+            <td>GD</td>
+            <td>133</td>
+        </tr>
+        <tr>
+            <td>Guam</td>
+            <td>GU</td>
+            <td>134</td>
+        </tr>
+        <tr>
+            <td>Guatemala</td>
+            <td>GT</td>
+            <td>135</td>
+        </tr>
+        <tr>
+            <td>Guernsey</td>
+            <td>GG</td>
+            <td>136</td>
+        </tr>
+        <tr>
+            <td>Guinea</td>
+            <td>GN</td>
+            <td>137</td>
+        </tr>
+        <tr>
+            <td>Guinea-Bissau</td>
+            <td>GW</td>
+            <td>138</td>
+        </tr>
+        <tr>
+            <td>Guyana</td>
+            <td>GY</td>
+            <td>139</td>
+        </tr>
+        <tr>
+            <td>Haiti</td>
+            <td>HT</td>
+            <td>140</td>
+        </tr>
+        <tr>
+            <td>Heard Island and McDonald Islands</td>
+            <td>HM</td>
+            <td>141</td>
+        </tr>
+        <tr>
+            <td>Vatican City</td>
+            <td>VA</td>
+            <td>142</td>
+        </tr>
+        <tr>
+            <td>Honduras</td>
+            <td>HN</td>
+            <td>143</td>
+        </tr>
+        <tr>
+            <td>Iceland</td>
+            <td>IS</td>
+            <td>144</td>
+        </tr>
+        <tr>
+            <td>Indonesia</td>
+            <td>ID</td>
+            <td>145</td>
+        </tr>
+        <tr>
+            <td>Iran</td>
+            <td>IR</td>
+            <td>146</td>
+        </tr>
+        <tr>
+            <td>Iraq</td>
+            <td>IQ</td>
+            <td>147</td>
+        </tr>
+        <tr>
+            <td>Isle of Man</td>
+            <td>IM</td>
+            <td>148</td>
+        </tr>
+        <tr>
+            <td>Jamaica</td>
+            <td>JM</td>
+            <td>149</td>
+        </tr>
+        <tr>
+            <td>Jersey</td>
+            <td>JE</td>
+            <td>150</td>
+        </tr>
+        <tr>
+            <td>Jordan</td>
+            <td>JO</td>
+            <td>151</td>
+        </tr>
+        <tr>
+            <td>Kenya</td>
+            <td>KE</td>
+            <td>152</td>
+        </tr>
+        <tr>
+            <td>Kiribati</td>
+            <td>KI</td>
+            <td>153</td>
+        </tr>
+        <tr>
+            <td>Democratic People's Republic of Korea</td>
+            <td>KP</td>
+            <td>154</td>
+        </tr>
+        <tr>
+            <td>Republic of Korea</td>
+            <td>KR</td>
+            <td>155</td>
+        </tr>
+        <tr>
+            <td>Kuwait</td>
+            <td>KW</td>
+            <td>156</td>
+        </tr>
+        <tr>
+            <td>Laos</td>
+            <td>LA</td>
+            <td>158</td>
+        </tr>
+        <tr>
+            <td>Lebanon</td>
+            <td>LB</td>
+            <td>159</td>
+        </tr>
+        <tr>
+            <td>Lesotho</td>
+            <td>LS</td>
+            <td>160</td>
+        </tr>
+        <tr>
+            <td>Liberia</td>
+            <td>LR</td>
+            <td>161</td>
+        </tr>
+        <tr>
+            <td>Libya</td>
+            <td>LY</td>
+            <td>162</td>
+        </tr>
+        <tr>
+            <td>Macao</td>
+            <td>MO</td>
+            <td>163</td>
+        </tr>
+        <tr>
+            <td>Macedonia</td>
+            <td>MK</td>
+            <td>164</td>
+        </tr>
+        <tr>
+            <td>Madagascar</td>
+            <td>MG</td>
+            <td>165</td>
+        </tr>
+        <tr>
+            <td>Malawi</td>
+            <td>MW</td>
+            <td>166</td>
+        </tr>
+        <tr>
+            <td>Mali</td>
+            <td>ML</td>
+            <td>168</td>
+        </tr>
+        <tr>
+            <td>Marshall Islands</td>
+            <td>MH</td>
+            <td>169</td>
+        </tr>
+        <tr>
+            <td>Martinique</td>
+            <td>MQ</td>
+            <td>170</td>
+        </tr>
+        <tr>
+            <td>Mauritania</td>
+            <td>MR</td>
+            <td>171</td>
+        </tr>
+        <tr>
+            <td>Mauritius</td>
+            <td>MU</td>
+            <td>172</td>
+        </tr>
+        <tr>
+            <td>Mayotte</td>
+            <td>YT</td>
+            <td>173</td>
+        </tr>
+        <tr>
+            <td>Micronesia</td>
+            <td>FM</td>
+            <td>174</td>
+        </tr>
+        <tr>
+            <td>Moldova</td>
+            <td>MD</td>
+            <td>175</td>
+        </tr>
+        <tr>
+            <td>Mongolia</td>
+            <td>MN</td>
+            <td>176</td>
+        </tr>
+        <tr>
+            <td>Montenegro</td>
+            <td>ME</td>
+            <td>177</td>
+        </tr>
+        <tr>
+            <td>Montserrat</td>
+            <td>MS</td>
+            <td>178</td>
+        </tr>
+        <tr>
+            <td>Mozambique</td>
+            <td>MZ</td>
+            <td>179</td>
+        </tr>
+        <tr>
+            <td>Myanmar</td>
+            <td>MM</td>
+            <td>180</td>
+        </tr>
+        <tr>
+            <td>Namibia</td>
+            <td>NA</td>
+            <td>181</td>
+        </tr>
+        <tr>
+            <td>Nauru</td>
+            <td>NR</td>
+            <td>182</td>
+        </tr>
+        <tr>
+            <td>Nepal</td>
+            <td>NP</td>
+            <td>183</td>
+        </tr>
+        <tr>
+            <td>Netherlands Antilles</td>
+            <td>AN</td>
+            <td>184</td>
+        </tr>
+        <tr>
+            <td>New Caledonia</td>
+            <td>NC</td>
+            <td>185</td>
+        </tr>
+        <tr>
+            <td>Nicaragua</td>
+            <td>NI</td>
+            <td>186</td>
+        </tr>
+        <tr>
+            <td>Niger</td>
+            <td>NE</td>
+            <td>187</td>
+        </tr>
+        <tr>
+            <td>Nigeria</td>
+            <td>NG</td>
+            <td>188</td>
+        </tr>
+        <tr>
+            <td>Niue</td>
+            <td>NU</td>
+            <td>189</td>
+        </tr>
+        <tr>
+            <td>Norfolk Island</td>
+            <td>NF</td>
+            <td>190</td>
+        </tr>
+        <tr>
+            <td>Northern Mariana Islands</td>
+            <td>MP</td>
+            <td>191</td>
+        </tr>
+        <tr>
+            <td>Oman</td>
+            <td>OM</td>
+            <td>192</td>
+        </tr>
+        <tr>
+            <td>Pakistan</td>
+            <td>PK</td>
+            <td>193</td>
+        </tr>
+        <tr>
+            <td>Palau</td>
+            <td>PW</td>
+            <td>194</td>
+        </tr>
+        <tr>
+            <td>Palestinian territories</td>
+            <td>PS</td>
+            <td>195</td>
+        </tr>
+        <tr>
+            <td>Panama</td>
+            <td>PA</td>
+            <td>196</td>
+        </tr>
+        <tr>
+            <td>Papua New Guinea</td>
+            <td>PG</td>
+            <td>197</td>
+        </tr>
+        <tr>
+            <td>Paraguay</td>
+            <td>PY</td>
+            <td>198</td>
+        </tr>
+        <tr>
+            <td>Peru</td>
+            <td>PE</td>
+            <td>199</td>
+        </tr>
+        <tr>
+            <td>Philippines</td>
+            <td>PH</td>
+            <td>200</td>
+        </tr>
+        <tr>
+            <td>Pitcairn Islands</td>
+            <td>PN</td>
+            <td>201</td>
+        </tr>
+        <tr>
+            <td>Puerto Rico</td>
+            <td>PR</td>
+            <td>202</td>
+        </tr>
+        <tr>
+            <td>Qatar</td>
+            <td>QA</td>
+            <td>203</td>
+        </tr>
+        <tr>
+            <td>Reunion</td>
+            <td>RE</td>
+            <td>204</td>
+        </tr>
+        <tr>
+            <td>Rwanda</td>
+            <td>RW</td>
+            <td>205</td>
+        </tr>
+        <tr>
+            <td>Saint Helena</td>
+            <td>SH</td>
+            <td>206</td>
+        </tr>
+        <tr>
+            <td>Saint Kitts and Nevis</td>
+            <td>KN</td>
+            <td>207</td>
+        </tr>
+        <tr>
+            <td>Saint Lucia</td>
+            <td>LC</td>
+            <td>208</td>
+        </tr>
+        <tr>
+            <td>Saint Pierre and Miquelon</td>
+            <td>PM</td>
+            <td>209</td>
+        </tr>
+        <tr>
+            <td>Saint Vincent and the Grenadines</td>
+            <td>VC</td>
+            <td>210</td>
+        </tr>
+        <tr>
+            <td>Samoa</td>
+            <td>WS</td>
+            <td>211</td>
+        </tr>
+        <tr>
+            <td>San Marino</td>
+            <td>SM</td>
+            <td>212</td>
+        </tr>
+        <tr>
+            <td>Sao Tome and Principe</td>
+            <td>ST</td>
+            <td>213</td>
+        </tr>
+        <tr>
+            <td>Saudi Arabia</td>
+            <td>SA</td>
+            <td>214</td>
+        </tr>
+        <tr>
+            <td>Senegal</td>
+            <td>SN</td>
+            <td>215</td>
+        </tr>
+        <tr>
+            <td>Serbia</td>
+            <td>RS</td>
+            <td>216</td>
+        </tr>
+        <tr>
+            <td>Seychelles</td>
+            <td>SC</td>
+            <td>217</td>
+        </tr>
+        <tr>
+            <td>Sierra Leone</td>
+            <td>SL</td>
+            <td>218</td>
+        </tr>
+        <tr>
+            <td>Solomon Islands</td>
+            <td>SB</td>
+            <td>219</td>
+        </tr>
+        <tr>
+            <td>Somalia</td>
+            <td>SO</td>
+            <td>220</td>
+        </tr>
+        <tr>
+            <td>South Africa</td>
+            <td>ZA</td>
+            <td>221</td>
+        </tr>
+        <tr>
+            <td>South Georgia and the South Sandwich Islands</td>
+            <td>GS</td>
+            <td>222</td>
+        </tr>
+        <tr>
+            <td>Sri Lanka</td>
+            <td>LK</td>
+            <td>223</td>
+        </tr>
+        <tr>
+            <td>Sudan</td>
+            <td>SD</td>
+            <td>224</td>
+        </tr>
+        <tr>
+            <td>Suriname</td>
+            <td>SR</td>
+            <td>225</td>
+        </tr>
+        <tr>
+            <td>Spitsbergen and Jan Mayen</td>
+            <td>SJ</td>
+            <td>226</td>
+        </tr>
+        <tr>
+            <td>Swaziland</td>
+            <td>SZ</td>
+            <td>227</td>
+        </tr>
+        <tr>
+            <td>Syria</td>
+            <td>SY</td>
+            <td>228</td>
+        </tr>
+        <tr>
+            <td>Tajikistan</td>
+            <td>TJ</td>
+            <td>229</td>
+        </tr>
+        <tr>
+            <td>Tanzania</td>
+            <td>TZ</td>
+            <td>230</td>
+        </tr>
+        <tr>
+            <td>Timor-Leste</td>
+            <td>TL</td>
+            <td>231</td>
+        </tr>
+        <tr>
+            <td>Togo</td>
+            <td>TG</td>
+            <td>232</td>
+        </tr>
+        <tr>
+            <td>Tokelau</td>
+            <td>TK</td>
+            <td>233</td>
+        </tr>
+        <tr>
+            <td>Tonga</td>
+            <td>TO</td>
+            <td>234</td>
+        </tr>
+        <tr>
+            <td>Trinidad and Tobago</td>
+            <td>TT</td>
+            <td>235</td>
+        </tr>
+        <tr>
+            <td>Tunisia</td>
+            <td>TN</td>
+            <td>236</td>
+        </tr>
+        <tr>
+            <td>Turkmenistan</td>
+            <td>TM</td>
+            <td>237</td>
+        </tr>
+        <tr>
+            <td>Turks and Caicos Islands</td>
+            <td>TC</td>
+            <td>238</td>
+        </tr>
+        <tr>
+            <td>Tuvalu</td>
+            <td>TV</td>
+            <td>239</td>
+        </tr>
+        <tr>
+            <td>Uganda</td>
+            <td>UG</td>
+            <td>240</td>
+        </tr>
+        <tr>
+            <td>Ukraine</td>
+            <td>UA</td>
+            <td>241</td>
+        </tr>
+        <tr>
+            <td>United States Minor Outlying Islands</td>
+            <td>UM</td>
+            <td>242</td>
+        </tr>
+        <tr>
+            <td>Uruguay</td>
+            <td>UY</td>
+            <td>243</td>
+        </tr>
+        <tr>
+            <td>Vanuatu</td>
+            <td>VU</td>
+            <td>244</td>
+        </tr>
+        <tr>
+            <td>Venezuela</td>
+            <td>VE</td>
+            <td>245</td>
+        </tr>
+        <tr>
+            <td>Vietnam</td>
+            <td>VN</td>
+            <td>246</td>
+        </tr>
+        <tr>
+            <td>British Virgin Islands</td>
+            <td>VG</td>
+            <td>247</td>
+        </tr>
+        <tr>
+            <td>United States Virgin Islands</td>
+            <td>VI</td>
+            <td>248</td>
+        </tr>
+        <tr>
+            <td>Wallis and Futuna</td>
+            <td>WF</td>
+            <td>249</td>
+        </tr>
+        <tr>
+            <td>Western Sahara</td>
+            <td>EH</td>
+            <td>250</td>
+        </tr>
+        <tr>
+            <td>Zambia</td>
+            <td>ZM</td>
+            <td>252</td>
+        </tr>
+        <tr>
+            <td>Zimbabwe</td>
+            <td>ZW</td>
+            <td>253</td>
+        </tr>
+        <tr>
+            <td>United Arab Emirates</td>
+            <td>AE</td>
+            <td>254</td>
+        </tr>
+        <tr>
+            <td>Helgoland</td>
+            <td>DE</td>
+            <td>255</td>
+        </tr>
+        <tr>
+            <td>Buesingen</td>
+            <td>DE</td>
+            <td>256</td>
+        </tr>
+        <tr>
+            <td>Curaçao</td>
+            <td>CUW</td>
+            <td>258</td>
+        </tr>
+        <tr>
+            <td>Sint Maarten</td>
+            <td>SXM</td>
+            <td>259</td>
+        </tr>
+        <tr>
+            <td>BES Islands</td>
+            <td>BES</td>
+            <td>260</td>
+        </tr>
+        <tr>
+            <td>Saint Barthélemy</td>
+            <td>BL</td>
+            <td>261</td>
+        </tr>
+        <tr>
+            <td>Livigno</td>
+            <td>IT</td>
+            <td>262</td>
+        </tr>
+        <tr>
+            <td>Campione d'Italia</td>
+            <td>IT</td>
+            <td>263</td>
+        </tr>
+        <tr>
+            <td>Lake Lugano from Ponte Tresa to Porto Ceresio</td>
+            <td>IT</td>
+            <td>264</td>
+        </tr>
+        <tr>
+            <td>Unknown</td>
+            <td>--</td>
+            <td>0</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h2 id="units">Default unit IDs</h2>
+<div class="api-docs-basics">
+    <p>
+        The following IDs are used for default units in the plentymarkets REST API.
+    </p>
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Unit</th>
+            <th>ISO code</th>
+            <th>plentymarkets ID</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Piece</td>
+            <td>C62</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>Kilogram</td>
+            <td>KGM</td>
+            <td>2</td>
+        </tr>
+        <tr>
+            <td>Gram</td>
+            <td>GRM</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>Milligram</td>
+            <td>MGM</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>Litre</td>
+            <td>LTR</td>
+            <td>5</td>
+        </tr>
+        <tr>
+            <td>12 pieces/dozen</td>
+            <td>DPC</td>
+            <td>6</td>
+        </tr>
+        <tr>
+            <td>Two pack</td>
+            <td>OP</td>
+            <td>7</td>
+        </tr>
+        <tr>
+            <td>Bale</td>
+            <td>BL</td>
+            <td>8</td>
+        </tr>
+        <tr>
+            <td>Dispenser</td>
+            <td>DI</td>
+            <td>9</td>
+        </tr>
+        <tr>
+            <td>Bag</td>
+            <td>BG</td>
+            <td>10</td>
+        </tr>
+        <tr>
+            <td>Sheet</td>
+            <td>ST</td>
+            <td>11</td>
+        </tr>
+        <tr>
+            <td>Block</td>
+            <td>D64</td>
+            <td>12</td>
+        </tr>
+        <tr>
+            <td>Block</td>
+            <td>PD</td>
+            <td>13</td>
+        </tr>
+        <tr>
+            <td>Quire</td>
+            <td>QR</td>
+            <td>14</td>
+        </tr>
+        <tr>
+            <td>Box</td>
+            <td>BX</td>
+            <td>15</td>
+        </tr>
+        <tr>
+            <td>Coil</td>
+            <td>CL</td>
+            <td>16</td>
+        </tr>
+        <tr>
+            <td>Container</td>
+            <td>CH</td>
+            <td>17</td>
+        </tr>
+        <tr>
+            <td>Tin</td>
+            <td>TN</td>
+            <td>18</td>
+        </tr>
+        <tr>
+            <td>Can</td>
+            <td>CA</td>
+            <td>19</td>
+        </tr>
+        <tr>
+            <td>Dozen</td>
+            <td>DZN</td>
+            <td>20</td>
+        </tr>
+        <tr>
+            <td>Bucket</td>
+            <td>BJ</td>
+            <td>21</td>
+        </tr>
+        <tr>
+            <td>Case</td>
+            <td>CS</td>
+            <td>22</td>
+        </tr>
+        <tr>
+            <td>Cask</td>
+            <td>Z3</td>
+            <td>23</td>
+        </tr>
+        <tr>
+            <td>Bottle</td>
+            <td>BO</td>
+            <td>24</td>
+        </tr>
+        <tr>
+            <td>Fluid ounce</td>
+            <td>OZA</td>
+            <td>25</td>
+        </tr>
+        <tr>
+            <td>Jar</td>
+            <td>JR</td>
+            <td>26</td>
+        </tr>
+        <tr>
+            <td>Cardboard box</td>
+            <td>CG</td>
+            <td>27</td>
+        </tr>
+        <tr>
+            <td>Carton</td>
+            <td>CT</td>
+            <td>28</td>
+        </tr>
+        <tr>
+            <td>Kit</td>
+            <td>KT</td>
+            <td>29</td>
+        </tr>
+        <tr>
+            <td>Ball</td>
+            <td>AA</td>
+            <td>30</td>
+        </tr>
+        <tr>
+            <td>Metre</td>
+            <td>MTR</td>
+            <td>31</td>
+        </tr>
+        <tr>
+            <td>Millilitre</td>
+            <td>MLT</td>
+            <td>32</td>
+        </tr>
+        <tr>
+            <td>Millimetre</td>
+            <td>MMT</td>
+            <td>33</td>
+        </tr>
+        <tr>
+            <td>Pair</td>
+            <td>PR</td>
+            <td>34</td>
+        </tr>
+        <tr>
+            <td>Packet</td>
+            <td>PA</td>
+            <td>35</td>
+        </tr>
+        <tr>
+            <td>Bundle</td>
+            <td>PK</td>
+            <td>36</td>
+        </tr>
+        <tr>
+            <td>Pallet/unit load</td>
+            <td>D97</td>
+            <td>37</td>
+        </tr>
+        <tr>
+            <td>Square metre</td>
+            <td>MTK</td>
+            <td>38</td>
+        </tr>
+        <tr>
+            <td>Square centimetre</td>
+            <td>CMK</td>
+            <td>39</td>
+        </tr>
+        <tr>
+            <td>Square millimetre</td>
+            <td>MMK</td>
+            <td>40</td>
+        </tr>
+        <tr>
+            <td>Square centimetre (non-standard)</td>
+            <td>SCM</td>
+            <td>41</td>
+        </tr>
+        <tr>
+            <td>Square millimetre (non-standard)</td>
+            <td>SMM</td>
+            <td>42</td>
+        </tr>
+        <tr>
+            <td>Role</td>
+            <td>RO</td>
+            <td>43</td>
+        </tr>
+        <tr>
+            <td>Sack</td>
+            <td>SA</td>
+            <td>44</td>
+        </tr>
+        <tr>
+            <td>Set</td>
+            <td>SET</td>
+            <td>45</td>
+        </tr>
+        <tr>
+            <td>Reel</td>
+            <td>RL</td>
+            <td>46</td>
+        </tr>
+        <tr>
+            <td>Each</td>
+            <td>EA</td>
+            <td>47</td>
+        </tr>
+        <tr>
+            <td>Tube</td>
+            <td>TU</td>
+            <td>48</td>
+        </tr>
+        <tr>
+            <td>Ounce</td>
+            <td>OZ</td>
+            <td>49</td>
+        </tr>
+        <tr>
+            <td>Wet ton</td>
+            <td>WE</td>
+            <td>50</td>
+        </tr>
+        <tr>
+            <td>Centimetre</td>
+            <td>CMT</td>
+            <td>51</td>
+        </tr>
+        <tr>
+            <td>Inch</td>
+            <td>INH</td>
+            <td>52</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h2 id="currencies">Supported currencies</h2>
+<div class="api-docs-basics">
+    <p>
+        The plentymarkets REST API supports the following currencies. The currency ID is equivalent to the currency's ISO code.
+    </p>
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>ISO code</th>
+            <th>Currency</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>AED</td>
+            <td>United Arab Emirates dirham</td>
+        </tr>
+        <tr>
+            <td>ARS</td>
+            <td>Argentine peso</td>
+        </tr>
+        <tr>
+            <td>AUD</td>
+            <td>Australian dollar</td>
+        </tr>
+        <tr>
+            <td>BGN</td>
+            <td>Bulgarian lev</td>
+        </tr>
+        <tr>
+            <td>BHD</td>
+            <td>Bahraini dinar</td>
+        </tr>
+        <tr>
+            <td>BRL</td>
+            <td>Brazilian real</td>
+        </tr>
+        <tr>
+            <td>CAD</td>
+            <td>Canadian dollar</td>
+        </tr>
+        <tr>
+            <td>CHF</td>
+            <td>Swiss franc</td>
+        </tr>
+        <tr>
+            <td>CNY</td>
+            <td>Chinese Renminbi</td>
+        </tr>
+        <tr>
+            <td>CZK</td>
+            <td>Czech koruna</td>
+        </tr>
+        <tr>
+            <td>DKK</td>
+            <td>Danish krone</td>
+        </tr>
+        <tr>
+            <td>EUR</td>
+            <td>Euro</td>
+        </tr>
+        <tr>
+            <td>GBP</td>
+            <td>Pound sterling</td>
+        </tr>
+        <tr>
+            <td>HKD</td>
+            <td>Hong Kong dollar</td>
+        </tr>
+        <tr>
+            <td>HRK</td>
+            <td>Croatian kuna</td>
+        </tr>
+        <tr>
+            <td>HUF</td>
+            <td>Hungarian forint</td>
+        </tr>
+        <tr>
+            <td>IDR</td>
+            <td>Indonesian rupiah</td>
+        </tr>
+        <tr>
+            <td>INR</td>
+            <td>Indian rupee</td>
+        </tr>
+        <tr>
+            <td>JPY</td>
+            <td>Japanese yen</td>
+        </tr>
+        <tr>
+            <td>MXN</td>
+            <td>Mexican peso</td>
+        </tr>
+        <tr>
+            <td>MYR</td>
+            <td>Malaysian ringgit</td>
+        </tr>
+        <tr>
+            <td>NOK</td>
+            <td>Norwegian krone</td>
+        </tr>
+        <tr>
+            <td>NZD</td>
+            <td>New Zealand dollar</td>
+        </tr>
+        <tr>
+            <td>PHP</td>
+            <td>Philippine peso</td>
+        </tr>
+        <tr>
+            <td>PLN</td>
+            <td>Polish zloty</td>
+        </tr>
+        <tr>
+            <td>QAR</td>
+            <td>Qatari riyal</td>
+        </tr>
+        <tr>
+            <td>RON</td>
+            <td>Romanian leu</td>
+        </tr>
+        <tr>
+            <td>RUB</td>
+            <td>Russian ruble</td>
+        </tr>
+        <tr>
+            <td>SEK</td>
+            <td>Swedish krona</td>
+        </tr>
+        <tr>
+            <td>SGD</td>
+            <td>Singapore dollar</td>
+        </tr>
+        <tr>
+            <td>THB</td>
+            <td>Thai baht</td>
+        </tr>
+        <tr>
+            <td>TRY</td>
+            <td>Turkish lira</td>
+        </tr>
+        <tr>
+            <td>TWD</td>
+            <td>New Taiwan dollar</td>
+        </tr>
+        <tr>
+            <td>UAH</td>
+            <td>Ukrainian hryvnia</td>
+        </tr>
+        <tr>
+            <td>USD</td>
+            <td>United States dollar</td>
+        </tr>
+        <tr>
+            <td>VND</td>
+            <td>Vietnamese dong</td>
+        </tr>
+        <tr>
+            <td>XCD</td>
+            <td>Eastern Caribbean dollar</td>
+        </tr>
+        <tr>
+            <td>ZAR</td>
+            <td>South African rand</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h2 id="payment-statuses">Payment status IDs</h2>
+<div class="api-docs-basics">
+    <p>
+        The following IDs are used for payment statuses in the plentymarkets REST API.
+    </p>
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Payment status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>Awaiting approval</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Approved</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Captured</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Partially captured</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>Cancelled</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>Refused</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>Awaiting renewal</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>Expired</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>Refunded</td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>Partially refunded</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

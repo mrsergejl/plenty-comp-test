@@ -1,0 +1,172 @@
+<!-- Code example -->
+<div class="route-container">
+    <code>PluginXY/plugin.json</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+{
+    "name"              : "PluginXY",
+    "marketplaceName"   : {"de":"German display name of plugin","en":"English display name of plugin"},
+    "namespace"         : "XY",
+    "type"              : "template",
+    "version"           : "1.0.0",
+    "license"           : "The license for the plugin",
+    "isClosedSource"    : "Determines if your plugin is closed source or open source",
+    "pluginIcon"        : "The plugin icon",
+    "price"             : 0.00,
+    "description"       : "The description for your plugin",
+    "shortDescription"  : {"de":"German short description","en":"English short description"},
+    "categories"        : ["3517", "3518"],
+    "keywords"          : ["plugins", "template"],
+    "author"            : "Your name",
+    "authorIcon"        : "The author icon",
+    "email"             : "Your email address",
+    "phone"             : "Your phone number",
+    "serviceProvider"   : "XY\\Providers\\TemplateServiceProvider",
+    "containers"        : [],
+    "dataProviders"     : [],
+    "javaScriptFiles"   : [],
+    "require"           : [],
+    "dependencies"      : [],
+    "runOnBuild"        : []
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<!-- Code example end -->
+
+<div class="api-docs-basics">
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>name</td>
+                <td>The name of your plugin. The plugin name must not yet exist in plentyMarketplace. The name must not contain spaces or special characters, must start with a character and must be written in <code>UpperCamelCase</code>. <span class="label label-danger">required</span></td>
+            </tr>
+            <tr>
+                <td>marketplaceName</td>
+                <td>The name of your plugin which is displayed on the Marketplace. Specify an array for multiple languages, e.g. {"de":"German plugin name","en":"English plugin name"}. You can also set a general name for all languages in a single string: "Name for all languages". The name specified here will be displayed as the name for the item in the category item view and single item view. <span class="label label-default">optional</span></td>
+            </tr>
+            <tr>
+                <td>namespace</td>
+                <td>The root namespace of your plugin <span class="label label-danger">required</span></td>
+            </tr>
+            <tr>
+                <td>type</td>
+                <td>The type of your plugin. The following plugin types are available: <span class="label label-danger">required</span>
+                    <ul>
+                        <li>
+                            <b>template</b>: type for frontend plugins
+                        </li>
+                        <li>
+                            <b>export</b>: type for new export formats
+                        </li>
+                        <li>
+                            <b>payment</b>: type for payment plugins
+                        </li>
+                        <li>
+                            <b>backend</b>: type for back end plugins
+                        </li>
+                        <li>
+                            <b>shipping</b>: type for shipping plugins
+                        </li>
+                        <li>
+                            etc.
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>version</td>
+                <td>The version of your plugin. <a href="http://semver.org/" target="_blank">Semantic versioning</a> is used for plentymarkets plugins. The <code>MAJOR.MINOR.PATCH</code>format must be used. <span class="label label-danger">required</span></td>
+            </tr>
+            <tr>
+                <td>license</td>
+                <td>The license type for your plugin <span class="label label-danger">required</span></td>
+            </tr>
+            <tr>
+                <td>isClosedSource</td>
+                <td>The value of this field must be of type <code>bool</code>.<br />
+                    <strong>True:</strong> Makes the plugin code invisible to all customers who buy the plugin (closed source).<br />
+                    <strong>False:</strong> Makes the plugin code visible to all customers who buy the plugin (open source).<br /> 
+                    If no value is specified, the default value is set to <strong>false</strong>. <span class="label label-default">optional</span></td>
+            </tr>
+            <tr>
+                <td>pluginIcon</td>
+                <td>The file name with file format of the plugin icon, e.g. <code>icon_plugin_xs.png</code> <span class="label label-danger">required</span></td>
+            </tr>
+            <tr>
+                <td>price</td>
+                <td>The price of your plugin in Euro. The value must be of the <code>float</code> type. For a free plugin, enter a value of <strong>0.00</strong>. For paid plugins, the minimum price is <strong>10.00</strong>. <span class="label label-danger">required</span></td>
+            </tr>
+            <tr>
+                <td>description</td>
+                <td>The description text for your plugin. The description text is displayed in the plentymarkets back end. <span class="label label-danger">required</span></td>
+            </tr>
+            <tr>
+            <tr>
+                <td>shortDescription</td>
+                <td>The short description for your plugin. Specify an array for multiple languages: e.g. <code>{"de":"German short description","en":"English short description"}</code>. The short description is displayed in the detail view of a plugin on plentyMarketplace. <span class="label label-danger">required</span></td>
+            </tr>
+            <tr>
+                <td>categories</td>
+                <td>An array of category IDs which will be linked to the plugin, e.g. <code>["3517", "3518"]</code>. The plugin will be available in these categories on plentyMarketplace. Find a list of available categories on <a href="http://marketplace.plentymarkets.com/faq" target="_blank">plentyMarketplace</a>. <span class="label label-danger">required</span>
+                </td>
+            </tr>
+            <tr>
+                <td>keywords</td>
+                <td>An array of keywords describing your plugin <span class="label label-default">optional</span></td>
+            </tr>
+            <tr>
+                <td>author</td>
+                <td>The author of the plugin <span class="label label-danger">required</span></td>
+            </tr>
+            <tr>
+                <td>authorIcon</td>
+                <td>The file name with file format of the author icon, e.g. <code>icon_author_xs.png</code> <span class="label label-danger">required</span></td>
+            </tr>
+            <tr>
+                <td>email</td>
+                <td>The email address of the author for support issues. The email is displayed in the contact information of the plugin in the plentymarkets back end. <span class="label label-default">optional</span></td>
+            </tr>
+            <tr>
+                <td>phone</td>
+                <td>The phone number of the author for support issues. The phone number is displayed in the contact information of the plugin in the plentymarkets back end. <span class="label label-default">optional</span></td>
+            </tr>
+            <tr>
+                <td>serviceProvider</td>
+                <td>The service provider to hook-up <span class="label label-default">optional</span></td>
+            </tr>
+            <tr>
+                <td>containers</td>
+                <td>An array of <a href="/dev-doc/template-containers#container-entrypoint">containers</a> <span class="label label-default">optional</span></td>
+            </tr>
+            <tr>
+                <td>dataProviders</td>
+                <td>An array of <a href="/tutorials/container#code-pluginjson">data providers</a> <span class="label label-default">optional</span></td>
+            </tr>
+            <tr>
+                <td>javaScriptFiles</td>
+                <td>An array of JavaScript files. The file name and file format must be specified. <span class="label label-default">optional</span></td>
+            </tr>
+            <tr>
+                <td>require</td>
+                <td>An array or object of dependencies of other plugins including required version, e.g. <code>"IO"</code> or <code>"IO" : "~1.6.0"</code>. Find an overview of the notation of versions on <a href="https://packagist.org/packages/version/version" target="_blank">Packagist</a>. <span class="label label-default">optional</span></td>
+            </tr>
+            <tr>
+                <td>dependencies</td>
+                <td>An array of dependencies of <a href="/tutorials/external-SDK">external SDKs</a>. The external source must be published on <a href="https://packagist.org/" target="_blank">Packagist</a>. <span class="label label-default">optional</span></td>
+            </tr>
+            <tr>
+                <td>runOnBuild</td>
+                <td>An array of <a href="/tutorials/data-storage#code-migration">classes</a> to be executed once when the plugin is provisioned <span class="label label-default">optional</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,1012 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="introduction">Storing data in a plugin database</h1>
+<div class="api-docs-basics">
+    <p>
+        This tutorial covers the matter of storing data in a specific data table created by the plugin.<!-- Add information about DB structure and PHP --> For this purpose, we create a data base model in the source code of the plugin and run a migration when provisioning the plugin. We then need a contract and a related repository to define the functions for creating, reading, updating or deleting data from the data table. In the ContentController, we use these functions to access the data base and make the data available in the template.
+    </p>
+	<p>
+		In the example plugin below, we create a simple To Do list. The plugin has the following features:
+	</p>
+	<ul>
+		<li>
+			Get all tasks of a logged in customer
+		</li>
+		<li>
+			Add new tasks to the list
+		</li>
+		<li>
+			Mark existing tasks as done
+		</li>
+		<li>
+			Delete tasks that are marked as done
+		</li>
+	</ul>
+</div>
+
+<!-- GitHub button -->
+<div class="connect">
+    <div class="btn btn-primary btn-block btn-github" title="Clone or download this plentymarkets plugin on GitHub.">
+        <a href="https://github.com/plentymarkets/plugin-tutorial-todolist" target="_blank" role="button"><img class="img-responsive pull-left" src="{{ plugin_path('PlentyPluginShowcase') }}/images/github-logo.png"  style="width: 40px;"/><span>Download on GitHub</span></a>
+    </div>
+</div>
+<!-- GitHub button end -->
+
+<h2 id="create-plugin-files">Step 1: Creating the plugin files</h2>
+<div class="api-docs-basics">
+    <p>
+        We need a total of 12 different files for this plugin. Comparable to the plugins we created in the other tutorials, this plugin requires a <code>plugin.json</code> containing the general plugin information. The source code of our plugin is stored in 8 individual files. Furthermore, we need a template file to display the plugin in the browser, a CSS file that contains the styling, and a script file for dynamically updating the To Do list without reloading the entire browser window every time. Create the folder structure and the required files. Pay attention to the scheme given below.
+    </p>
+</div>
+
+<!-- Folder structure -->
+<div class="code-container">
+<pre class="prettyprint lang-plain grey-back">
+ToDoList/
+    ├── resources/
+    │   ├── css/
+    │   │   └── main.css
+    │   │
+    │   ├── js/
+    │   │   └── todo.js
+    │   │
+    │   └── views/
+    │       └── content/
+    │           └── todo.twig
+    │
+    ├── src/
+    │   ├── Contracts/
+    │   │   └── ToDoRepositoryContract.php
+    │   │
+    │   ├── Controllers/
+    │   │   └── ContentController.php
+    │   │
+    │   ├── Migrations/
+    │   │   └── CreateToDoTable.php
+    │   │
+    │   ├── Models/
+    │   │   └── ToDo.php
+    │   │
+    │   ├── Providers/
+    │   │   ├── ToDoServiceProvider.php
+    │   │   └── ToDoRouteServiceProvider.php
+    │   │
+    │   ├── Repositories/
+    │   │   └── ToDoRepository.php
+    │   │
+    │   └── Validators/
+    │       └── ToDoValidator.php
+    │
+    ├── plugin.json // plugin information
+    └── // additional files (Readme, license etc.)
+</pre>
+</div>
+<!-- Folder structure end -->
+
+<h2 id="fill-source-files">Step 2: Filling the source files</h2>
+<div class="api-docs-basics">
+    <p>
+		After creating all folders and files, we start by filling the files that contain the plugin source code. Copy the code into the respective file. The code is explained in detail below.
+    </p>
+</div>
+
+<h3 id="code-model">Code for the Model</h3>
+<div class="api-docs-basics">
+    <p>
+        This is the model for our data base table. The table will have 5 columns for storing the following data:
+    </p>
+	<ul>
+		<li>
+			The ID of the task
+		</li>
+		<li>
+			A string with the description of the task
+		</li>
+		<li>
+			The ID of the user who adds the task
+		</li>
+		<li>
+			The status showing if the task is done
+		</li>
+		<li>
+			A timestamp showing when the task was created
+		</li>
+	</ul>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+<code>ToDoList/src/Models/ToDo.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace ToDoList\Models;
+
+use Plenty\Modules\Plugin\DataBase\Contracts\Model;
+
+/**
+ * Class ToDo
+ *
+ * @property int     $id
+ * @property string  $taskDescription
+ * @property int     $userId
+ * @property boolean $isDone
+ * @property int     $createdAt
+ */
+class ToDo extends Model
+{
+    /**
+     * @var int
+     */
+    public $id              = 0;
+    public $taskDescription = '';
+    public $userId          = 0;
+    public $isDone          = false;
+    public $createdAt       = 0;
+
+    /**
+     * @return string
+     */
+    public function getTableName(): string
+    {
+        return 'ToDoList::ToDo';
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Our model extends the class <code>Plenty\Modules\Plugin\DataBase\Contracts\Model</code>. All attributes of the model must be <code>public</code> properties.<br /><br />The data type of our properties must be added either as class annotations or as property annotations (lines 18 to 20 are redundant in the code example because the data type of this property was already added in the class annotation of our model). The following data types are allowed:<code>int</code>, <code>string</code>, <code>float</code>, <code>double</code>, <code>boolean</code> and <code>array</code>.<br /><br />Models require a primary key attribute. The default attribute is <code>id:int</code>. You can change the name and type of the primary key attribute by overwriting the protected attributes <code>$primaryKeyFieldName</code> and <code>$primaryKeyFieldType</code>. Otherwise, the <code>id:int</code> attribute must be added to your model.<br /><br />
+	The <code>autoincrement</code> option will be assigned automatically to primary key attributes. You can overwrite the protected attribute <code>autoIncrementPrimaryKey</code> and change its value to <code>false</code> to avoid auto-incrementing of your primary key field.<br /><br />The model must return the plugin name and the model name separated by two colons: <code>return 'ToDoList::ToDo'</code>.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-migration">Code for the Migration</h3>
+<div class="api-docs-basics">
+    <p>
+        Next, we create a migration class that must be specified in the <code>runOnBuild</code> attribute of the <code>plugin.json</code> file.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+<code>ToDoList/src/Migrations/CreateToDoTable.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace ToDoList\Migrations;
+
+use ToDoList\Models\ToDo;
+use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
+
+/**
+ * Class CreateToDoTable
+ */
+class CreateToDoTable
+{
+    /**
+     * @param Migrate $migrate
+     */
+    public function run(Migrate $migrate)
+    {
+        $migrate->createTable(ToDo::class);
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In line 5, we use the previously created model. We also have to use the <code>Plenty\Modules\Plugin\DataBase\Contracts\Migrate</code> class. This class allows us to create and delete data tables. We use the <code>Migrate</code> class in the <code>run()</code> method and create a new data table with the name <b>ToDo</b>. Learn how to specify the migration in the <code>plugin.json</code> file in the next chapter.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-pluginjson">Code for the plugin.json</h3>
+
+<!-- Code example -->
+<div class="route-container">
+<code>ToDoList/plugin.json</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+{
+	"name":"ToDoList",
+	"description":"A simple To Do list",
+	"namespace":"ToDoList",
+	"author":"Your name",
+	"type":"template",
+	"serviceProvider":"ToDoList\\Providers\\ToDoServiceProvider",
+	"runOnBuild":["ToDoList\\Migrations\\CreateToDoTable"]
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In line 8, we add another key-value pair consisting of the <code>runOnBuild</code> key and an array of migration classes to be executed once when the plugin is provisioned. In our case, the array contains only one class: <code>ToDoList\\Migrations\\CreateToDoTable</code>.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-contract">Code for the Contract</h3>
+<div class="api-docs-basics">
+    <p>
+        A contract is a PHP interface in the Laravel framework. The ToDoRepositoryContract will be the interface for our repository.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+<code>ToDoList/src/Contracts/ToDoRepositoryContract.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace ToDoList\Contracts;
+
+use ToDoList\Models\ToDo;
+
+/**
+ * Class ToDoRepositoryContract
+ * @package ToDoList\Contracts
+ */
+interface ToDoRepositoryContract
+{
+    /**
+     * Add a new task to the To Do list
+     *
+     * @param array $data
+     * @return ToDo
+     */
+    public function createTask(array $data): ToDo;
+
+    /**
+     * List all tasks of the To Do list
+     *
+     * @return ToDo[]
+     */
+    public function getToDoList(): array;
+
+    /**
+     * Update the status of the task
+     *
+     * @param int $id
+     * @return ToDo
+     */
+    public function updateTask($id): ToDo;
+
+    /**
+     * Delete a task from the To Do list
+     *
+     * @param int $id
+     * @return ToDo
+     */
+    public function deleteTask($id): ToDo;
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In this contract, we specify the functions to be used in our plugin. We implement the four basic functions of data storage: create, read, update and delete.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-validator">Code for the Validator</h3>
+<div class="api-docs-basics">
+    <p>
+		The next file on our list is the validator. The validator class will be used in the ToDoRepository.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+<code>ToDoList/src/Validators/ToDoValidator.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums">
+&lt;?php
+
+namespace ToDoList\Validators;
+
+use Plenty\Validation\Validator;
+
+/**
+ *  Validator Class
+ */
+class ToDoValidator extends Validator
+{
+    protected function defineAttributes()
+    {
+        $this->addString('taskDescription', true);
+    }
+}
+</pre>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In order to avoid empty tasks in our To Do list, we want to validate the input and check if a <code>taskDescription</code> was entered in the input field when adding a new task to the list.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-repository">Code for the Repository</h3>
+<div class="api-docs-basics">
+    <p>
+        In our repository we implement the functions specified in the contract. Here, we also access our data base table by using the <code>Plenty\Modules\Plugin\DataBase\Contracts\DataBase</code> contract.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+<code>ToDoList/src/Repositories/ToDoRepository.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace ToDoList\Repositories;
+
+use Plenty\Exceptions\ValidationException;
+use Plenty\Modules\Plugin\DataBase\Contracts\DataBase;
+use ToDoList\Contracts\ToDoRepositoryContract;
+use ToDoList\Models\ToDo;
+use ToDoList\Validators\ToDoValidator;
+use Plenty\Modules\Frontend\Services\AccountService;
+
+
+class ToDoRepository implements ToDoRepositoryContract
+{
+    /**
+     * @var AccountService
+     */
+    private $accountService;
+
+    /**
+     * UserSession constructor.
+     * @param AccountService $accountService
+     */
+    public function __construct(AccountService $accountService)
+    {
+        $this->accountService = $accountService;
+    }
+
+    /**
+     * Get the current contact ID
+     * @return int
+     */
+    public function getCurrentContactId(): int
+    {
+        return $this->accountService->getAccountContactId();
+    }
+
+    /**
+     * Add a new item to the To Do list
+     *
+     * @param array $data
+     * @return ToDo
+     * @throws ValidationException
+     */
+    public function createTask(array $data): ToDo
+    {
+        try {
+            ToDoValidator::validateOrFail($data);
+        } catch (ValidationException $e) {
+            throw $e;
+        }
+
+        /**
+         * @var DataBase $database
+         */
+        $database = pluginApp(DataBase::class);
+
+        $toDo = pluginApp(ToDo::class);
+
+        $toDo->taskDescription = $data['taskDescription'];
+
+        $toDo->userId = $this->getCurrentContactId();
+
+        $toDo->createdAt = time();
+
+        $database->save($toDo);
+
+        return $toDo;
+    }
+
+    /**
+     * List all items of the To Do list
+     *
+     * @return ToDo[]
+     */
+    public function getToDoList(): array
+    {
+        $database = pluginApp(DataBase::class);
+
+        $id = $this->getCurrentContactId();
+        /**
+         * @var ToDo[] $toDoList
+         */
+        $toDoList = $database->query(ToDo::class)->where('userId', '=', $id)->get();
+        return $toDoList;
+    }
+
+    /**
+     * Update the status of the item
+     *
+     * @param int $id
+     * @return ToDo
+     */
+    public function updateTask($id): ToDo
+    {
+        /**
+         * @var DataBase $database
+         */
+        $database = pluginApp(DataBase::class);
+
+        $toDoList = $database->query(ToDo::class)
+            ->where('id', '=', $id)
+            ->get();
+
+        $toDo = $toDoList[0];
+        $toDo->isDone = true;
+        $database->save($toDo);
+
+        return $toDo;
+    }
+
+    /**
+     * Delete an item from the To Do list
+     *
+     * @param int $id
+     * @return ToDo
+     */
+    public function deleteTask($id): ToDo
+    {
+        /**
+         * @var DataBase $database
+         */
+        $database = pluginApp(DataBase::class);
+
+        $toDoList = $database->query(ToDo::class)
+            ->where('id', '=', $id)
+            ->get();
+
+        $toDo = $toDoList[0];
+        $database->delete($toDo);
+
+        return $toDo;
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+	<b>Explanation</b>: In the first part of the code, we use <code>getCurrentContactId()</code> function of the <code>Plenty\Modules\Frontend\Services\AccountService</code> class to get the ID of the currently logged in customer. With this ID, tasks can be related to a specific customer. If a customer is not logged in, but adds a new task to the list, the <code>userId = 0</code> will be assigned and saved in the data base.<br /><br />In line 44, we implement the <code>createTask()</code> function. Here, we also use the previously created validator. A new entry will be created in the data base when this function is executed.<br /><br />Next, we implement the <code>getToDoList()</code> function. This function will return an array of tasks of a specific customer.<br /><br />The <code>updateTask()</code> function in line 96 is used to update the status of a task and mark it as done.<br /><br />Finally, the <code>deleteTask()</code> function allows us to delete a specific task from the data base.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-serviceprovider">Code for the ServiceProvider</h3>
+
+<!-- Code example -->
+<div class="route-container">
+<code>ToDoList/src/Providers/ToDoServiceProvider.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace ToDoList\Providers;
+
+use Plenty\Plugin\ServiceProvider;
+use ToDoList\Contracts\ToDoRepositoryContract;
+use ToDoList\Repositories\ToDoRepository;
+
+/**
+ * Class ToDoServiceProvider
+ * @package ToDoList\Providers
+ */
+class ToDoServiceProvider extends ServiceProvider
+{
+    /**
+     * Register the service provider.
+     */
+    public function register()
+    {
+        $this->getApplication()->register(ToDoRouteServiceProvider::class);
+        $this->getApplication()->bind(ToDoRepositoryContract::class, ToDoRepository::class);
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In the <code>register()</code> function, we register the RouteServiceProvider. Furthermore we use the <code>bind()</code> function to bind the <code>ToDoRepositoryContract</code> class to the <code>ToDoRepository</code> class. This way, when using the <code>ToDoRepositoryContract</code> class via dependency injection, the functions defined in the repository will be implemented.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-routeserviceprovider">Code for the RouteServiceProvider</h3>
+
+<!-- Code example -->
+<div class="route-container">
+<code>ToDoList/src/Providers/ToDoRouteServiceProvider.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace ToDoList\Providers;
+
+use Plenty\Plugin\RouteServiceProvider;
+use Plenty\Plugin\Routing\Router;
+
+/**
+ * Class ToDoRouteServiceProvider
+ * @package ToDoList\Providers
+ */
+class ToDoRouteServiceProvider extends RouteServiceProvider
+{
+    /**
+     * @param Router $router
+     */
+    public function map(Router $router)
+    {
+        $router->get('todo', 'ToDoList\Controllers\ContentController@showToDo');
+        $router->post('todo', 'ToDoList\Controllers\ContentController@createToDo');
+        $router->put('todo/{id}', 'ToDoList\Controllers\ContentController@updateToDo')->where('id', '\d+');
+        $router->delete('todo/{id}', 'ToDoList\Controllers\ContentController@deleteToDo')->where('id', '\d+');
+    }
+
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In the RouteServiceProvider, we define 4 different routes for our To Do list. <code>put()</code> and <code>delete()</code> require the ID of a task. <code>where('id', '\d+')</code> ensures that the ID is a decimal number.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-contentcontroller">Code for the ContentController</h3>
+
+<!-- Code example -->
+<div class="route-container">
+<code>ToDoList/src/Controllers/ContentController.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace ToDoList\Controllers;
+
+use Plenty\Plugin\Controller;
+use Plenty\Plugin\Http\Request;
+use Plenty\Plugin\Templates\Twig;
+use ToDoList\Contracts\ToDoRepositoryContract;
+
+/**
+ * Class ContentController
+ * @package ToDoList\Controllers
+ */
+class ContentController extends Controller
+{
+    /**
+     * @param Twig                   $twig
+     * @param ToDoRepositoryContract $toDoRepo
+     * @return string
+     */
+    public function showToDo(Twig $twig, ToDoRepositoryContract $toDoRepo): string
+    {
+        $toDoList = $toDoRepo->getToDoList();
+        $templateData = array("tasks" => $toDoList);
+        return $twig->render('ToDoList::content.todo', $templateData);
+    }
+
+    /**
+     * @param  \Plenty\Plugin\Http\Request $request
+     * @param ToDoRepositoryContract       $toDoRepo
+     * @return string
+     */
+    public function createToDo(Request $request, ToDoRepositoryContract $toDoRepo): string
+    {
+        $newToDo = $toDoRepo->createTask($request->all());
+        return json_encode($newToDo);
+    }
+
+    /**
+     * @param int                    $id
+     * @param ToDoRepositoryContract $toDoRepo
+     * @return string
+     */
+    public function updateToDo(int $id, ToDoRepositoryContract $toDoRepo): string
+    {
+        $updateToDo = $toDoRepo->updateTask($id);
+        return json_encode($updateToDo);
+    }
+
+    /**
+     * @param int                    $id
+     * @param ToDoRepositoryContract $toDoRepo
+     * @return string
+     */
+    public function deleteToDo(int $id, ToDoRepositoryContract $toDoRepo): string
+    {
+        $deleteToDo = $toDoRepo->deleteTask($id);
+        return json_encode($deleteToDo);
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In the ContentController, we use the <code>ToDoRepositoryContract</code> and its specified functions.<br /><br />The <code>showToDo</code> function is used to access the contract, get an array of tasks and render this array in our template. The template will be described in step 3.<br /><br />The other functions are used to create a new task, update an existing task or delete a task. Saving the ContentController, we have created the plugin source code and can now fill the resource files.
+</div>
+<!-- Code example end -->
+
+<h2 id="fill-resource-files">Step 3: Filling the resource files</h2>
+<div class="api-docs-basics">
+    <p>
+        For our To Do list plugin, we already created 3 files in the <b>resources</b> folder:
+    </p>
+	<ul>
+		<li>
+			The <code>todo.twig</code> file in the <b>views/content</b> sub-folder with HTML structure and TWIG syntax. This template will be rendered in the browser.
+		</li>
+		<li>
+			The <code>main.css</code> file in the <b>css</b> sub-folder with the styling for our template
+		</li>
+		<li>
+			The <code>todo.js</code> file in the <b>js</b> sub-folder containing JavaScript code. The scripts in this file allow us to dynamically update the To Do list in the browser without reloading the entire page.
+		</li>
+	</ul>
+</div>
+
+<h3 id="code-twig">Code for the TWIG file</h3>
+
+<!-- Code example -->
+<div class="route-container">
+<code>ToDoList/resources/views/content/todo.twig</code>
+</div>
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+    &lt;meta charset="utf-8">
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1">
+    &lt;title>To Do&lt;/title>
+
+    &lt;!-- Link main CSS file and additional fonts -->
+    &lt;link href="{{ plugin_path('ToDoList') }}/css/main.css" rel="stylesheet">
+    &lt;link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    &lt;link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
+
+    &lt;!-- Integrate jQuery -->
+    &lt;script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous">&lt;/script>
+&lt;/head>
+
+&lt;body>
+    &lt;!-- To Do list -->
+    &lt;div class="list">
+        &lt;h1 class="header">Things to do&lt;/h1>
+
+        &lt;ul class="tasks">
+            {% if tasks is not null %}
+                {% for task in tasks %}
+                    &lt;li>
+                        &lt;span class="task {% if task.isDone == 1 %} done {% endif %}">{{ task.taskDescription }}&lt;/span>
+                        {% if task.isDone == 1 %}
+                            &lt;button id="{{ task.id }}" class="delete-button">Delete from list&lt;/button>
+                        {% else %}
+                            &lt;button id="{{ task.id }}" class="done-button">Mark as done&lt;/button>
+                        {% endif %}
+                    &lt;/li>
+                {% endfor %}
+            {% endif %}
+        &lt;/ul>
+
+        &lt;!-- Text field and submit button -->
+        &lt;div class="task-add">
+            &lt;input type="text" name="taskDescription" placeholder="Enter a new task here." class="input" autocomplete="off">
+            &lt;input type="submit" id="addTask" value="Add" class="submit">
+        &lt;/div>
+    &lt;/div>
+
+    &lt;!-- Enable adding, updating and deleting tasks in the To Do list without reloading the page -->
+    &lt;script src="{{ plugin_path('ToDoList') }}/js/todo.js">&lt;/script>
+&lt;/body>
+&lt;/html>
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+	<b>Explanation</b>: In the <code>head</code> of our template, we define meta information, add a title, link our CSS file and additional fonts that we use in our CSS. We also integrate <a href="https://jquery.com/" target="_blank">jQuery</a> in the <code>script</code> tag.<br /><br />The <code>body</code> of our template contains the markup for our To Do list. A container with the <code>list</code> class wraps the header, the actual list, as well as the input field and the submit button.<br /><br />
+	In the <code>ul</code>, we use the <a href="http://twig.sensiolabs.org/doc/2.x/tags/if.html" target="_blank">if</a> statement to check if our request is not <code>null</code>. Inside the <code>if</code> statement, we have a <a href="http://twig.sensiolabs.org/doc/2.x/tags/for.html" target="_blank">for</a> loop for displaying all tasks of our array as individual list items. Each <code>li</code> displays the <code>taskDescription</code> of one data base entry and has a <b>Delete from list</b> button or a <b>Mark as done</b> button attached depending on the <code>isDone</code> status of the task.<br /><br />Below the submit button, we specify the <code>todo.js</code> file in a <code>script</code> tag.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-css">Code for the CSS file</h3>
+
+<!-- Code example -->
+<div class="route-container">
+<code>ToDoList/resources/css/main.css</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+/* General styling */
+body {
+    background-color: #F8F8F8;
+}
+
+body,
+input,
+button{
+    font:1em "Open Sans", sans-serif;
+    color: #4D4E53;
+}
+
+a {
+    text-decoration: none;
+    border-bottom: 1px dashed #4D4E53;
+}
+
+/* List */
+.list {
+    background-color:#fff;
+    margin:20px auto;
+    width:100%;
+    max-width:500px;
+    padding:20px;
+    border-radius:2px;
+    box-shadow:3px 3px 0 rgba(0, 0, 0, .1);
+    box-sizing:border-box;
+}
+
+.list .header {
+    font-family: "Amatic SC", cursive;
+    margin:0 0 10px 0;
+}
+
+/* Tasks */
+.tasks {
+    margin: 0;
+    padding:0;
+    list-style-type: none;
+}
+
+.tasks .task.done {
+    text-decoration:line-through;
+}
+
+.tasks li,
+.task-add .input{
+    border:0;
+    border-bottom:1px dashed #ccc;
+    padding: 15px 0;
+
+}
+
+/* Input field */
+.input:focus {
+    outline:none;
+}
+
+.input {
+    width:100%;
+}
+
+/* Done button & Delete button*/
+.tasks .done-button {
+    display:inline-block;
+    font-size:0.8em;
+    background-color: #5d9c67;
+    color:#000;
+    padding:3px 6px;
+    border:0;
+    opacity:0.4;
+}
+
+.tasks .delete-button {
+    display:inline-block;
+    font-size:0.8em;
+    background-color: #77525c;
+    color:#000;
+    padding:3px 6px;
+    border:0;
+    opacity:0.4;
+}
+
+.tasks li:hover .done-button,
+.tasks li:hover .delete-button {
+    opacity:1;
+    cursor:pointer;
+}
+
+/* Submit button */
+.submit {
+    background-color:#fff;
+    padding: 5px 10px;
+    border:1px solid #ddd;
+    width:100%;
+    margin-top:10px;
+    box-shadow: 3px 3px 0 #ddd;
+}
+
+.submit:hover {
+    cursor:pointer;
+    background-color:#ddd;
+    color: #fff;
+    box-shadow: 3px 3px 0 #ccc;
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+	<b>Explanation</b>: By adding the CSS code, our plugin will look like this in the browser. We still need the JavaScript code to add the desired functionality to our buttons.
+</div>
+<!-- Code example end -->
+
+<!-- Image -->
+<div class="api-docs-basics">
+    <figure>
+        <a data-toggle="modal" data-target="#modal1" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/todolist-without-tasks.png" />
+        </a>
+    </figure>
+</div>
+<!-- Image end -->
+
+<h3 id="code-js">Code for the JS file</h3>
+
+<!-- Code example -->
+<div class="route-container">
+<code>ToDoList/resources/js/todo.js</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+// Add a new task to the To Do list when clicking on the submit button
+$('#addTask').click(function(){
+    var nameInput = $("[name='taskDescription']");
+    var data = {
+        'taskDescription': nameInput.val()
+    };
+    $.ajax({
+        type: "POST",
+        url: "/todo",
+        data: data,
+        success: function(data)
+        {
+            var data = jQuery.parseJSON( data );
+            $("ul.tasks").append('' +
+                '&lt;li>' +
+                '   &lt;span class="task">' + data.taskDescription + '&lt;/span> ' +
+                '   &lt;button id="' + data.id + '"class="done-button">Mark as done&lt;/button>' +
+                '&lt;/li>');
+            nameInput.val("");
+        },
+        error: function(data)
+        {
+            alert("ERROR");
+        }
+    });
+});
+
+// Update the status of an existing task in the To Do list and mark it as done when clicking on the Mark as done button
+$(document).on('click', 'button.done-button', function(e) {
+    var button = this;
+    var id = button.id;
+    $.ajax({
+        type: "PUT",
+        url: "/todo/" + id,
+        success: function(data)
+        {
+            var data = jQuery.parseJSON( data );
+            if(data.isDone)
+            {
+                $("#" + id).removeClass("done-button").addClass("delete-button").html("Delete from list");
+                $("#" + id).prev().addClass("done");
+            }
+            else
+            {
+                alert("ERROR");
+            }
+        },
+        error: function(data)
+        {
+            alert("ERROR");
+        }
+    });
+});
+
+// Delete a task from the To Do list when clicking on the Delete from list button
+$(document).on('click', 'button.delete-button', function(e) {
+    var button = this;
+    var id = button.id;
+    $.ajax({
+        type: "DELETE",
+        url: "/todo/" + id,
+        success: function(data)
+        {
+            $("#" + id).parent().remove();
+        },
+        error: function(data)
+        {
+            alert("ERROR");
+        }
+    });
+});
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Our JavaScript code is divided into 3 parts: a script for adding a new task to the list, a script for marking a task as done and a script for deleting a done task from the list.<br /><br />The first script is executed when a user enters a new task into the input field and clicks on the <b>Add</b> button. A <code>POST</code> request is sent and a new task is created, provided that the <code>taskDescription</code> is not empty. The new task will be added at the bottom of the list. Otherwise an error message will be displayed.<br /><br />The second script is executed when a user clicks on the <b>Mark as done</b> button of a task. A <code>PUT</code> request is sent and the <code>isDone</code> status of the task is updated. The <code>done-button</code> class will be removed and the <code>delete-button</code> class will be added to the button that was clicked. This switches the <b>Mark as done</b> button into the <b>Delete from list</b> button.<br /><br /><code>$("#" + id).prev().addClass("done")</code> is used to add the <code>done</code> class to the task. The text of the task will be lined through.<br /><br />The third script is executed when a user clicks on the <b>Delete from list</b> button of a task. A <code>DELETE</code> request is sent and the task will be removed from the list and the data base.
+</div>
+<!-- Code example end -->
+
+<h1 id="open-plugin">All tasks are done</h1>
+<div class="api-docs-basics">
+	<p>
+        After creating the plugin, we have to <a href="/dev-doc/basics#add-repository">add</a> our new plugin to the plentymarkets inbox and <a href="/dev-doc/basics#provisioning">provision</a> the plugin in <b>Productive</b>. Finally, to display the To Do list, open a new browser tab and type in your domain adding <code>/todo</code> at the end. Have fun with your new plugin!
+    </p>
+
+    <figure>
+        <a data-toggle="modal" data-target="#modal2" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/todolist-with-tasks.png" />
+        </a>
+    </figure>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">The To Do list plugin</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/todolist-without-tasks.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Adding tasks to the To Do list</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/tutorials/todolist-with-tasks.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

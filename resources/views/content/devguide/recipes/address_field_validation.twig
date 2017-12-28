@@ -1,0 +1,119 @@
+<h2 id="address-field-validation">Validating addresses in template plugins</h2>
+
+<div class="api-docs-basics">
+
+<p>
+    Template plugins that want to validate address fields using the validators in <strong>IO</strong> must have a configuration file following certain rules. IO can get the configuration values set in the template plugin and validate addresses based on these settings. The easiest way to do this is to copy part of the <code>config.json</code> file of <strong>Ceres</strong> and edit the code. Then, the namespace of the template plugin must be specified in <strong>IO</strong>.</p>
+
+        <ol>
+        <li>
+            Go to <b>Plugins » Plugin overview</b>.
+        </li>
+        <li>
+            Click on <strong>IO</strong>.<br /> → The plugin will open.
+        </li>
+        <li>
+            Click on <strong>Configuration</strong> in the directory tree.<br /> → The <strong>Template</strong> tab will open.
+        </li>
+        </li>
+        <li>
+            Enter the namespace of your template plugin.
+        </li>
+        <li>
+            <strong>Save</strong> the settings.
+        </li>
+    </ol>
+</div>
+
+<h3 id="address-field-validation-example1">Example code of the configuration</h3>
+<!-- Code example -->
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+...
+
+{
+    "tab"                                   : "Checkout and My account",
+    "key"                                   : "billing_address.require",
+        "label"                             : "Enable invoice address field validation",
+        "type"                              : "multi_select",
+        "possibleValues"                    :
+            {
+                "billing_address.name1"     : "Company",
+                "billing_address.vatNumber" : "VAT number",
+                "billing_address.birthday"  : "Date of birth",
+                "billing_address.name4"     : "Name affix",
+                "billing_address.address3"  : "Additional address 1 / Building name",
+                "billing_address.address4"  : "Additional address 2",
+                "billing_address.stateId"   : "State"
+
+            },
+        "default"                           : "billing_address.birthday, billing_address.name4, billing_address.address3, billing_address.address4"
+},
+
+...
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: The values specified under <code>possibleValues</code> will be validated with the help of the <code>BillingAddressValidator</code> of <strong>IO</strong>.
+</div>
+<!-- Code example end -->
+
+
+<h3 id="address-field-validation-example2">Example code of the validator</h3>
+<!-- Code example -->
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace IO\Validators\Customer;
+
+use Plenty\Validation\Validator;
+use IO\Services\TemplateConfigService;
+
+class BillingAddressValidator extends Validator
+{
+    private $requiredFields;
+
+    public function defineAttributes()
+    {
+        /**
+         * @var TemplateConfigService $templateConfigService
+         */
+        $templateConfigService = pluginApp(TemplateConfigService::class);
+        $requiredFieldsString  = $templateConfigService->get('billing_address.require');
+        $this->requiredFields  = explode(', ', $requiredFieldsString);
+        foreach ($this->requiredFields as $key => $value)
+        {
+            $this->requiredFields[$key] = str_replace('billing_address.', '', $value);
+        }
+
+        $this->addString('name2',      true);
+        $this->addString('name3',      true);
+        $this->addString('address1',   true);
+        $this->addString('address2',   true);
+        $this->addString('postalCode', true);
+        $this->addString('town',       true);
+
+        if(count($this->requiredFields))
+        {
+            $this->addString('name1',     $this->isRequired('name1'));
+            $this->addString('vatNumber', $this->isRequired('vatNumber'));
+            $this->addString('birthday',  $this->isRequired('birthday'));
+            $this->addString('name4',     $this->isRequired('name4'));
+            $this->addString('address3',  $this->isRequired('address3'));
+            $this->addString('address4',  $this->isRequired('address4'));
+            $this->addString('stateId',  $this->isRequired('stateId'));
+        }
+    }
+
+    private function isRequired($fieldName)
+    {
+        return in_array($fieldName, $this->requiredFields);
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<!-- Code example end -->

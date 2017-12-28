@@ -1,0 +1,1022 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="theme-introduction">Introducing theme plugins</h1>
+<div class="api-docs-basics">
+    <p>
+        On this page, you will find an overview of relevant information about theme plugins. Theme plugins let you change the colour and style of your template in an easy and convenient way. In contrast to other plugins, you only have to provision a theme once to then activate and deactivate it without further configuration.
+    </p>
+    <p>
+        Theme plugins make use of a <a href="/tutorials/container">template container</a> in the Ceres template and extend the CSS of Ceres. In doing so, the CSS of the theme will override all concerned classes in the Ceres stylesheet. Classes that are not styled in the CSS of the theme but in the Ceres stylesheet are not affected.
+    </p>
+</div>
+
+<h3 id="theme-further-reading">Further reading</h3>
+
+<div class="api-docs-basics">
+    <ul>
+        <li>
+            <a href="/dev-doc/basics#plugin-structure">Plugin structure</a>
+        </li>
+        <li>
+            <a href="/tutorials/design">Installing a template</a>
+        </li>
+        <li>
+            <a href="/dev-doc/template-plugins">Developing template plugins</a>
+        </li>
+        <li>
+            <a href="/tutorials/container">Template containers</a>
+        </li>
+        <li>
+            <a href="/marketplace/plugin-requirements">Plugin requirements for plentyMarketplace</a>
+        </li>
+        <li>
+            <a href="http://twig.sensiolabs.org/doc/templates.html#template-inheritance" target="_blank">Template inheritance</a>
+        </li>
+        <li>
+            <a href="http://twig.sensiolabs.org/doc/templates.html#including-other-templates" target="_blank">Including other templates</a>
+        </li>
+        <li>
+            <a href="/dev-doc/cookbook#adding-style">Adding style and scripts in Ceres</a>
+        </li>
+    </ul>
+</div>
+
+<h1 id="theme-create-style">Creating a theme</h1>
+<div class="api-docs-basics">
+    <p>
+        Create the following files and develop a theme that changes the background colour of the template plugin. If you want to offer the theme in the plentyMarketplace, pay attention to our <a href="/marketplace/plugin-requirements">plugin requirements</a>.
+    </p>
+</div>
+
+<h2 id="theme-structure">Changing the CSS of a template</h2>
+<div class="api-docs-basics">
+    <p>
+        This basic theme plugin for changing the CSS of a template consists of a <code>plugin.json</code> file, a ServiceProvider, a Container, a CSS file and a TWIG template.
+    </p>
+</div>
+
+<!-- Folder structure -->
+<div class="code-container">
+<pre class="prettyprint lang-plain grey-back">
+Theme/
+    ├── resources/
+    │   ├── css/
+    │   │   └── main.css // theme stylesheet
+    │   │
+    │   └── views/
+    │       └── content/
+    │           └── Theme.twig // content to be injected into the Ceres template container
+    ├── src/
+    │   ├── Containers/
+    │   │   └── ThemeContainer.php
+    │   │
+    │   └── Providers/
+    │       └── ThemeServiceProvider.php
+    │
+    └── plugin.json // plugin information
+</pre>
+</div>
+<!-- Folder structure end -->
+
+<h3 id="code-pluginjson">Code for the plugin.json</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>ThemePlugin/plugin.json</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+{
+    "name"                  :"Theme",
+    "description"           :"Basic theme plugin",
+    "namespace"             :"Theme",
+    "author"                :"Your name",
+    "keywords"              : ["theme", "Ceres", "template"],
+    "type"                  :"theme",
+    "require"               : [],
+    "serviceProvider"       :"Theme\\Providers\\ThemeServiceProvider",
+    "dataProviders"         :
+    [
+        {
+            "key"           :"Theme\\Containers\\ThemeContainer",
+            "name"          :"Dark background",
+            "description"   :"Change the background colour of the Ceres template"
+        }
+    ]
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Specify the <code>serviceProvider</code> and the <code>dataProviders</code>.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-serviceprovider">Code for the ServiceProvider</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Theme/src/Providers/ThemeServiceProvider.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace Theme\Providers;
+
+use Plenty\Plugin\ServiceProvider;
+
+class ThemeServiceProvider extends ServiceProvider
+{
+
+	/**
+	 * Register the service provider.
+	 */
+	public function register()
+	{
+
+	}
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<!-- Code example end -->
+
+<h3 id="code-themecontainer">Code for the Container</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Theme/src/Containers/ThemeContainer.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace Theme\Containers;
+
+use Plenty\Plugin\Templates\Twig;
+
+class ThemeContainer
+{
+    public function call(Twig $twig):string
+    {
+        return $twig->render('Theme::content.Theme');
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Specify the path to the TWIG template <code>Theme::content.Theme</code>. Note that the path is case-sensitive.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-template">Code for the TWIG template</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Theme/resources/views/content/Theme.twig</code>
+</div>
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+&lt;link rel="stylesheet" href="{{ plugin_path('Theme') }}/css/main.css">
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Specify the path to the CSS file <code><span>{</span>{ plugin_path('Theme') }}/css/main.css</code>. You can link one or multiple stylesheets here. Note that only CSS files are allowed. SCSS files must be compiled into one or multiple CSS files first.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-stylesheet">Code for the CSS file</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Theme/resources/css/main.css</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-js grey-back linenums code-example">
+/* Change background colour */
+body {
+    background-color: #808080;
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Change the style in the stylesheet according to your preferences. This stylesheet will extend the existing stylesheet of the template plugin. This CSS will have a higher priority than the CSS of the template plugin.
+</div>
+<!-- Code example end -->
+
+<h2 id="theme-activate">Activating a theme</h2>
+<div class="api-docs-basics">
+    <p>
+        Create the theme as described, then <a href="/dev-doc/basics#add-repository">add</a> the plugin to the plentymarkets inbox and <a href="/dev-doc/basics#provisioning">provision</a> it in <b>Productive</b>. After provisioning the theme plugin once, you can activate and deactivate it without further configuration.
+    </p>
+    <ol>
+        <li>
+            Open the plentymarkets back end.
+        </li>
+        <li>
+            Go to <b>Plugins » Content</b>.<br />
+            → A list of all plugins that provide data will be displayed.
+        </li>
+        <li>
+            Activate the <b>Template: Style</b> container in the <b>Dark background (Theme)</b> area.
+        </li>
+        <li>
+            <b>Save</b> the settings.
+        </li>
+        <li>
+            Refresh the browser window.<br />
+            → The new theme will be loaded.
+        </li>
+    </ol>
+</div>
+
+<h1 id="theme-edit-template">Editing a template plugin</h1>
+<div class="api-docs-basics">
+    <p>
+        A theme plugin can not only extend the CSS file of the template plugin, but also change the entire markup of individual template components or the overall page design.
+    </p>
+    <p>
+        This facilitates adding your own markup and style to an existing template plugin. Maintaining the code of your theme plugin is not directly linked to the code of the template plugin, i.e. changes made in your theme plugin are not overwritten when the template plugin is updated.
+    </p>
+</div>
+
+<h2 id="theme-page-structure">Page structure</h2>
+<div class="api-docs-basics">
+    <p>
+        You can either change parts of the page design or edit the entire page design to meet your needs. The page design of Ceres consists of two main sections, the <b>head</b> and the <b>body</b>. The head contains the meta data of the page as well as the linked stylesheets. The body is divided into multiple sub-sections called wrappers. Wrappers include different components, partials or pages.
+    </p>
+    <p>
+        The most important wrapper is the main wrapper containing the following partials:
+    </p>
+    <ul>
+        <li>
+            <b>Header</b>: includes the navigation, the login button, the search field etc.
+        </li>
+        <li>
+            <b>PageBody</b>: includes dynamic pages, e.g. the single item view, or static pages, e.g. the cancellation rights
+        </li>
+        <li>
+            <b>Footer</b>: includes store features, containers for icons as well as columns
+        </li>
+    </ul>
+</div>
+
+<figure>
+    <a data-toggle="modal" data-target="#modal1" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/Ceres_PageDesign.png" />
+    </a>
+</figure>
+
+<h2 id="theme-change-footer">Changing the page design</h2>
+<div class="api-docs-basics">
+    <p>
+        The TWIG <a href="http://twig.sensiolabs.org/doc/2.x/tags/include.html" target="_parent">include statement</a> is used for this purpose. In the example below the <code>ThemeFooter.twig</code> file is included in the <code>PageDesign.twig</code> file of Ceres. You can simply create your own footer template and replace the Ceres footer.
+    </p>
+</div>
+
+<h3 id="code-serviceprovider-footer">Code for the ServiceProvider</h3>
+<div class="api-docs-basics">
+    <p>
+        The code of the ServiceProvider must be updated to inject your own template paths into the template plugin.
+    </p>
+</div>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Theme/src/Providers/ThemeServiceProvider.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace Theme\Providers;
+
+use IO\Extensions\Functions\Partial;
+use Plenty\Plugin\Events\Dispatcher;
+use Plenty\Plugin\ServiceProvider;
+use Plenty\Plugin\Templates\Twig;
+
+class ThemeServiceProvider extends ServiceProvider
+{
+
+	/**
+	 * Register the service provider.
+	 */
+	public function register()
+	{
+
+	}
+
+    /**
+	 * Boot a template for the footer that will be displayed in the template plugin instead of the original footer.
+	 */
+	public function boot(Twig $twig, Dispatcher $eventDispatcher)
+    {
+        $eventDispatcher->listen('IO.init.templates', function(Partial $partial)
+        {
+           $partial->set('footer', 'Theme::content.ThemeFooter');
+        }, 0);
+        return false;
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Add the dependencies for the <code>Partial</code> function as well as the <code>Dispatcher</code> and <code>Twig</code> classes.<br /><br />Add the <code>boot()</code> function and specify one or multiple partials, e.g. <code>IO.init.templates</code>, as well as the TWIG template(s) for the partial(s), e.g. <code>Theme::content.ThemeFooter</code>. We will add the TWIG template in the next step.<br /><br />The priority of the template is set in line 29. Original Ceres templates have a priority of 100. Any number less than 100 will indicate a higher priority.<br /><br />Available partials are: <code>head</code>, <code>header</code>, <code>footer</code> and <code>page-design</code>. You can also add your own partials by using the <code>set('your-partial', 'Plugin::PartialTemplate')</code> method to extend the original page design. Replace <code>your-partial</code> with your own partial and <code>Plugin::PartialTemplate</code> with the template path.<br /><br />We use the <code>return false</code> statement to interrupt the chain of events.<br /><br />Include the partial in the page design template with the TWIG include statement: <code><span>{</span>% include getPartial('your-partial') %}</code>.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-footer">Code for the Footer template</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Theme/resources/views/content/ThemeFooter.twig</code>
+</div>
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+&lt;div class="footer">
+
+    &lt;!-- Insert footer markup here -->
+
+&lt;/div>
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: By using the <code><span>{</span>% include getPartial('footer') %}</code> statement in the <code>PageDesign.twig</code> file, we include the content of this template in our PageDesign template.
+</div>
+<!-- Code example end -->
+
+<h2 id="theme-change-page">Changing the template of a page</h2>
+<div class="api-docs-basics">
+    <p>The <a href="http://twig.sensiolabs.org/doc/2.x/tags/extends.html" target="_blank">extends tag</a> is used to extend a template from another template. In the example below, the <code>ThemeBasket.twig</code> file extends the <code>PageDesign.twig</code> file of Ceres. TWIG <a href="http://twig.sensiolabs.org/doc/2.x/tags/block.html" target="_blank">blocks</a> are used to define the content that will be inserted in the main wrapper of the page design. We only have to edit the ServiceProvider of our theme and create the page template, e.g. the basket.
+    </p>
+</div>
+
+<figure>
+    <a data-toggle="modal" data-target="#modal2" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/Ceres_Basket.png" />
+    </a>
+</figure>
+
+<h3 id="code-serviceprovider-basket">Code for the ServiceProvider</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Theme/src/Providers/ThemeServiceProvider.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace Theme\Providers;
+
+use IO\Helper\TemplateContainer;
+use Plenty\Plugin\Events\Dispatcher;
+use Plenty\Plugin\ServiceProvider;
+use Plenty\Plugin\Templates\Twig;
+
+class ThemeServiceProvider extends ServiceProvider
+{
+
+	/**
+	 * Register the service provider.
+	 */
+	public function register()
+	{
+
+	}
+
+    /**
+	 * Boot a template for the basket that will be displayed in the template plugin instead of the original basket.
+	 */
+	public function boot(Twig $twig, Dispatcher $eventDispatcher)
+    {
+        $eventDispatcher->listen('IO.tpl.basket', function(TemplateContainer $container, $templateData)
+        {
+            $container->setTemplate('Theme::content.ThemeBasket');
+            return false;
+        }, 0);
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Add the dependencies for the <code>TemplateContainer</code>, the <code>Dispatcher</code> and <code>Twig</code> classes.<br /><br />Add the <code>boot()</code> function and specify one or multiple pages, e.g. <code>IO.tpl.basket</code> as well as the TWIG template(s) for the page(s), e.g. <code>Theme::content.ThemeBasket</code>. We will add the TWIG template in the next step.<br /><br />We use the <code>return false</code> statement to interrupt the chain of events.<br /><br />The priority of the template is set in line 29. Original Ceres templates have a priority of 100. Any number less than 100 will indicate a higher priority.<br /><br />A list of available pages can be found in the <a href="/dev-doc/theme-plugins#theme-ceres-pages">template overview</a> for Ceres.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-template-basket">Code for the Basket template</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Theme/resources/views/content/ThemeBasket.twig</code>
+</div>
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+{% extends getPartial('page-design') %}
+
+{% block PageBody %}
+
+    &lt;!-- Insert markup for the basket here -->
+
+{% endblock %}
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: By using the <code><span>{</span>% extends getPartial('page-design') %}</code> statement in the <code>ThemeBasket.twig</code> file, we extend our page design and inject the content of this template in the <code><span>{</span>% block PageBody %}</code> area of the PageDesign template.
+</div>
+<!-- Code example end -->
+
+<h2 id="theme-change-page-component">Changing the template of a page component</h2>
+<div class="api-docs-basics">
+    <p>
+        Page components, e.g. the BasketList of the Basket template, can also be individualised. For this purpose, the template of the page where the component is used must be updated and a new template for the component must be created.
+    </p>
+</div>
+
+<figure>
+    <a data-toggle="modal" data-target="#modal3" href="#">
+        <img class="img-responsive img-pretty" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/Ceres_BasketList.png" />
+    </a>
+</figure>
+
+<h3 id="code-theme-basket">Code for the Basket template</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Theme/resources/views/content/ThemeBasket.twig</code>
+</div>
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+{% extends getPartial('page-design') %}
+{% import "Ceres::PageDesign.Macros.LayoutContainer" as LayoutContainer %}
+
+{% block PageBody %}
+
+    {{ component( "Theme::content.Components.ThemeBasketList" ) }}
+
+    ...
+
+    &lt;div class="page-content basket container-max">
+
+        &lt;div class="row m-t-1">
+            &lt;div class="col-xs-12">
+                &lt;h1 class="h4">{{ trans("Ceres::Template.basket") }}&lt;/h1>
+            &lt;/div>
+        &lt;/div>
+
+        &lt;hr class="m-b-3">
+
+        &lt;div class="row">
+            &lt;div class="col-xs-12">
+              &lt;basket-list template="#theme-basket-list">&lt;/basket-list>
+            &lt;/div>
+        &lt;/div>
+
+    ...
+
+{% endblock %}
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In line 6 of the basket template, we specify the template path of the new template component: <code><span>{</span>{ component( "Theme::content.Components.ThemeBasketList" ) }}</code>.<br /><br />In line 22, a new ID for the component must be indicated. Note that this ID must be the same as in the BasketList template. We will create this template in the next step.
+</div>
+<!-- Code example end -->
+
+<h3 id="code-theme-basket-list">Code for the BasketList template</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Theme/resources/views/content/Components/ThemeBasketList.twig</code>
+</div>
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+&lt;script type="x/template" id="theme-basket-list">
+
+    &lt;!-- Insert BasketList markup here -->
+
+&lt;/script>
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: In this template, we specify a new unique ID. This is the same ID that we use in the code of the <code>ThemeBasket.twig</code> file. Here, we use <code>id="theme-basket-list"</code>.<br /><br />Note that a component template  is always linked to a specific <a href="http://v1.vuejs.org/" target="_blank">Vue.js</a> component, i.e. <a href="http://v1.vuejs.org/guide/syntax.html#Shorthands" target="_blank">Vue.js shorthand</a> is used in the template. The prefix <code>v-</code> is one indicator of Vue.js syntax. Other indicators are <code>:</code> representing <code>v-bind</code> and <code>@</code> representing <code>v-on</code>. If you change the Vue.js notation, the linked component might not work properly anymore.
+</div>
+<!-- Code example end -->
+
+
+<h2 id="theme-change-vue-component">Changing the template of a Vue component</h2>
+<div class="api-docs-basics">
+    <p>
+        Vue components, e.g. the SingleItem component of the SingleItemView template, can also be individualised. For this purpose, the ServiceProvider of your theme must be updated and a new template for the Vue component must be created.
+    </p>
+</div>
+
+<h3 id="code-vue-service-provider">Code for the ServiceProvider</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Theme/src/Providers/ThemeServiceProvider.php</code>
+</div>
+<div class="code-container">
+<pre class="prettyprint lang-php grey-back linenums code-example">
+&lt;?php
+
+namespace Theme\Providers;
+
+use IO\Helper\TemplateContainer;
+use IO\Helper\ComponentContainer;
+use Plenty\Plugin\Events\Dispatcher;
+use Plenty\Plugin\ServiceProvider;
+use Plenty\Plugin\Templates\Twig;
+
+class ThemeServiceProvider extends ServiceProvider
+{
+
+	/**
+	 * Register the service provider.
+	 */
+	public function register()
+	{
+
+	}
+
+    /**
+	 * Boot a template for the basket that will be displayed in the template plugin instead of the original basket.
+	 */
+	public function boot(Twig $twig, Dispatcher $eventDispatcher)
+    {
+        $eventDispatcher->listen('IO.Component.Import', function (ComponentContainer $container)
+        {
+            if ($container->getOriginComponentTemplate()=='Ceres::Item.Components.SingleItem')
+            {
+                $container->setNewComponentTemplate('Theme::content.SingleItem');
+            }
+        }, self::PRIORITY);
+    }
+}
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Add the dependencies for the <code>ComponentContainer</code>, the <code>Dispatcher</code> and <code>Twig</code> classes.<br /><br />Add the <code>boot()</code> function and use the dispatcher for listening to the component import event <code>IO.Component.Import</code>. We get the component that we want to change by using the <code>getOriginComponentTemplate()</code> method, e.g. the SingleItem template in Ceres. We then set our own component template by using <code>setNewComponentTemplate</code> and specifying the path to the component, here <code>Theme::content.SingleItem</code>.
+</div>
+<!-- Code example end -->
+
+
+<h3 id="code-vue-single-item">Code for the Vue component template</h3>
+
+<!-- Code example -->
+<div class="route-container">
+    <code>Theme/resources/views/content/SingleItem.twig</code>
+</div>
+<div class="code-container">
+{% raw %}
+<pre class="prettyprint lang-twig grey-back linenums code-example">
+
+&lt;!-- Insert SingleItem markup here -->
+
+</pre>
+{% endraw %}
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<div class="alert alert-info" role="alert">
+    <b>Explanation</b>: Simply add a template for your Vue component and insert your markup into the template.
+</div>
+<!-- Code example end -->
+
+<h1 id="theme-template-overview">Overview of pages and page components</h1>
+<div class="api-docs-basics">
+    <p>
+        Find the template folder structure of Ceres as well as an overview of pages and page components used in the Ceres template plugin below.
+    </p>
+</div>
+
+<h2 id="theme-ceres-templates">Ceres template folder</h2>
+
+<div class="api-docs-basics">
+    <p>
+        The template folder is structured into 10 sub-folders that include the main pages of Ceres and the respective components.
+    </p>
+</div>
+
+<!-- Folder structure -->
+<div class="code-container">
+<pre class="prettyprint lang-plain grey-back code-example">
+Ceres/
+    └── resources/
+        └── views/
+            ├── Basket/
+            │   ├── Basket.twig
+            │   └── Components/
+            │       ├── AddItemToBasket.twig
+            │       ├── AddItemToBasketOverlay.twig
+            │       ├── BasketList.twig
+            │       ├── BasketListItem_large.twig
+            │       ├── BasketListItem_small.twig
+            │       ├── BasketListItem.twig
+            │       ├── BasketPreview.twig
+            │       ├── BasketTotals.twig
+            │       └── Coupon.twig
+            │
+            ├── Category/
+            │   ├── Content/
+            │   │   └── CategoryContent.twig
+            │   └── Item/
+            │       ├── CategoryItem.twig
+            │       └── Partials/
+            │           ├── CategoryListItem.twig
+            │           ├── CategoryViewFilter.twig
+            │           ├── ListControls.twig
+            │           └── Pagination.twig
+            │
+            ├── Checkout/
+            │   ├── Checkout.twig
+            │   ├── OrderConfirmation.twig
+            │   ├── Components/
+            │   │   ├── OrderDetails.twig
+            │   │   ├── PaymentProviderSelect.twig
+            │   │   ├── PlaceOrder.twig
+            │   │   └── ShippingProfileSelect.twig
+            │   └── Macros/
+            │       └── Address.twig
+            │
+            ├── Customer/
+            │   ├── Guest.twig
+            │   ├── Login.twig
+            │   ├── Register.twig
+            │   └── Components/
+            │       ├── CountrySelect.twig
+            │       ├── Login.twig
+            │       ├── Registration.twig
+            │       ├── UserLoginHandler.twig
+            │       ├── AddressInputGroup/
+            │       │   ├── AddressInputGroup.twig
+            │       │   └── Locale/
+            │       │       ├── AddressInputGroupDE.twig
+            │       │       └── AddressInputGroupGB.twig
+            │       └── AddressSelect/
+            │           ├── AddressSelect.twig
+            │           └── CreateUpdateAddress.twig
+            │
+            ├── Homepage/
+            │   └── Homepage.twig
+            │
+            ├── Item/
+            │   ├── SingleItem.twig
+            │   ├── Components/
+            │   │   ├── QuantityInput.twig
+            │   │   ├── VariationImageList.twig
+            │   │   └── VariationSelect.twig
+            │   └── Partials/
+            │       └── ItemRating.twig
+            │
+            ├── ItemList/
+            │   ├── ItemListView.twig
+            │   └── Components/
+            │       ├── ItemList.twig
+            │       ├── ItemSortingList.twig
+            │       ├── ItemSearch.twig
+            │       ├── ItemsPerPage.twig
+            │       ├── LoadingAnimation.twig
+            │       └── Pagination.twig
+            │
+            ├── MyAccount/
+            │   ├── MyAccount.twig
+            │   └── Components/
+            │       ├── AccountSettings.twig
+            │       ├── BankDataSelect.twig
+            │       └── OrderHistory.twig
+            │
+            ├── PageDesign/
+            │   ├── PageDesign.twig
+            │   ├── Components/
+            │   │   ├── Notifications.twig
+            │   │   ├── ShippingCountrySelect.twig
+            │   │   └── ShopLanguageSelect.twig
+            │   ├── Macros/
+            │   │   ├── IncludeComponents.twig
+            │   │   └── LayoutContainer.twig
+            │   └── Partials/
+            │       ├── Footer.twig
+            │       ├── Head.twig
+            │       └── Header/
+            │           ├── Breadcrumb.twig
+            │           ├── Header.twig
+            │           └── Navigation.twig
+            │
+            └── StaticPages/
+                ├── CancellationRights.twig
+                ├── ItemNotFound.twig
+                ├── LegalDisclosure.twig
+                ├── PageNotFound.twig
+                ├── PrivacyPolicy.twig
+                └── TermsAndConditions.twig
+</pre>
+<button type="button" class="btn btn-primary pull-right toggle-code-example">Expand</button>
+</div>
+<!-- Folder structure end -->
+
+<h2 id="theme-ceres-pages">Ceres page templates</h2>
+
+<div class="api-docs-basics">
+    <p>
+        Ceres uses individual templates containing the markup of the main pages. Some templates include partials or components. Find a table of all page templates and their respective location in the <b>resources/views</b> folder below:
+    </p>
+</div>
+
+<div class="api-docs-basics">
+    <table class="table table-striped table-responsive table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Template</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>Basket</td>
+                <td>The template for the shopping cart of your online store. It can be found in the <b>Basket</b> sub-folder of Ceres. This template includes the following components:<br />
+                    <ul>
+                        <li>
+                            BasketList
+                        </li>
+                        <li>
+                            Coupon
+                        </li>
+                        <li>
+                            BasketTotals
+                        </li>
+                    </ul>
+            </tr>
+            <tr>
+                <td>CategoryItem</td>
+                <td>The template for the category view of your online store. It can be found in the <b>Category/Item</b> sub-folder.</td>
+            </tr>
+            <tr>
+                <td>Checkout</td>
+                <td>The template for the checkout of your online store. It can be found in the <b>Checkout</b> sub-folder. This template includes the following components:<br />
+                    <ul>
+                        <li>
+                            AddressSelect
+                        </li>
+                        <li>
+                            PaymentProviderSelect
+                        </li>
+                        <li>
+                            ShippingProfileSelect
+                        </li>
+                        <li>
+                            PlaceOrder
+                        </li>
+                        <li>
+                            Coupon
+                        </li>
+                        <li>
+                            BasketList
+                        </li>
+                        <li>
+                            BasketTotals
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Guest</td>
+                <td>The template for guest orders. It can be found in the <b>Customer</b> sub-folder. This template includes the following components:<br />
+                    <ul>
+                        <li>
+                            Registration
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>HomePage</td>
+                <td>The template for the homepage of your online store. It can be found in the <b>Homepage</b> sub-folder.</td>
+            </tr>
+            <tr>
+                <td>ItemListView</td>
+                <td>The template for the item list view of your online store. It can be found in the <b>ItemList</b> sub-folder. This template includes the following components:<br />
+                    <ul>
+                        <li>
+                            ItemList
+                        </li>
+                        <li>
+                            ItemsPerPage
+                        </li>
+                        <li>
+                            ItemListSorting
+                        </li>
+                        <li>
+                            Pagination
+                        </li>
+                        <li>
+                            LoadingAnimation
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Login</td>
+                <td>The template for customer login. It can be found in the <b>Customer</b> sub-folder.</td>
+            </tr>
+            <tr>
+                <td>MyAccount</td>
+                <td>The template for the <b>My Account</b> page of your online store. It can be found in the <b>MyAccount</b> sub-folder. This template includes the following components:<br />
+                    <ul>
+                        <li>
+                            AddressSelect
+                        </li>
+                        <li>
+                            AccountSettings
+                        </li>
+                        <li>
+                            OrderHistory
+                        </li>
+                        <li>
+                            BankDataSelect
+                        </li>
+                        <li>
+                            OrderDetails
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>OrderConfirmation</td>
+                <td>The template for the order confirmation page. It can be found in the <b>Checkout</b> sub-folder. This template includes the following components:<br />
+                    <ul>
+                        <li>
+                            OrderDetails
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>PageDesign</td>
+                <td>The general template for your online store. It can be found in the <b>PageDesign</b> sub-folder. This template includes the following partials and components:<br />
+                    <ul>
+                        <li>
+                            Notifications
+                        </li>
+                        <li>
+                            BasketPreview
+                        </li>
+                        <li>
+                            Login
+                        </li>
+                        <li>
+                            Registration
+                        </li>
+                        <li>
+                            AddItemToBasketOverlay
+                        </li>
+                        <li>
+                            Head
+                        </li>
+                        <li>
+                            Header
+                        </li>
+                        <li>
+                            Footer
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Register</td>
+                <td>The template for customer registration. It can be found in the <b>Customer</b> sub-folder. This template includes the following components:<br />
+                    <ul>
+                        <li>
+                            Registration
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>SingleItem</td>
+                <td>The template for the single item view of your online store. It can be found in the <b>SingleItem</b> sub-folder. This template includes the following components:<br />
+                    <ul>
+                        <li>
+                            VariationSelect
+                        </li>
+                        <li>
+                            VariationImageList
+                        </li>
+                        <li>
+                            AddItemToBasket
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>CancellationRights</td>
+                <td>The cancellation rights of your online store. It can be found in the <b>StaticPages</b> sub-folder.</td>
+            </tr>
+            <tr>
+                <td>ItemNotFound</td>
+                <td>The <b>Item not found</b> page of your online store. It can be found in the <b>StaticPages</b> sub-folder.</td>
+            </tr>
+            <tr>
+                <td>LegalDisclosure</td>
+                <td>The legal disclosure of your online store. It can be found in the <b>StaticPages</b> sub-folder.</td>
+            </tr>
+            <tr>
+                <td>PageNotFound</td>
+                <td>The <b>Page not found</b> page. It can be found in the <b>StaticPages</b> sub-folder.</td>
+            </tr>
+            <tr>
+                <td>PrivacyPolicy</td>
+                <td>The privacy policy of your online store. It can be found in the <b>StaticPages</b> sub-folder.</td>
+            </tr>
+            <tr>
+                <td>TermsAndConditions</td>
+                <td>The general terms and conditions of your online store. It can be found in the <b>StaticPages</b> sub-folder.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">The PageDesign template of Ceres</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/Ceres_PageDesign.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">The Basket template of Ceres</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/Ceres_Basket.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog img-horizontal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">The BasketList template of Ceres</h4>
+            </div>
+            <div class="modal-body">
+                <figure>
+                    <img class="img-responsive" src="{{ plugin_path('PlentyPluginShowcase') }}/images/devguide/Ceres_BasketList.png" />
+                </figure>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

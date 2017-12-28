@@ -1,0 +1,37 @@
+{% extends 'PlentyPluginShowcase::templates.ExamplePage' %}
+
+{% block Content %}
+
+<h1 id="introduction-cookbook">Introducing the plugin cookbook</h1>
+<div class="api-docs-basics">
+    <p>
+        The plugin cookbook is a collection of recipes for plentymarkets plugin scenarios. On this page, you will find answers to questions that might arise when developing plentymarkets plugins.
+    </p>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <b>Info</b>: The cookbook is just getting started. New recipes are already on the way. If you can't find an answer to your question, post your requests and feedback in our <a href="https://forum.plentymarkets.com/c/plugin-entwicklung"><b>forum</b></a>.
+</div>
+
+<!-- DocBlock with Adding scripts in Ceres -->
+{% include "PlentyPluginShowcase::content.devguide.recipes.adding_scripts_in_ceres" %}
+
+<!-- DocBlock with Adding style in Ceres -->
+{% include "PlentyPluginShowcase::content.devguide.recipes.adding_style_in_ceres" %}
+
+<!-- DocBlock with AuthHelper class -->
+{% include "PlentyPluginShowcase::content.devguide.recipes.auth_helper" %}
+
+<!-- DocBlock with Adding Address field to Address form -->
+{% include "PlentyPluginShowcase::content.devguide.recipes.address_field" %}
+
+<!-- DocBlock with Address field validation -->
+{% include "PlentyPluginShowcase::content.devguide.recipes.address_field_validation" %}
+
+<!-- DocBlock with Disable lazy load -->
+{% include "PlentyPluginShowcase::content.devguide.recipes.disable_lazy_load" %}
+
+<!-- DocBlock with Adding item sorting value -->
+{% include "PlentyPluginShowcase::content.devguide.recipes.item_sorting" %}
+
+{% endblock %}
